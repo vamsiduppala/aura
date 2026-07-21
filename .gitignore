@@ -14,6 +14,11 @@ web-build/
 .env.*
 !.env.example
 
+# local-only resume helpers (contain unattended-run flags; kept on disk, not distributed)
+scripts/resume-build.ps1
+scripts/register-resume-task.ps1
+logs/
+
 # os / editor
 .DS_Store
 Thumbs.db

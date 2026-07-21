@@ -51,6 +51,31 @@ needs no infra/billing.
 Also producing a static HTML mockup for quick visual review without a device/simulator.
 **Impact of changing:** Adjust Expo config + testing targets.
 
+## Q-10 — ⚠️ ACTION NEEDED: auto-resume schedule needs a one-time authorization
+You asked me to "save an auto start schedule for 3h40m from now." I set up everything but
+**both automated paths need a one-time action only you can take** — I was blocked from doing
+either autonomously (correctly, they're guarded/OAuth-gated actions):
+
+1. **Local scheduled task (recommended, most reliable — uses the local repo directly):**
+   The task registration was blocked because it runs the CLI unattended with
+   `--dangerously-skip-permissions`. To enable, run ONE command (right-click → Run with
+   PowerShell, or):
+   `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\register-resume-task.ps1`
+   That schedules `scripts\resume-build.ps1` to fire once at **07:45 local** and drive the
+   Claude CLI to continue the build until ~12:55 (before your 1pm review). Edit the `-At`
+   time in the script if your reset differs. Remove with:
+   `Unregister-ScheduledTask -TaskName 'aura-build-resume' -Confirm:$false`
+
+2. **Cloud routine (backup):** creating it returned HTTP 403 — the claude.ai Code cloud
+   runner has no access to the private repo `vamsiduppala/cosmicmentor`. To enable, connect
+   the Claude GitHub app to this repo at https://claude.ai/code/routines (or make the repo
+   accessible), then re-ask me to create the routine. I did **not** make the repo public on
+   my own — that would expose your product idea, which is your call.
+
+**Net:** if you run command (1) before you sleep / before 07:45, the build auto-resumes with
+no further input. If not, no harm — I've committed + pushed everything, and you (or I) can
+just continue manually. All state is in git.
+
 ## Q-09 — Streak counter (mockup) vs "no streak-shaming" (§11.5)?
 The mockup's Today/Forecast brandbar shows a "🔥 7" streak. SPEC §11.5 forbids loss-framed
 streak pressure and streak-shaming.

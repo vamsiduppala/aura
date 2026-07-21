@@ -12,9 +12,10 @@ Last updated: 2026-07-21 ~04:10 CDT (session 1)
 ## Phase 0 — Scaffolding & handoff
 - [x] git init, dir structure
 - [x] AGENT_HANDOFF.md, docs/SPEC.md, DECISIONS.md, QUESTIONS.md, PROGRESS.md
-- [~] npm workspaces root + engine package + tsconfig + vitest
-- [ ] GitHub private remote + first push
-- [ ] Auto-resume schedule created (cloud agent, ~07:41 CDT)
+- [x] npm workspaces root + engine package + tsconfig + vitest
+- [x] GitHub private remote + first push (github.com/vamsiduppala/cosmicmentor)
+- [~] Auto-resume schedule — scripts written; needs 1 owner command to arm (see QUESTIONS Q-10).
+      Both cloud + local auto-registration were guarded/blocked; enabler script ready.
 
 ## Phase 1 — Engine core (Tiers 0–2)  ← CURRENT
 - [ ] `types.ts` — full data model (SPEC §7)
