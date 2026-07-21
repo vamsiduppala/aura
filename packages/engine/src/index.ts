@@ -20,6 +20,9 @@ export {
   planetStrength, moonIllumination, type StrengthInput, type StrengthResult,
 } from './chart/shadbala.js';
 export { aspectedHouses } from './chart/aspects.js';
+export {
+  computeAshtakavarga, ashtakavargaTotal, AV_PLANETS, type Ashtakavarga,
+} from './chart/ashtakavarga.js';
 
 // Dasha (Tier 2)
 export {

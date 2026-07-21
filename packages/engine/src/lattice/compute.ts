@@ -20,6 +20,8 @@ import {
   HOUSE_TO_AREA, AREA_TO_HOUSE, ENERGIES,
 } from '../constants.js';
 import { DEFAULT_CONFIG, type EngineConfig } from '../types.js';
+import type { Ashtakavarga } from '../chart/ashtakavarga.js';
+import { AV_PLANETS } from '../chart/ashtakavarga.js';
 
 /** Sign occupying whole-sign house H for a given Lagna. */
 function signOfHouse(lagnaSign: number, house: number): number {
@@ -60,12 +62,22 @@ function dashaWeight(p: Graha, stack: DashaStack, cfg: EngineConfig): number {
   return w;
 }
 
-/** transit_weight(P,H): transiting P sitting in H (from natal Moon) + Sade Sati. */
+/** Ashtakavarga potency of a planet's current transit sign (0..2, 1 ≈ average). */
+function avFactor(p: Graha, transitSign: number, av: Ashtakavarga | undefined): number {
+  if (!av || !(AV_PLANETS as readonly Graha[]).includes(p)) return 1;
+  const bindus = av.bav[p as (typeof AV_PLANETS)[number]]?.[transitSign] ?? 4;
+  return bindus / 4; // 8 bindus → 2×, 4 (average) → 1×, 0 → 0×
+}
+
+/** transit_weight(P,H): transiting P sitting in H (from natal Moon), weighted by its
+ *  Ashtakavarga bindus in the transited sign, + Sade Sati. */
 function transitWeight(
-  p: Graha, h: House, transit: TransitState, cfg: EngineConfig,
+  p: Graha, h: House, transit: TransitState, cfg: EngineConfig, av: Ashtakavarga | undefined,
 ): number {
   let w = 0;
-  if (transit.houseFromMoon[p] === h) w += cfg.transitWeight;
+  if (transit.houseFromMoon[p] === h) {
+    w += cfg.transitWeight * avFactor(p, transit.signs[p]!, av);
+  }
   if (p === 'saturn' && transit.sadeSati) w += cfg.sadeSatiWeight;
   return w;
 }
@@ -99,6 +111,7 @@ export function computeLattice(
   transit: TransitState,
   checkin?: Checkin,
   cfg: EngineConfig = DEFAULT_CONFIG,
+  av?: Ashtakavarga,
 ): LatticeResult {
   const cells: SignalCell[] = [];
   const energyScore = Object.fromEntries(ENERGIES.map((e) => [e, 0])) as Record<Energy, number>;
@@ -110,7 +123,7 @@ export function computeLattice(
     const cw = checkinWeight(p, checkin);
     for (let h = 1 as House; h <= 12; h = (h + 1) as House) {
       const stat = cellStatic(chart, p, h, cfg);
-      const tw = transitWeight(p, h, transit, cfg);
+      const tw = transitWeight(p, h, transit, cfg, av);
       const live = stat
         * (1 + cfg.alpha * dw + cfg.beta * tw)
         * (1 + cfg.gamma * cw);

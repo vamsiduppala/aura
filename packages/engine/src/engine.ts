@@ -11,6 +11,7 @@ import { dateFromJd } from './astro/julian.js';
 import { getStackAt } from './dasha/vimshottari.js';
 import { computeTransit } from './transit/gochara.js';
 import type { Ephemeris } from './astro/ephemeris.js';
+import { computeAshtakavarga } from './chart/ashtakavarga.js';
 import {
   computeLattice, dominantAreas, pickPassingEnergy,
 } from './lattice/compute.js';
@@ -37,7 +38,8 @@ export function computeReadingInput(
   }
 
   const transit = computeTransit(chart, date, ephem);
-  const lattice = computeLattice(chart, stack, transit, opts.checkin, cfg);
+  const av = computeAshtakavarga(chart);
+  const lattice = computeLattice(chart, stack, transit, opts.checkin, cfg, av);
 
   const input: ReadingInput = {
     majorEnergy: GRAHA_TO_ENERGY[stack.maha],
