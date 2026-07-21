@@ -52,6 +52,12 @@ export interface ReadingOptions {
  * @param dateISO the day being read, for deterministic seeding + date stamping
  * @param chartSeed a per-chart stable value (e.g. lagnaLong) so different people differ
  */
+/** A short signature of the optional check-in, so a check-in visibly re-tunes the copy. */
+function checkinSig(input: ReadingInput): string {
+  if (!input.checkin) return '';
+  return `|${input.checkin.mood ?? ''}:${input.checkin.focus ?? ''}`;
+}
+
 export function generateReading(
   input: ReadingInput,
   dateISO: string,
@@ -60,8 +66,8 @@ export function generateReading(
 ): Reading {
   const major = input.majorEnergy;
   const passing = input.passingEnergy;
-  const base = `${Math.round(chartSeed * 1000)}|${dateISO}`;
-  const area = opts.goalArea ?? input.dominantAreas[0];
+  const base = `${Math.round(chartSeed * 1000)}|${dateISO}${checkinSig(input)}`;
+  const area = input.checkin?.focus ?? opts.goalArea ?? input.dominantAreas[0];
 
   const gift = pick(CONTENT[major].gift, `${base}|gift`);
   const trap = pick(CONTENT[passing].trap, `${base}|trap`);
@@ -85,12 +91,12 @@ export function generateReading(
 
 /** The one-liner for the Today/home screen — the passing energy's texture. */
 export function generateTodayLine(input: ReadingInput, dateISO: string, chartSeed: number): string {
-  return pick(CONTENT[input.passingEnergy].headlines, `${Math.round(chartSeed * 1000)}|${dateISO}|today`);
+  return pick(CONTENT[input.passingEnergy].headlines, `${Math.round(chartSeed * 1000)}|${dateISO}${checkinSig(input)}|today`);
 }
 
 /** The Today-screen short remedy pill text. */
 export function generateRemedyShort(input: ReadingInput, dateISO: string, chartSeed: number): string {
-  return pick(CONTENT[input.passingEnergy].remedyShort, `${Math.round(chartSeed * 1000)}|${dateISO}|rem`);
+  return pick(CONTENT[input.passingEnergy].remedyShort, `${Math.round(chartSeed * 1000)}|${dateISO}${checkinSig(input)}|rem`);
 }
 
 /**

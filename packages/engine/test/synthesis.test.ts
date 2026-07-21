@@ -75,6 +75,17 @@ describe('Phase 2 acceptance', () => {
     expect(seen.size).toBeGreaterThan(2);
   });
 
+  it('a daily check-in visibly re-tunes the reading (the "it knows" moment)', () => {
+    const chart = computeChart(einstein, ephem);
+    const date = new Date('2026-07-21T00:00:00Z');
+    const cold = generateReading(computeReadingInput(chart, date, ephem), '2026-07-21', chart.lagnaLong);
+    const tuned = generateReading(
+      computeReadingInput(chart, date, ephem, { checkin: { mood: 'anxious', focus: 'money' } }),
+      '2026-07-21', chart.lagnaLong,
+    );
+    expect(JSON.stringify(cold)).not.toBe(JSON.stringify(tuned));
+  });
+
   it('a chart far in time shifts the passing energy (dasha movement)', () => {
     const chart = computeChart(einstein, ephem);
     const a = computeReadingInput(chart, new Date('2026-07-21T00:00:00Z'), ephem);
