@@ -58,8 +58,14 @@ export interface PlanetPos {
   pada?: number;
   retrograde: boolean;
   combust: boolean;
-  /** Dignity/strength scalar ≈ [−1, +1]. */
+  /** Dignity scalar ≈ [−1, +1] (D1 rasi dignity). */
   dignity: number;
+  /** Navamsa (D9) sign 0..11. */
+  navamsa: number;
+  /** Same sign in D1 and D9 → very strong. */
+  vargottama: boolean;
+  /** Composite Shadbala-inspired strength in [0,1] (drives energy loudness). */
+  strength: number;
   /** Functional polarity for this Lagna: +1 benefic-leaning, −1 malefic-leaning. */
   polarity: number;
   /** Houses (1..12) this planet aspects via graha drishti. */

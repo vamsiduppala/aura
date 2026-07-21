@@ -36,10 +36,11 @@ function influence(chart: Chart, p: Graha, h: House, cfg: EngineConfig): number 
   return inf;
 }
 
-/** Expression magnitude of a planet: neutral planets still speak (floor), exalted
- *  and debilitated planets speak loudest (|dignity|). */
+/** Expression magnitude of a planet: driven by the composite Shadbala-inspired
+ *  strength (dignity in D1+D9, dig/cheshta/naisargika/paksha bala). Floor keeps
+ *  every planet audible; strong (esp. vargottama/exalted) planets speak loudest. */
 function expression(chart: Chart, p: Graha): number {
-  return 0.3 + 0.7 * Math.abs(chart.planets[p].dignity);
+  return 0.25 + 0.9 * chart.planets[p].strength;
 }
 
 /** Static cell magnitude (natal only), always ≥ 0. */

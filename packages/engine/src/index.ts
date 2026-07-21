@@ -15,6 +15,10 @@ export {
 // Chart (Tier 1)
 export { computeChart } from './chart/chart.js';
 export { dignityScalar, functionalPolarity } from './chart/strength.js';
+export { navamsaSign, rasiSign, dasamsaSign, isVargottama } from './chart/varga.js';
+export {
+  planetStrength, moonIllumination, type StrengthInput, type StrengthResult,
+} from './chart/shadbala.js';
 export { aspectedHouses } from './chart/aspects.js';
 
 // Dasha (Tier 2)
