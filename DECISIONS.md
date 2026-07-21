@@ -51,6 +51,27 @@ no transpile config). TypeScript `strict: true`.
 the kind of sign/index bugs that would corrupt dasha math.
 **Undo:** Swap to pnpm/jest if desired; test files are framework-light.
 
+## [2026-07-21] D-07 — Lattice: separate signal INTENSITY (magnitude) from QUALITY (polarity)
+**Decided:** In the 108-cell scoring I compute cell MAGNITUDE (always ≥ 0) using |dignity| as
+"loudness" with a floor, rather than the literal `influence × strength × polarity` of SPEC §5.1
+(which would zero any neutral-dignity planet and make energyScore/houseScore go negative).
+Polarity + dignity are carried separately for the synthesis layer to colour gift-vs-trap tone.
+**Why:** A neutral-dignity planet (e.g. Jupiter dignity ≈ 0 in the Einstein chart) still occupies
+/rules/aspects houses and must contribute signal; multiplying by 0 erased it. Non-negative
+intensities also make "hottest life areas" ranking well-defined. Exalted AND debilitated planets
+both read as "loud" (|dignity|), which is astrologically sound — a debilitated planet in its
+dasha is strongly (difficultly) felt.
+**Undo:** Swap `cellStatic` back to the signed product if a future tuning wants signed scores;
+the aggregation and synthesis interfaces don't change.
+
+## [2026-07-21] D-08 — Dasha timeline spans 2 Vimshottari cycles (240 years)
+**Decided:** Generate 2 full 120-year cycles of Mahadashas from the first maha (not 1).
+**Why:** Vimshottari is cyclic; one cycle (120y) falls off for old charts (e.g. a 1879 birth
+viewed in 2026) and long-range forecasts, breaking getStackAt/getPeriodsAt. 240y covers any
+realistic case. `buildDashaTree('prana')` on 2 cycles is large (~118k leaves) but it's an
+optional cache path; the hot paths (getStackAt/getPeriodsAt) walk only what they need.
+**Undo:** Change `MAHA_CYCLES` in vimshottari.ts.
+
 ## [2026-07-21] D-06 — Phase-1 validation strategy: exact arithmetic goldens + calendar anchors
 **Decided:** Validate the engine with (a) hand-computed dasha goldens (exact, not just "within
 a day"), (b) real-world calendar anchors that need no external source — Makara Sankranti (Sun →

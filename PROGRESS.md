@@ -34,17 +34,18 @@ Last updated: 2026-07-21 ~04:10 CDT (session 1)
       is rigorous; this is belt-and-suspenders.
 - [x] **Phase 1 acceptance met** (with the documented follow-up above)
 
-## Phase 2 — Lattice + synthesis (Tiers 3–5)
-- [ ] 108 Signal Lattice (9×12), static cell scoring
-- [ ] Temporal modulation (dasha + transit + check-in weights)
-- [ ] Aggregation → energyScore, houseScore, major/passing, dominantAreas
-- [ ] `computeReading(chart, date, checkin?) → ReadingInput`
-- [ ] Five-beat generator + template bank (skeleton for all 9 energies)
-- [ ] Forecast builder (daily/weekly/monthly/custom) + pinned maha flip
-- [ ] Blueprint deriver (standing energies)
-- [ ] TESTS: two charts differ; same chart different days differ; snapshot beats
-- [ ] no-jargon lint test over content
-- [ ] **Phase 2 acceptance met**
+## Phase 2 — Lattice + synthesis (Tiers 3–5)  ✅ COMPLETE (40 tests total, typecheck clean)
+- [x] 108 Signal Lattice (9×12), static cell scoring (magnitude/quality split, D-07)
+- [x] Temporal modulation (dasha + transit + check-in weights)
+- [x] Aggregation → energyScore, houseScore, major/passing, dominantAreas
+- [x] `computeReadingInput(chart, date, ephem, {checkin, goalArea}) → ReadingInput`
+- [x] Five-beat generator + template bank (all 9 energies × 5 beats × area specializations)
+- [x] Forecast builder (daily/weekly/monthly/custom) + pinned maha flip
+- [x] Blueprint deriver (standing energies, 4 distinct roles)
+- [x] TESTS: two charts differ; same chart across 21 days differs; dasha moves over a year
+- [x] no-jargon lint test over content + generated readings (daily/expanded/blueprint/forecast)
+- [x] **Phase 2 acceptance met** (eyeballed: readings are coherent, honest, non-doom, jargon-free)
+- NOTE: dasha now spans 2 Vimshottari cycles (240y) so old charts / long forecasts don't fall off.
 
 ## Phase 3 — UI (Tier 7)
 - [ ] Static HTML mockup of 7 screens (quick visual review) — docs/mockups/

@@ -63,7 +63,7 @@ describe('Vimshottari period tree (SPEC §4.4)', () => {
   it('first maha lord and balance are exact', () => {
     expect(startingMahaLord(moonLong)).toBe('ketu');
     const maha = buildDashaTree(moonLong, birth, 'maha');
-    expect(maha).toHaveLength(9);
+    expect(maha).toHaveLength(18); // 2 Vimshottari cycles (240y) for long forecasts
     expect(maha[0]!.lord).toBe('ketu');
     // Ketu maha ends 3.5 years after birth.
     expect(yearsBetween(birth.toISOString(), maha[0]!.end)).toBeCloseTo(3.5, 6);
@@ -74,7 +74,7 @@ describe('Vimshottari period tree (SPEC §4.4)', () => {
   it('maha sequence follows the order from the starting lord, each of correct length', () => {
     const maha = buildDashaTree(moonLong, birth, 'maha');
     const expectedOrder = ['ketu', 'venus', 'sun', 'moon', 'mars', 'rahu', 'jupiter', 'saturn', 'mercury'];
-    expect(maha.map((m) => m.lord)).toEqual(expectedOrder);
+    expect(maha.slice(0, 9).map((m) => m.lord)).toEqual(expectedOrder);
     for (const node of maha) {
       const len = yearsBetween(node.start, node.end);
       expect(len).toBeCloseTo(VIMSHOTTARI_YEARS[node.lord], 5);

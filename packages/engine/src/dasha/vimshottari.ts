@@ -64,17 +64,23 @@ function firstMahaStartMs(moonLong: number, birthMs: number, opts: DashaOptions)
 
 interface Span { lord: Graha; startMs: number; endMs: number; years: number; }
 
-/** The nine Mahadasha spans of one full 120-year cycle from the first maha. */
+/** Vimshottari repeats every 120 years; generate this many cycles so forecasts and
+ *  old charts never fall off the end of the timeline. 2 cycles = 240 years. */
+const MAHA_CYCLES = 2;
+
+/** The Mahadasha spans from the first maha, across MAHA_CYCLES full 120-year cycles. */
 function mahaSpans(moonLong: number, birthMs: number, opts: DashaOptions): Span[] {
   const lord = startingMahaLord(moonLong);
   const order = orderFrom(lord);
   const spans: Span[] = [];
   let cursor = firstMahaStartMs(moonLong, birthMs, opts);
-  for (const g of order) {
-    const years = VIMSHOTTARI_YEARS[g];
-    const len = years * yearMs(opts);
-    spans.push({ lord: g, startMs: cursor, endMs: cursor + len, years });
-    cursor += len;
+  for (let cycle = 0; cycle < MAHA_CYCLES; cycle++) {
+    for (const g of order) {
+      const years = VIMSHOTTARI_YEARS[g];
+      const len = years * yearMs(opts);
+      spans.push({ lord: g, startMs: cursor, endMs: cursor + len, years });
+      cursor += len;
+    }
   }
   return spans;
 }

@@ -26,3 +26,22 @@ export {
 
 // Transits (Tier 2)
 export { computeTransit, sadeSatiPhase } from './transit/gochara.js';
+
+// Lattice + aggregation (Tiers 3–4)
+export {
+  computeLattice, cellStatic, dominantAreas, pickPassingEnergy, type LatticeResult,
+} from './lattice/compute.js';
+export { computeReadingInput, type ReadingInputOptions } from './engine.js';
+
+// Synthesis (Tier 5)
+export {
+  generateReading, generateTodayLine, generateRemedyShort, generateExpandedReading,
+  type ReadingOptions,
+} from './synthesis/reading.js';
+export {
+  buildForecast, buildCustomForecast, type ForecastResult, FORECAST_GLOSS,
+} from './synthesis/forecast.js';
+export { buildBlueprint, natalProminence, type BlueprintRow } from './synthesis/blueprint.js';
+
+// Content (Tier 6)
+export { CONTENT, type EnergyContent } from './content/templates.js';
