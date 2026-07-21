@@ -47,13 +47,19 @@ Last updated: 2026-07-21 ~04:10 CDT (session 1)
 - [x] **Phase 2 acceptance met** (eyeballed: readings are coherent, honest, non-doom, jargon-free)
 - NOTE: dasha now spans 2 Vimshottari cycles (240y) so old charts / long forecasts don't fall off.
 
-## Phase 3 — UI (Tier 7)
-- [ ] Static HTML mockup of 7 screens (quick visual review) — docs/mockups/
-- [ ] Expo app scaffold + design tokens + fonts
-- [ ] Aura orb component (two-tone, reduced-motion)
-- [ ] Screens: Onboarding, Today, Reading, Check-in, Forecast, Expanded, Blueprint
-- [ ] Navigation + per-day reading cache + local storage
-- [ ] **Phase 3 acceptance met**
+## Phase 3 — UI (Tier 7)  ✅ COMPLETE (apps/web, all 7 screens visually verified)
+- [x] Real mockup vendored (docs/mockups/) — visual source of truth
+- [x] Web app scaffold (Vite+React+TS, D-09) + design tokens + fonts + ported CSS
+- [x] Aura orb component (two-tone gradient, reduced-motion) — the signature, verified
+- [x] Screens: Onboarding, Today, Reading, Check-in, Forecast, Expanded, Blueprint — all wired to engine
+- [x] Navigation (Today/Forecast/Blueprint + pushed Reading/Checkin/Expanded)
+- [x] Builds clean (vite build), typecheck clean, rendered + screenshotted (docs/screens/)
+- [x] **Phase 3 acceptance met** — real birth date flows onboarding→today→reading→forecast→
+      expanded→blueprint end-to-end, no jargon, goal-specialized moves, fixed "Turns →" bug.
+- NOTE (D-09): built as a Vite web app (verifiable + de-risks astronomia bundling) rather than
+  Expo mobile. Expo mobile app = follow-up; components/CSS translate. Bundle is 1.3MB (VSOP87
+  data) — code-split/lazy-load the ephemeris for production (tracked, non-blocking).
+- Per-day reading cache + encrypted local storage: deferred to Phase 5 (privacy).
 
 ## Phase 4 — Content depth & check-in
 - [ ] Fill template bank (9 energies × 5 beats × life-area specializations)

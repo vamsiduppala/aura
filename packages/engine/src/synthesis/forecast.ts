@@ -10,7 +10,7 @@ import type {
 import { GRAHA_TO_ENERGY, ENERGY_META } from '../constants.js';
 import { DEFAULT_CONFIG, type EngineConfig } from '../types.js';
 import { dateFromJd } from '../astro/julian.js';
-import { getPeriodsAt, currentMaha } from '../dasha/vimshottari.js';
+import { getPeriodsAt } from '../dasha/vimshottari.js';
 
 /** Short forecast-row gloss per energy (concise, non-doom). */
 const FORECAST_GLOSS: Record<Energy, string> = {
@@ -70,20 +70,21 @@ export function buildForecast(
   const birth = dateFromJd(chart.julianDayUT);
   const moonLong = chart.planets.moon.siderealLong;
   const opts = { yearLengthDays: cfg.yearLengthDays };
-
-  // Pinned major season = current maha + the next one.
-  const maha = currentMaha(moonLong, birth, now, opts)!;
-  const nextMahaList = getPeriodsAt(moonLong, birth, 'maha', maha.end, new Date(maha.end.getTime() + 1), opts);
-  const next = nextMahaList[0];
-
   const day = 86400_000;
+
+  // Pinned major season = the maha containing `now`, and the one after it. Reading
+  // both from one getPeriodsAt call keeps the boundary exact (no Date round-trip).
+  const mahas = getPeriodsAt(moonLong, birth, 'maha', now, new Date(now.getTime() + 130 * 365.25 * day), opts);
+  const current = mahas[0]!;
+  const next = mahas[1] ?? current;
+
   return {
     majorSeason: {
-      energy: GRAHA_TO_ENERGY[maha.lord],
-      start: maha.start.toISOString(),
-      end: maha.end.toISOString(),
-      nextEnergy: next ? GRAHA_TO_ENERGY[next.lord] : GRAHA_TO_ENERGY[maha.lord],
-      nextStart: maha.end.toISOString(),
+      energy: GRAHA_TO_ENERGY[current.lord],
+      start: current.start.toISOString(),
+      end: current.end.toISOString(),
+      nextEnergy: GRAHA_TO_ENERGY[next.lord],
+      nextStart: current.end.toISOString(),
     },
     daily: toPeriods(chart, ZOOM_LEVEL.daily, now, new Date(now.getTime() + 16 * day), now, cfg, 8),
     weekly: toPeriods(chart, ZOOM_LEVEL.weekly, now, new Date(now.getTime() + 75 * day), now, cfg, 8),

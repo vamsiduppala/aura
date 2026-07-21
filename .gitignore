@@ -19,6 +19,9 @@ scripts/resume-build.ps1
 scripts/register-resume-task.ps1
 logs/
 
+# playwright / test artifacts
+.playwright-mcp/
+
 # os / editor
 .DS_Store
 Thumbs.db

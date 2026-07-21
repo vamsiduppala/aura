@@ -5,6 +5,10 @@
 // applies the Lahiri ayanamsa to sidereal-ize.
 // ─────────────────────────────────────────────────────────────────────────────
 
+/// <reference path="./astronomia.d.ts" />
+// ^ makes the astronomia type shim ambient for any consumer (e.g. apps/web) whose
+//   tsconfig `include` doesn't glob the engine's src directory.
+
 import {
   solar, moonposition, planetposition, elliptic, coord, nutation,
 } from 'astronomia';

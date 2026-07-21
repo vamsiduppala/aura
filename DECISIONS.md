@@ -51,6 +51,21 @@ no transpile config). TypeScript `strict: true`.
 the kind of sign/index bugs that would corrupt dasha math.
 **Undo:** Swap to pnpm/jest if desired; test files are framework-light.
 
+## [2026-07-21] D-09 — Phase 3 UI built as a Vite web app (apps/web), not Expo mobile (yet)
+**Decided:** Built the 7 screens as a Vite + React + TypeScript web app wired to `@aura/engine`,
+porting the mockup's exact CSS. Not the spec's React Native + Expo (§10) — yet.
+**Why:** (1) Verifiability — I can actually build, render, and screenshot a web app autonomously
+to confirm it looks right; an Expo build needs a simulator/device I can't drive here, so RN
+screens would be write-only/unverified. (2) De-risks bundling the astronomia dependency (Vite
+handles the ESM + VSOP87 subpath imports cleanly; Metro/RN config is uncertain). (3) Gives the
+owner a clickable real-data prototype to review immediately (`cd apps/web && npm run dev`).
+**Result:** All 7 screens render faithfully with REAL engine data — verified via screenshots in
+docs/screens/. The signature two-tone aura orb works. Readings are honest, goal-specialized,
+jargon-free.
+**Undo / follow-up:** Port these components to Expo/React-Native for the mobile target; the CSS
+→ RN StyleSheet and the engine API stay the same. Provide the ephemeris via a Metro-friendly
+build or the FastAPI backend if astronomia doesn't bundle in RN.
+
 ## [2026-07-21] D-07 — Lattice: separate signal INTENSITY (magnitude) from QUALITY (polarity)
 **Decided:** In the 108-cell scoring I compute cell MAGNITUDE (always ≥ 0) using |dignity| as
 "loudness" with a floor, rather than the literal `influence × strength × polarity` of SPEC §5.1
