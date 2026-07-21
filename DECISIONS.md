@@ -51,6 +51,20 @@ no transpile config). TypeScript `strict: true`.
 the kind of sign/index bugs that would corrupt dasha math.
 **Undo:** Swap to pnpm/jest if desired; test files are framework-light.
 
+## [2026-07-21] D-06 — Phase-1 validation strategy: exact arithmetic goldens + calendar anchors
+**Decided:** Validate the engine with (a) hand-computed dasha goldens (exact, not just "within
+a day"), (b) real-world calendar anchors that need no external source — Makara Sankranti (Sun →
+sidereal Capricorn ~14 Jan) and Meena Sankranti consistency validate the ayanamsa+Sun+time
+pipeline; ascendant validated against pure-trig anchors; dignity validated by known exaltations
+(Einstein's Mars in Capricorn, Venus in Pisces both come out exalted). A hard external golden
+vs a trusted Jyotish source's *dasha dates* is left as a follow-up.
+**Why:** Offline, I can't fetch a trusted external dasha table without risking locking in a
+WRONG reference (many free sources disagree by days due to ayanamsa/year-length conventions).
+The arithmetic is proven exact; the astronomy is anchored to real calendar events. This is a
+stronger, more honest validation than an unverified external golden.
+**Undo / follow-up:** Owner drops a trusted chart (birth data + that source's maha/antar dates)
+into `test/fixtures/`; I assert against it. Or I WebSearch a reputable source when online.
+
 ## [2026-07-21] D-05 — True node default for Rahu; Ketu = Rahu + 180°; Lahiri ayanamsa
 **Decided:** Rahu = true node (configurable to mean), Ketu = Rahu + 180°, sidereal via Lahiri
 (Chitrapaksha) ayanamsa. Year length constant = 365.25 days.
