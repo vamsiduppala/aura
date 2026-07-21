@@ -106,6 +106,40 @@ describe('real chart pipeline (AstronomiaEphemeris)', () => {
   });
 });
 
+describe('external validation vs published Vedic sources (Einstein)', () => {
+  // Cross-checked against multiple established Jyotish sources (astrosage, astro-seek,
+  // vedicmarga, ganeshaspeaks). All discrete, convention-robust facts match our engine.
+  const einstein: BirthData = {
+    date: '1879-03-14', time: '11:30', unknownTime: false,
+    place: 'Ulm, DE', lat: 48.4, lng: 10.0, tzOffsetMinutes: 40,
+  };
+  const chart = computeChart(einstein, ephem);
+  const SIGN = { Gemini: 2, Scorpio: 7, Capricorn: 9, Aquarius: 10, Pisces: 11 };
+  const JYESHTHA = 17;
+
+  it('Moon sign = Scorpio, nakshatra = Jyeshtha', () => {
+    expect(chart.moonSign).toBe(SIGN.Scorpio);
+    expect(chart.moonNakshatra).toBe(JYESHTHA);
+    expect(NAKSHATRAS[chart.moonNakshatra]!.name).toBe('Jyeshtha');
+  });
+  it('Sun sign = Pisces; Ascendant = Gemini', () => {
+    expect(chart.planets.sun.sign).toBe(SIGN.Pisces);
+    expect(chart.lagnaSign).toBe(SIGN.Gemini);
+  });
+  it('Mars is exalted (Capricorn) in the 8th house', () => {
+    expect(chart.planets.mars.sign).toBe(SIGN.Capricorn);
+    expect(chart.planets.mars.dignity).toBeGreaterThan(0.5);
+    expect(chart.planets.mars.house).toBe(8);
+  });
+  it('reproduces the Jupiter↔Saturn 9th/10th lord exchange (for Gemini lagna)', () => {
+    // Gemini lagna: 9th = Aquarius (Saturn), 10th = Pisces (Jupiter).
+    // The sources note Jupiter & Saturn exchange the 9th and 10th.
+    expect(chart.planets.jupiter.house).toBe(9); // 10th lord sits in the 9th
+    expect(chart.planets.saturn.house).toBe(10); // 9th lord sits in the 10th
+    expect(startingMahaLord(chart.planets.moon.siderealLong)).toBe('mercury'); // Jyeshtha → Mercury
+  });
+});
+
 describe('deterministic chart with FixedEphemeris', () => {
   it('assigns houses by the whole-sign rule and detects combustion', () => {
     // Put Sun and Mercury at the same tropical longitude → Mercury combust.

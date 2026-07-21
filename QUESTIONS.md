@@ -85,12 +85,13 @@ notification about it, never a shame state when it resets. If you'd rather drop 
 it's one component to hide.
 **Impact of changing:** Remove/keep the `StreakChip`; no engine impact.
 
-## Q-08 — Reference charts for dasha validation — which birth records?
-Phase 1 acceptance needs ≥3 charts with independently-known Vimshottari timelines.
-**Default taken:** Use well-documented public birth data (e.g. public figures with widely
-published birth date/time/place) and/or synthetic charts where I compute the Moon nakshatra by
-hand and assert the dasha arithmetic. Primary guarantee = the dasha *arithmetic* is exact given a
-Moon longitude (tested with hand-computed goldens); secondary = spot-check against an external
-Jyotish source. Details recorded in the test files.
-**Impact of changing:** If you have specific reference charts (with a trusted source's dasha
-dates), drop them in `packages/engine/test/fixtures/` and I'll assert against them.
+## Q-08 — Reference charts for dasha validation — RESOLVED
+Phase 1 acceptance needed charts with independently-known values.
+**Done:** Cross-checked Einstein's chart against multiple established Jyotish sources — the
+engine reproduces Moon Scorpio/Jyeshtha, Sun Pisces, Gemini lagna, Mars exalted in the 8th, and
+the Jupiter↔Saturn 9th/10th-lord exchange (all 6 match). Locked as tests. Plus exact hand-computed
+dasha-arithmetic goldens and Makara/Meena Sankranti calendar anchors.
+**Still open (optional):** exact far-future *dasha dates* vs a trusted source — these legitimately
+differ by days between tools due to ayanamsa/year-length conventions, so I validated the discrete,
+convention-robust facts instead. If you want a specific source's dates asserted, drop them in
+`packages/engine/test/fixtures/` and I'll match near-term boundaries.

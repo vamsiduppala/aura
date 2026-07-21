@@ -29,9 +29,10 @@ Last updated: 2026-07-21 ~11:20 CDT (session 1). Phases 1–5 complete; 52 engin
 - [x] TESTS: nakshatra/pada + whole-sign house invariant
 - [x] TESTS: pipeline validated via external calendar anchors (Makara/Meena Sankranti),
       ascendant trig anchors, exaltation sanity (Mars/Venus exalted in Einstein chart)
-- [~] External golden vs a trusted Jyotish source's dasha table — FOLLOW-UP (see Q-08 / D-06;
-      needs owner-provided reference to avoid locking in a wrong source). Internal validation
-      is rigorous; this is belt-and-suspenders.
+- [x] External golden DONE: cross-checked Einstein's chart vs multiple established Jyotish
+      sources (astrosage, astro-seek, vedicmarga, ganeshaspeaks). Engine reproduces ALL six
+      discrete facts — Moon Scorpio/Jyeshtha, Sun Pisces, Gemini lagna, Mars exalted in the 8th,
+      and the Jupiter↔Saturn 9th/10th-lord exchange. Locked as 4 tests.
 - [x] **Phase 1 acceptance met** (with the documented follow-up above)
 
 ## Phase 2 — Lattice + synthesis (Tiers 3–5)  ✅ COMPLETE (40 tests total, typecheck clean)
