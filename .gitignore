@@ -1,0 +1,30 @@
+# deps
+node_modules/
+**/node_modules/
+
+# build
+dist/
+build/
+*.tsbuildinfo
+.expo/
+web-build/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+coverage/
+
+# expo / rn
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*

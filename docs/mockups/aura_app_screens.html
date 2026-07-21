@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>aura — energy reading app · screen concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* base */
+    --ink:#09080F;
+    --ink-2:#0E0C17;
+    --card:rgba(255,255,255,0.035);
+    --card-2:rgba(255,255,255,0.055);
+    --line:rgba(255,255,255,0.09);
+    --line-2:rgba(255,255,255,0.14);
+    --mist:#EDEAF6;
+    --mist-2:#B4AFC6;
+    --mist-3:#7C7791;
+
+    /* energy hues */
+    --radiance:#FFD070;
+    --tide:#8FB7FF;
+    --forge:#FF6E58;
+    --signal:#5FE0C0;
+    --bloom:#7ED69B;
+    --velvet:#F49CC9;
+    --slate:#8E93C8;
+    --smoke:#AE8FE6;
+    --ash:#A6ABB8;
+
+    --serif:'Instrument Serif',Georgia,serif;
+    --grotesk:'Space Grotesk',system-ui,sans-serif;
+    --sans:'Inter',system-ui,sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+
+  body{
+    background:
+      radial-gradient(120% 80% at 15% -5%, rgba(142,147,200,0.10), transparent 45%),
+      radial-gradient(120% 80% at 90% 5%, rgba(174,143,230,0.09), transparent 45%),
+      linear-gradient(180deg,#0A0813 0%, #09080F 60%, #070610 100%);
+    color:var(--mist);
+    font-family:var(--sans);
+    min-height:100vh;
+    padding:56px 20px 100px;
+    position:relative;
+  }
+  /* film grain */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:999;
+    opacity:.05;mix-blend-mode:soft-light;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- presentation chrome ---------- */
+  .deck-head{max-width:640px;margin:0 auto 60px;text-align:center;}
+  .deck-mark{
+    font-family:var(--grotesk);font-size:12px;letter-spacing:.42em;
+    text-transform:uppercase;color:var(--mist-3);margin-bottom:22px;
+  }
+  .deck-head h1{
+    font-family:var(--serif);font-weight:400;font-size:clamp(32px,7vw,52px);
+    line-height:1.02;letter-spacing:-.01em;color:var(--mist);
+  }
+  .deck-head h1 em{font-style:italic;color:var(--smoke);}
+  .deck-head p{
+    margin-top:20px;color:var(--mist-2);font-size:15px;line-height:1.6;
+    max-width:480px;margin-left:auto;margin-right:auto;
+  }
+
+  .gallery{
+    display:flex;flex-direction:column;align-items:center;gap:92px;
+    max-width:420px;margin:0 auto;
+  }
+  .slot{width:100%;}
+  .slot-label{
+    display:flex;align-items:baseline;gap:14px;margin:0 6px 20px;
+  }
+  .slot-num{
+    font-family:var(--grotesk);font-size:12px;font-weight:500;letter-spacing:.12em;
+    color:var(--mist-3);
+  }
+  .slot-name{
+    font-family:var(--grotesk);font-size:13px;font-weight:500;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--mist);
+  }
+  .slot-desc{
+    font-size:13px;color:var(--mist-3);line-height:1.5;margin:0 6px 22px;max-width:340px;
+  }
+
+  /* ---------- device frame ---------- */
+  .device{
+    width:100%;max-width:372px;margin:0 auto;
+    aspect-ratio:372/806;
+    background:var(--ink);
+    border-radius:46px;
+    padding:11px;
+    position:relative;
+    box-shadow:
+      0 0 0 1.5px rgba(255,255,255,0.10),
+      0 2px 4px rgba(0,0,0,0.6),
+      0 40px 80px -30px rgba(0,0,0,0.9),
+      0 0 120px -40px rgba(142,147,200,0.25);
+  }
+  .screen{
+    width:100%;height:100%;border-radius:36px;overflow:hidden;position:relative;
+    background:linear-gradient(180deg,#0C0A16 0%, #0A0812 100%);
+    display:flex;flex-direction:column;
+  }
+  .island{
+    position:absolute;top:11px;left:50%;transform:translateX(-50%);
+    width:88px;height:26px;background:#000;border-radius:16px;z-index:40;
+  }
+  .statusbar{
+    height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;
+    padding:0 24px 6px;font-family:var(--grotesk);font-size:12px;color:var(--mist-2);
+    letter-spacing:.02em;z-index:30;
+  }
+  .statusbar .dots{display:flex;gap:5px;align-items:center;}
+  .statusbar .dots span{width:15px;height:9px;border-radius:2px;background:currentColor;opacity:.5;}
+  .statusbar .batt{width:20px;height:10px;border:1.2px solid currentColor;border-radius:3px;opacity:.6;position:relative;}
+  .statusbar .batt::after{content:"";position:absolute;left:2px;top:2px;bottom:2px;width:11px;background:currentColor;border-radius:1px;}
+
+  .view{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  .scroll{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+  /* shared bits */
+  .brandbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:6px 26px 0;flex:none;
+  }
+  .wordmark{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-size:21px;color:var(--mist);}
+  .wordmark .glyph{
+    width:15px;height:15px;border-radius:50%;
+    background:conic-gradient(from 210deg, var(--slate), var(--smoke), var(--slate));
+    box-shadow:0 0 12px -2px var(--smoke);
+  }
+  .barmeta{font-family:var(--grotesk);font-size:11px;letter-spacing:.06em;color:var(--mist-3);display:flex;align-items:center;gap:8px;}
+  .streak{display:flex;align-items:center;gap:5px;color:var(--mist-2);}
+  .streak b{color:var(--radiance);font-weight:500;}
+
+  .label{
+    font-family:var(--grotesk);font-size:10.5px;font-weight:500;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--mist-3);
+  }
+  .serif-h{font-family:var(--serif);font-weight:400;letter-spacing:-.01em;color:var(--mist);line-height:1.08;}
+  .body{font-size:13.5px;line-height:1.62;color:var(--mist-2);}
+
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    width:100%;height:56px;border-radius:18px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(228,224,240,0.9));
+    color:#0B0912;font-family:var(--grotesk);font-weight:600;font-size:14.5px;letter-spacing:.01em;
+    border:none;box-shadow:0 8px 30px -12px rgba(174,143,230,0.6);
+  }
+  .btn.ghost{
+    background:transparent;color:var(--mist-2);box-shadow:none;height:auto;font-weight:400;
+    font-family:var(--sans);font-size:13px;
+  }
+
+  /* ---------- AURA ORB (signature) ---------- */
+  .orb-wrap{position:relative;display:grid;place-items:center;}
+  .orb{
+    position:relative;border-radius:50%;
+    --e1:var(--slate);--e2:var(--smoke);
+    background:
+      radial-gradient(115% 115% at 32% 26%, var(--e1), transparent 56%),
+      radial-gradient(120% 120% at 74% 78%, var(--e2), transparent 58%),
+      radial-gradient(circle at 50% 44%, rgba(255,255,255,0.14), transparent 46%),
+      radial-gradient(circle at 50% 50%, #17142400, #0c0a17 88%);
+    box-shadow:
+      inset 0 0 40px -14px rgba(255,255,255,0.35),
+      inset 0 -30px 60px -30px rgba(0,0,0,0.7);
+    isolation:isolate;
+    animation:breathe 7s ease-in-out infinite;
+  }
+  .orb::before{
+    content:"";position:absolute;inset:-34%;border-radius:50%;z-index:-1;
+    background:radial-gradient(circle, var(--e2), transparent 62%);
+    opacity:.5;filter:blur(26px);animation:pulse 7s ease-in-out infinite;
+  }
+  .orb::after{
+    content:"";position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 0deg, transparent, rgba(255,255,255,0.18), transparent 40%);
+    mix-blend-mode:screen;opacity:.6;animation:spin 14s linear infinite;
+  }
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+  @keyframes pulse{0%,100%{opacity:.42}50%{opacity:.62}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .orb-chip{
+    width:26px;height:26px;border-radius:50%;flex:none;
+    background:radial-gradient(circle at 34% 30%, var(--e1), transparent 60%),
+               radial-gradient(circle at 72% 74%, var(--e2), transparent 62%);
+    box-shadow:0 0 14px -4px var(--e2), inset 0 0 8px -3px rgba(255,255,255,.5);
+  }
+
+  /* ---------- SCREEN 1 · onboarding ---------- */
+  .s1{padding:14px 26px 22px;gap:0;justify-content:flex-start;overflow:hidden;}
+  .s1 .mark{display:flex;align-items:center;justify-content:center;gap:9px;font-family:var(--serif);font-size:23px;margin:6px 0 26px;}
+  .s1 .mark .glyph{width:16px;height:16px;}
+  .s1 h2{font-family:var(--serif);font-size:33px;line-height:1.03;margin-bottom:12px;}
+  .s1 .intro{font-size:13px;line-height:1.6;color:var(--mist-2);margin-bottom:26px;}
+  .field{border-bottom:1px solid var(--line);padding:12px 2px;display:flex;align-items:center;justify-content:space-between;}
+  .field .k{font-family:var(--grotesk);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist-3);}
+  .field .v{font-family:var(--sans);font-size:15px;color:var(--mist);}
+  .field .v.dim{color:var(--mist-3);}
+  .unknown{margin:9px 2px 2px;font-family:var(--grotesk);font-size:11px;letter-spacing:.04em;color:var(--slate);display:flex;align-items:center;gap:7px;}
+  .unknown .box{width:13px;height:13px;border-radius:4px;border:1.4px solid var(--slate);opacity:.8;}
+  .s1 .subq{font-family:var(--grotesk);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--mist-3);margin:26px 0 13px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    font-family:var(--grotesk);font-size:12.5px;padding:8px 13px;border-radius:11px;
+    border:1px solid var(--line);color:var(--mist-2);background:var(--card);
+  }
+  .chip.on{background:linear-gradient(180deg,rgba(174,143,230,.22),rgba(142,147,200,.14));border-color:rgba(174,143,230,.5);color:var(--mist);}
+  .empire{margin-top:14px;border-bottom:1px solid var(--line);padding:11px 2px;display:flex;align-items:center;justify-content:space-between;}
+  .empire .k{font-family:var(--grotesk);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist-3);}
+  .empire .v{font-family:var(--serif);font-size:19px;color:var(--mist);}
+  .s1 .cta-zone{margin-top:auto;padding-top:24px;}
+  .fineprint{text-align:center;font-size:11px;color:var(--mist-3);margin-top:14px;letter-spacing:.02em;}
+
+  /* ---------- SCREEN 2 · today / home ---------- */
+  .s2{align-items:center;text-align:center;padding:2px 26px 22px;justify-content:space-between;}
+  .s2 .orb{width:186px;height:186px;margin:6px 0 4px;}
+  .s2 .blend{display:flex;gap:0;justify-content:center;align-items:stretch;margin-top:2px;width:100%;}
+  .s2 .en{flex:1;padding:0 10px;}
+  .s2 .en + .en{border-left:1px solid var(--line);}
+  .s2 .en .label{margin-bottom:8px;}
+  .s2 .en .name{font-family:var(--grotesk);font-weight:600;font-size:14.5px;line-height:1.15;letter-spacing:.02em;text-transform:uppercase;}
+  .s2 .en .name.slate{color:var(--slate);}
+  .s2 .en .name.smoke{color:var(--smoke);}
+  .s2 .en .gloss{font-size:11.5px;color:var(--mist-3);margin-top:3px;}
+  .s2 .today{font-family:var(--serif);font-size:25px;line-height:1.12;margin:22px 4px 0;}
+  .remedy-pill{
+    display:flex;align-items:center;gap:11px;margin:20px 0 0;padding:13px 16px;width:100%;
+    border-radius:16px;background:var(--card);border:1px solid var(--line);
+  }
+  .remedy-pill .ring{width:22px;height:22px;border-radius:50%;border:1.6px solid var(--smoke);flex:none;position:relative;}
+  .remedy-pill .ring::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--smoke);opacity:.25;}
+  .remedy-pill .txt{text-align:left;flex:1;}
+  .remedy-pill .txt .rl{font-family:var(--grotesk);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--mist-3);}
+  .remedy-pill .txt .rv{font-size:13.5px;color:var(--mist);margin-top:2px;}
+  .s2 .cta-zone{width:100%;margin-top:16px;}
+
+  /* ---------- SCREEN 3 · the reading ---------- */
+  .s3{overflow:hidden;}
+  .s3 .top{display:flex;align-items:center;justify-content:space-between;padding:6px 24px 0;flex:none;}
+  .s3 .top .back{font-size:20px;color:var(--mist-2);}
+  .s3 .top .ttl{font-family:var(--grotesk);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist-2);}
+  .s3 .top .date{font-family:var(--grotesk);font-size:11px;color:var(--mist-3);}
+  .s3 .roll{flex:1;overflow:hidden;padding:0 24px;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 22px,#000 calc(100% - 40px),transparent 100%);
+            mask-image:linear-gradient(180deg,transparent 0,#000 22px,#000 calc(100% - 40px),transparent 100%);}
+  .s3 h2{font-family:var(--serif);font-size:26px;line-height:1.1;margin:16px 0 14px;}
+  .s3 .tags{display:flex;gap:8px;margin-bottom:20px;}
+  .s3 .tag{display:flex;align-items:center;gap:6px;font-family:var(--grotesk);font-size:11px;letter-spacing:.06em;color:var(--mist-2);}
+  .s3 .tag .d{width:9px;height:9px;border-radius:50%;}
+  .sect{position:relative;padding:0 0 20px 16px;}
+  .sect::before{content:"";position:absolute;left:0;top:6px;bottom:20px;width:1.5px;background:var(--line-2);}
+  .sect .node{position:absolute;left:-3.5px;top:5px;width:8.5px;height:8.5px;border-radius:50%;background:var(--mist-3);}
+  .sect .hl{font-family:var(--grotesk);font-size:10.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mist);margin-bottom:8px;}
+  .sect p{font-size:13px;line-height:1.6;color:var(--mist-2);}
+  .sect.gift .node{background:var(--bloom);box-shadow:0 0 10px -1px var(--bloom);}
+  .sect.trap .node{background:var(--smoke);box-shadow:0 0 10px -1px var(--smoke);}
+  .sect.move .node{background:var(--radiance);box-shadow:0 0 10px -1px var(--radiance);}
+  .sect.watch .node{background:var(--forge);box-shadow:0 0 10px -1px var(--forge);}
+  .remedy-card{
+    margin:2px 0 24px;padding:16px;border-radius:18px;
+    background:linear-gradient(160deg, rgba(174,143,230,0.16), rgba(142,147,200,0.07));
+    border:1px solid rgba(174,143,230,0.28);
+  }
+  .remedy-card .rh{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+  .remedy-card .rh .label{color:var(--smoke);}
+  .remedy-card .rh .star{color:var(--smoke);font-size:13px;}
+  .remedy-card p{font-size:13px;line-height:1.6;color:var(--mist);}
+  .remedy-card .done{margin-top:13px;display:flex;align-items:center;gap:9px;font-family:var(--grotesk);font-size:12px;color:var(--mist-2);}
+  .remedy-card .done .ring{width:20px;height:20px;border-radius:50%;border:1.6px solid var(--smoke);}
+
+  /* ---------- SCREEN 4 · check-in ---------- */
+  .s4{padding:16px 26px 24px;justify-content:flex-start;}
+  .s4 .orb-chip{margin:14px auto 26px;width:44px;height:44px;}
+  .s4 h2{font-family:var(--serif);font-size:29px;line-height:1.06;text-align:center;margin-bottom:11px;}
+  .s4 .sub{text-align:center;font-size:13px;color:var(--mist-2);margin-bottom:30px;line-height:1.5;}
+  .s4 .qh{font-family:var(--grotesk);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--mist-3);margin-bottom:14px;}
+  .moodgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:30px;}
+  .mood{
+    padding:15px 6px;border-radius:14px;border:1px solid var(--line);background:var(--card);
+    text-align:center;font-family:var(--grotesk);font-size:12.5px;color:var(--mist-2);
+  }
+  .mood .em{display:block;font-size:19px;margin-bottom:7px;filter:grayscale(.15);}
+  .mood.on{background:linear-gradient(180deg,rgba(174,143,230,.24),rgba(174,143,230,.08));border-color:rgba(174,143,230,.55);color:var(--mist);}
+  .s4 .cta-zone{margin-top:auto;}
+
+  /* ---------- SCREEN 5 · the arc ---------- */
+  .s5{padding:14px 26px 24px;}
+  .s5 h2{font-family:var(--serif);font-size:29px;line-height:1.06;margin:8px 0 8px;}
+  .s5 .lede{font-size:13px;color:var(--mist-2);line-height:1.55;margin-bottom:28px;}
+  .arc{position:relative;padding-left:26px;flex:1;}
+  .arc::before{content:"";position:absolute;left:6px;top:6px;bottom:20px;width:2px;
+    background:linear-gradient(180deg,var(--slate),var(--smoke) 12%,var(--bloom) 52%,var(--velvet) 100%);opacity:.55;border-radius:2px;}
+  .stop{position:relative;margin-bottom:26px;}
+  .stop .pin{position:absolute;left:-26px;top:2px;width:14px;height:14px;border-radius:50%;background:#0C0A16;border:2px solid var(--mist-3);}
+  .stop.now .pin{border-color:var(--smoke);box-shadow:0 0 12px -1px var(--smoke);}
+  .stop.rise .pin{border-color:var(--bloom);box-shadow:0 0 12px -1px var(--bloom);}
+  .stop.soft .pin{border-color:var(--velvet);}
+  .stop.turn .pin{border-color:var(--radiance);}
+  .stop .when{font-family:var(--grotesk);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist-3);margin-bottom:6px;}
+  .stop .pairing{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+  .stop .pairing .nm{font-family:var(--grotesk);font-weight:500;font-size:14.5px;letter-spacing:.03em;}
+  .stop .pairing .plus{color:var(--mist-3);font-size:12px;}
+  .stop .pairing .a{color:var(--slate);} .stop .pairing .b{color:var(--smoke);}
+  .stop .pairing .c{color:var(--bloom);} .stop .pairing .d{color:var(--velvet);} .stop .pairing .e{color:var(--radiance);}
+  .stop .note{font-size:12.5px;color:var(--mist-2);line-height:1.5;}
+  .stop.now{opacity:.72;}
+  .s5 .foot{margin-top:auto;padding-top:14px;font-size:12.5px;line-height:1.55;color:var(--mist-2);border-top:1px solid var(--line);}
+  .s5 .foot b{color:var(--bloom);font-weight:500;}
+
+  /* ---------- SCREEN 6 · blueprint ---------- */
+  .s6{padding:14px 24px 22px;}
+  .s6 .hd{text-align:center;margin-bottom:22px;}
+  .s6 h2{font-family:var(--serif);font-size:30px;margin-bottom:9px;}
+  .s6 .sub{font-size:12.5px;color:var(--mist-2);}
+  .bpcard{
+    flex:1;border-radius:24px;padding:22px 20px;
+    background:
+      radial-gradient(130% 90% at 20% 0%, rgba(142,147,200,0.16), transparent 55%),
+      radial-gradient(130% 90% at 90% 100%, rgba(174,143,230,0.16), transparent 55%),
+      linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+    border:1px solid var(--line-2);display:flex;flex-direction:column;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .bpcard .cardmark{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-size:16px;color:var(--mist-2);margin-bottom:20px;}
+  .bpcard .cardmark .glyph{width:12px;height:12px;}
+  .bprow{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line);}
+  .bprow:first-of-type{border-top:none;}
+  .bprow .en-dot{width:34px;height:34px;border-radius:50%;flex:none;
+    box-shadow:inset 0 0 8px -2px rgba(255,255,255,.5);}
+  .bprow .txt{flex:1;}
+  .bprow .rel{font-family:var(--grotesk);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--mist-3);}
+  .bprow .en-nm{font-family:var(--grotesk);font-weight:600;font-size:15px;letter-spacing:.03em;margin:2px 0 3px;}
+  .bprow .desc{font-size:12px;color:var(--mist-2);line-height:1.4;}
+  .bpcard .share{margin-top:auto;padding-top:18px;}
+  .share-btn{display:flex;align-items:center;justify-content:center;gap:9px;height:48px;border-radius:15px;
+    border:1px solid var(--line-2);background:rgba(255,255,255,0.04);
+    font-family:var(--grotesk);font-weight:500;font-size:13px;color:var(--mist);}
+
+  .arrow{font-size:15px;}
+
+  .foot-note{max-width:420px;margin:78px auto 0;text-align:center;font-size:12px;color:var(--mist-3);line-height:1.7;font-family:var(--grotesk);letter-spacing:.03em;}
+
+  /* ---------- SCREEN 5b · forecast with tabs ---------- */
+  .s5b{overflow:hidden;}
+  .s5b .fx-head{padding:4px 24px 0;flex:none;}
+  .s5b .fx-head h2{font-family:var(--serif);font-size:23px;line-height:1.05;}
+  .s5b .fx-head .sub{font-size:11.5px;color:var(--mist-3);margin-top:5px;letter-spacing:.01em;}
+
+  /* stable major-season bar carries the MAIN dasha change */
+  .seasonbar{margin:13px 24px 0;padding:13px 15px;border-radius:15px;flex:none;
+    background:linear-gradient(160deg, rgba(142,147,200,0.14), rgba(255,255,255,0.02));
+    border:1px solid rgba(142,147,200,0.28);}
+  .seasonbar .sb-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+  .seasonbar .sb-top .label{color:var(--mist-3);}
+  .seasonbar .sb-top .nm{font-family:var(--grotesk);font-weight:600;font-size:14px;letter-spacing:.05em;color:var(--slate);}
+  .sb-line{display:flex;align-items:center;gap:8px;}
+  .sb-line .rail{flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(142,147,200,.5),rgba(95,224,192,.5));position:relative;}
+  .mini-date{display:flex;flex-direction:column;line-height:1;}
+  .mini-date .l{font-family:var(--grotesk);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist-3);margin-bottom:3px;}
+  .mini-date .d{font-family:var(--grotesk);font-size:11px;font-weight:500;color:var(--mist-2);}
+  .mini-date.turn .d{color:var(--signal);}
+
+  /* tabs */
+  .tabs{display:flex;margin:16px 20px 0;border-bottom:1px solid var(--line);flex:none;}
+  .tab{flex:1;text-align:center;padding:11px 2px;font-family:var(--grotesk);font-size:12px;font-weight:500;
+    letter-spacing:.03em;color:var(--mist-3);position:relative;background:none;border:none;cursor:pointer;}
+  .tab.active{color:var(--mist);}
+  .tab.active::after{content:"";position:absolute;bottom:-1px;left:22%;right:22%;height:2px;border-radius:2px;
+    background:var(--smoke);box-shadow:0 0 10px -1px var(--smoke);}
+
+  .fx-panels{flex:1;overflow:hidden;position:relative;}
+  .panel{display:none;position:absolute;inset:0;overflow:hidden;padding:4px 24px 0;flex-direction:column;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16px,#000 calc(100% - 26px),transparent 100%);
+            mask-image:linear-gradient(180deg,transparent 0,#000 16px,#000 calc(100% - 26px),transparent 100%);}
+  .panel.active{display:flex;}
+
+  .rangebar{display:flex;align-items:center;gap:8px;margin:14px 0 4px;flex:none;}
+  .range-pill{flex:1;padding:9px 12px;border-radius:11px;background:var(--card-2);border:1px solid var(--line-2);text-align:center;}
+  .range-pill .l{font-family:var(--grotesk);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist-3);}
+  .range-pill .d{font-family:var(--grotesk);font-size:13px;font-weight:500;color:var(--mist);margin-top:2px;}
+  .range-pill .arr{color:var(--mist-3);}
+  .range-count{font-family:var(--grotesk);font-size:11px;color:var(--smoke);text-align:center;margin:11px 0 2px;letter-spacing:.03em;flex:none;}
+
+  /* a period whose START marks the dasha change */
+  .period{display:flex;gap:13px;padding:15px 0;border-top:1px solid var(--line);}
+  .period:first-of-type{border-top:none;}
+  .period .bar{width:3px;border-radius:3px;flex:none;align-self:stretch;}
+  .period .pbody{flex:1;min-width:0;}
+  .period .prow{display:flex;align-items:center;gap:9px;margin-bottom:3px;}
+  .period .en{font-family:var(--grotesk);font-weight:600;font-size:15.5px;letter-spacing:.03em;}
+  .period .now{font-family:var(--grotesk);font-size:8.5px;font-weight:500;letter-spacing:.16em;padding:3px 7px;border-radius:6px;
+    background:rgba(174,143,230,.2);color:var(--smoke);}
+  .period .gloss{font-size:12px;color:var(--mist-2);margin-bottom:11px;}
+  .daterow{display:flex;align-items:stretch;gap:9px;}
+  .dchip{display:flex;flex-direction:column;padding:7px 11px;border-radius:10px;background:rgba(255,255,255,0.045);
+    border:1px solid var(--line);}
+  .dchip .dl{font-family:var(--grotesk);font-size:8px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--mist-3);margin-bottom:3px;}
+  .dchip .dd{font-family:var(--grotesk);font-size:12px;font-weight:500;color:var(--mist);white-space:nowrap;}
+  .dchip.start{background:rgba(255,255,255,0.06);}  /* start = the change; border colored inline */
+  .dconn{flex:1;display:flex;align-items:center;justify-content:center;min-width:14px;color:var(--mist-3);font-size:12px;}
+  .dconn::before{content:"";height:1px;flex:1;background:var(--line-2);}
+  .dconn span{padding:0 6px;font-size:10px;}
+  .dconn::after{content:"";height:1px;flex:1;background:var(--line-2);}
+
+  /* the big one: a MAJOR season change, highlighted differently */
+  .major-shift{margin:6px 0 16px;padding:14px 15px;border-radius:14px;display:flex;align-items:center;gap:12px;
+    background:linear-gradient(160deg, rgba(95,224,192,0.14), rgba(255,255,255,0.02));
+    border:1px solid rgba(95,224,192,0.3);}
+  .major-shift .di{font-size:15px;color:var(--signal);}
+  .major-shift .ms-body{flex:1;}
+  .major-shift .ms-l{font-family:var(--grotesk);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--signal);margin-bottom:3px;}
+  .major-shift .ms-t{font-size:12.5px;color:var(--mist);}
+  .major-shift .ms-t b{font-family:var(--grotesk);font-weight:600;color:var(--signal);}
+  .major-shift .ms-date{font-family:var(--grotesk);font-size:11px;font-weight:500;color:var(--mist);white-space:nowrap;}
+
+  /* ---------- tappable rows + expanded reading detail ---------- */
+  .s5b .period{position:relative;cursor:pointer;padding-right:20px;}
+  .s5b .period::after{content:"\203A";position:absolute;right:0;top:15px;color:var(--mist-3);font-size:19px;line-height:1;}
+  .s5b .period:active{opacity:.7;}
+
+  .detail{position:absolute;inset:0;z-index:60;background:linear-gradient(180deg,#0C0A16 0%,#0A0812 100%);
+    display:none;flex-direction:column;}
+  .detail.active{display:flex;}
+  .detail .dtop{display:flex;align-items:center;gap:12px;padding:15px 22px 8px;flex:none;}
+  .detail .dtop .close{font-size:23px;color:var(--mist-2);cursor:pointer;line-height:1;}
+  .detail .dtop .dctx{font-family:var(--grotesk);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist-3);}
+  .droll{flex:1;overflow:hidden;padding:0 22px;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18px,#000 calc(100% - 32px),transparent 100%);
+            mask-image:linear-gradient(180deg,transparent 0,#000 18px,#000 calc(100% - 32px),transparent 100%);}
+  .dname{font-family:var(--grotesk);font-weight:600;font-size:23px;letter-spacing:.02em;margin:10px 0 5px;}
+  .dmean{font-size:12.5px;color:var(--mist-2);margin-bottom:15px;}
+  .ddates{display:flex;align-items:stretch;gap:9px;margin-bottom:20px;}
+  .dintro{font-size:13.5px;line-height:1.62;color:var(--mist);margin-bottom:20px;}
+  .blend-note{margin:4px 0 24px;padding:13px 15px;border-radius:14px;border:1px solid var(--line);
+    background:var(--card);font-size:12.5px;line-height:1.55;color:var(--mist-2);}
+  .blend-note b{color:var(--mist);font-weight:500;font-family:var(--grotesk);}
+
+  @media (prefers-reduced-motion: reduce){
+    .orb,.orb::before,.orb::after{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="deck-head">
+    <div class="deck-mark">energy reading app · concept</div>
+    <h1>Your <em>mystical right hand</em> for building an empire.</h1>
+    <p>An ancient timing system, stripped of every planet name and chart. Two energies, one honest reading, one real thing to do today.</p>
+  </div>
+
+  <div class="gallery">
+
+    <!-- ============ SCREEN 1 · ONBOARDING ============ -->
+    <div class="slot">
+      <div class="slot-label"><span class="slot-num">01</span><span class="slot-name">Onboarding</span></div>
+      <div class="slot-desc">Captures birth details (with a graceful “I don’t know my time” path) and what they’re building — so every reading points at their actual goal.</div>
+      <div class="device">
+        <div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><div class="dots"><span></span><div class="batt"></div></div></div>
+          <div class="view s1">
+            <div class="mark"><span class="glyph"></span> aura</div>
+            <h2>Let’s read<br>your timing.</h2>
+            <div class="intro">No charts to learn. No jargon. Just your energy — translated from a system that’s been read for 5,000 years.</div>
+
+            <div class="field"><span class="k">Born on</span><span class="v">14 · 03 · 2001</span></div>
+            <div class="field"><span class="k">Born at</span><span class="v">09:42</span></div>
+            <div class="unknown"><span class="box"></span> I don’t know my time — read me by day</div>
+            <div class="field"><span class="k">Born in</span><span class="v">Jaipur, IN</span></div>
+
+            <div class="subq">What are you building?</div>
+            <div class="chips">
+              <span class="chip">Career</span>
+              <span class="chip on">Wealth</span>
+              <span class="chip">Love</span>
+              <span class="chip">Health</span>
+              <span class="chip">Self</span>
+            </div>
+            <div class="empire"><span class="k">Name your empire</span><span class="v">Kai’s studio</span></div>
+
+            <div class="cta-zone">
+              <button class="btn">Read my energy <span class="arrow">→</span></button>
+              <div class="fineprint">Private. Yours only. Delete anytime.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN 2 · TODAY / HOME ============ -->
+    <div class="slot">
+      <div class="slot-label"><span class="slot-num">02</span><span class="slot-name">Today</span></div>
+      <div class="slot-desc">The home screen. Your living aura = the blend of your <b>major energy</b> (the multi-year season) and the <b>passing energy</b> moving through right now. One line for today, one remedy.</div>
+      <div class="device">
+        <div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><div class="dots"><span></span><div class="batt"></div></div></div>
+          <div class="brandbar">
+            <div class="wordmark"><span class="glyph"></span> aura</div>
+            <div class="barmeta"><span class="streak">🔥 <b>7</b></span><span>Mon 20</span></div>
+          </div>
+          <div class="view s2">
+            <div class="orb-wrap"><div class="orb"></div></div>
+            <div class="blend">
+              <div class="en">
+                <div class="label">Major energy</div>
+                <div class="name slate">HEAVY LIFTING</div>
+                <div class="gloss">the long build</div>
+              </div>
+              <div class="en">
+                <div class="label">Passing through</div>
+                <div class="name smoke">NEVER ENOUGH</div>
+                <div class="gloss">hunger &amp; fog</div>
+              </div>
+            </div>
+            <div class="today">Build the brick in<br>front of you.<br>The map can wait.</div>
+            <div class="remedy-pill">
+              <span class="ring"></span>
+              <div class="txt"><div class="rl">Today’s remedy</div><div class="rv">Sleep early tonight — starve the fog</div></div>
+            </div>
+            <div class="cta-zone">
+              <button class="btn">Open today’s reading <span class="arrow">→</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN 3 · THE READING ============ -->
+    <div class="slot">
+      <div class="slot-label"><span class="slot-num">03</span><span class="slot-name">The Reading</span></div>
+      <div class="slot-desc">The core. Five beats: the gift on offer, the thinking trap to catch, the smartest move toward the goal, the thing to watch for around them, and the one remedy.</div>
+      <div class="device">
+        <div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><div class="dots"><span></span><div class="batt"></div></div></div>
+          <div class="view s3">
+            <div class="top"><span class="back">‹</span><span class="ttl">Today’s reading</span><span class="date">Mon 20</span></div>
+            <div class="roll">
+              <h2>You’re building in the fog. Trust the next brick, not the whole map.</h2>
+              <div class="tags">
+                <span class="tag"><span class="d" style="background:var(--slate)"></span>HEAVY LIFTING</span>
+                <span class="tag"><span class="d" style="background:var(--smoke)"></span>NEVER ENOUGH</span>
+              </div>
+
+              <div class="sect gift"><span class="node"></span>
+                <div class="hl">The gift</div>
+                <p>Your patience is turning into a weapon. What you lay down in this heaviness will outlast everything the fast people are chasing. You’re not slow — you’re structural.</p>
+              </div>
+              <div class="sect trap"><span class="node"></span>
+                <div class="hl">The trap</div>
+                <p>Your mind wants to sprint into a future it can’t see, and it’s calling that anxiety “planning.” The hunger whispers you’re behind. You’re not behind — you’re being pulled by a story, not a fact.</p>
+              </div>
+              <div class="sect move"><span class="node"></span>
+                <div class="hl">The move</div>
+                <p>Pick the one thing that actually grows your empire this week and let the other ten be noise. Depth beats scatter right now. Say no to something shiny today — on purpose.</p>
+              </div>
+              <div class="sect watch"><span class="node"></span>
+                <div class="hl">Watch for</div>
+                <p>Something will bait your urgency — a message, a comparison, a “now or never.” It’s a mirage. Nothing real needs you to panic-decide. Let it sit 24 hours.</p>
+              </div>
+
+              <div class="remedy-card">
+                <div class="rh"><span class="star">✦</span><span class="label">The remedy</span></div>
+                <p>Fix your sleep window for 7 days — up early, down early. The fog and overthinking feed on late nights. Morning light will do more for your clarity than any plan.</p>
+                <div class="done"><span class="ring"></span> Mark done today</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN 4 · CHECK-IN ============ -->
+    <div class="slot">
+      <div class="slot-label"><span class="slot-num">04</span><span class="slot-name">Daily check-in</span></div>
+      <div class="slot-desc">The “how did it <i>know</i>” engine. One tap on your real headspace tunes the reading to today — the difference between a generic horoscope and something that lands.</div>
+      <div class="device">
+        <div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><div class="dots"><span></span><div class="batt"></div></div></div>
+          <div class="view s4">
+            <div class="orb-chip"></div>
+            <h2>Before I read you —<br>where’s your head?</h2>
+            <div class="sub">One tap. It tunes today’s reading to where you actually are.</div>
+
+            <div class="qh">The mood</div>
+            <div class="moodgrid">
+              <div class="mood"><span class="em">◔</span>Focused</div>
+              <div class="mood on"><span class="em">◍</span>Foggy</div>
+              <div class="mood"><span class="em">◌</span>Anxious</div>
+              <div class="mood"><span class="em">◉</span>Wired</div>
+              <div class="mood"><span class="em">○</span>Drained</div>
+              <div class="mood"><span class="em">◑</span>Restless</div>
+            </div>
+
+            <div class="qh">What matters today</div>
+            <div class="chips">
+              <span class="chip on">Money</span>
+              <span class="chip">Work</span>
+              <span class="chip">Love</span>
+              <span class="chip">Self</span>
+              <span class="chip">Rest</span>
+            </div>
+
+            <div class="cta-zone">
+              <button class="btn">Tune my reading <span class="arrow">→</span></button>
+              <button class="btn ghost" style="margin-top:12px">Skip — read me cold</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN 5 · THE ARC ============ -->
+    <div class="slot">
+      <div class="slot-label"><span class="slot-num">05</span><span class="slot-name">The Arc</span></div>
+      <div class="slot-desc">The forecast, zoomable by tab — Daily, Weekly, Monthly, Custom. Each view lists the energy shifts in range with their <b>start and end dates highlighted</b>. The major season change sits pinned at the top.</div>
+      <div class="device">
+        <div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><div class="dots"><span></span><div class="batt"></div></div></div>
+          <div class="brandbar">
+            <div class="wordmark"><span class="glyph"></span> aura</div>
+            <div class="barmeta"><span>forecast</span></div>
+          </div>
+          <div class="view s5b">
+            <div class="fx-head">
+              <h2>The heaviness has an exit.</h2>
+              <div class="sub">Zoom with the tabs · tap any shift to open it.</div>
+            </div>
+
+            <!-- MAIN dasha change, pinned -->
+            <div class="seasonbar">
+              <div class="sb-top"><span class="label">Major season</span><span class="nm">HEAVY LIFTING</span></div>
+              <div class="sb-line">
+                <span class="mini-date"><span class="l">Began</span><span class="d">Mar 2019</span></span>
+                <span class="rail"></span>
+                <span class="mini-date turn"><span class="l">Turns → Busy Mind</span><span class="d">24 Feb 2029</span></span>
+              </div>
+            </div>
+
+            <!-- tabs -->
+            <div class="tabs">
+              <button class="tab" data-tab="daily">Daily</button>
+              <button class="tab" data-tab="weekly">Weekly</button>
+              <button class="tab active" data-tab="monthly">Monthly</button>
+              <button class="tab" data-tab="custom">Custom</button>
+            </div>
+
+            <div class="fx-panels">
+
+              <!-- DAILY -->
+              <div class="panel" data-panel="daily">
+                <div class="period">
+                  <span class="bar" style="background:var(--smoke)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--smoke)">NEVER ENOUGH</span><span class="now">Now</span></div>
+                    <div class="gloss">Dense and sharp. Mind won’t settle.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--smoke)"><span class="dl">Starts</span><span class="dd">18 Jul</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">22 Jul</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--tide)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--tide)">BIG FEELINGS</span></div>
+                    <div class="gloss">Softer, tired, more feeling. Rest here.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--tide)"><span class="dl">Starts</span><span class="dd">23 Jul</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">26 Jul</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--smoke)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--smoke)">NEVER ENOUGH</span></div>
+                    <div class="gloss">Restless again — good for hard focus.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--smoke)"><span class="dl">Starts</span><span class="dd">27 Jul</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">31 Jul</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- WEEKLY -->
+              <div class="panel" data-panel="weekly">
+                <div class="period">
+                  <span class="bar" style="background:var(--smoke)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--smoke)">NEVER ENOUGH</span><span class="now">Now</span></div>
+                    <div class="gloss">Restless and foggy. Keep the load light.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--smoke)"><span class="dl">Starts</span><span class="dd">15 Jul</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">29 Jul</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--smoke)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--smoke)">NEVER ENOUGH</span></div>
+                    <div class="gloss">Thinning out. The fog starts to break.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--smoke)"><span class="dl">Starts</span><span class="dd">29 Jul</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">12 Aug</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--bloom)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--bloom)">GREEN LIGHT</span></div>
+                    <div class="gloss">The lift begins. Doors give. Say yes.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--bloom)"><span class="dl">Starts</span><span class="dd">12 Aug</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">26 Aug</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MONTHLY (default) -->
+              <div class="panel active" data-panel="monthly">
+                <div class="period">
+                  <span class="bar" style="background:var(--smoke)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--smoke)">NEVER ENOUGH</span><span class="now">Now</span></div>
+                    <div class="gloss">Hunger &amp; fog. Build small and steady.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--smoke)"><span class="dl">Starts</span><span class="dd">18 Jun 2026</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">12 Aug 2026</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--bloom)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--bloom)">GREEN LIGHT</span></div>
+                    <div class="gloss">Luck &amp; momentum return. Expand.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--bloom)"><span class="dl">Starts</span><span class="dd">12 Aug 2026</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">29 Oct 2026</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--radiance)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--radiance)">MAIN CHARACTER</span></div>
+                    <div class="gloss">You’re seen. Recognition, visibility.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--radiance)"><span class="dl">Starts</span><span class="dd">29 Oct 2026</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">6 Dec 2026</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--tide)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--tide)">BIG FEELINGS</span></div>
+                    <div class="gloss">Feelings, home, rest. Slow down.</div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--tide)"><span class="dl">Starts</span><span class="dd">6 Dec 2026</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">21 Feb 2027</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CUSTOM -->
+              <div class="panel" data-panel="custom">
+                <div class="rangebar">
+                  <div class="range-pill"><div class="l">From</div><div class="d">18 Jul 2026</div></div>
+                  <span class="range-pill arr" style="flex:0;border:none;background:none;padding:0 2px">→</span>
+                  <div class="range-pill"><div class="l">To</div><div class="d">31 Dec 2026</div></div>
+                </div>
+                <div class="range-count">4 energy shifts in this window</div>
+                <div class="period">
+                  <span class="bar" style="background:var(--smoke)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--smoke)">NEVER ENOUGH</span><span class="now">Now</span></div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--smoke)"><span class="dl">Starts</span><span class="dd">18 Jun 2026</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">12 Aug 2026</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--bloom)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--bloom)">GREEN LIGHT</span></div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--bloom)"><span class="dl">Starts</span><span class="dd">12 Aug 2026</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">29 Oct 2026</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--radiance)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--radiance)">MAIN CHARACTER</span></div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--radiance)"><span class="dl">Starts</span><span class="dd">29 Oct 2026</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">6 Dec 2026</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="period">
+                  <span class="bar" style="background:var(--tide)"></span>
+                  <div class="pbody">
+                    <div class="prow"><span class="en" style="color:var(--tide)">BIG FEELINGS</span></div>
+                    <div class="daterow">
+                      <div class="dchip start" style="border-color:var(--tide)"><span class="dl">Starts</span><span class="dd">6 Dec 2026</span></div>
+                      <div class="dconn"><span>→</span></div>
+                      <div class="dchip"><span class="dl">Ends</span><span class="dd">21 Feb 2027</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="detail" id="fxDetail"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN 6 · EXPANDED READING (opens from a forecast shift) ============ -->
+    <div class="slot">
+      <div class="slot-label"><span class="slot-num">06</span><span class="slot-name">Expanded reading</span></div>
+      <div class="slot-desc">Tap any shift in the forecast and it opens like this — the same five-beat reading as the daily one, but written for that whole stretch, with its start and end dates and how it lands inside your major season. (Shown: the Green Light stretch.)</div>
+      <div class="device">
+        <div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><div class="dots"><span></span><div class="batt"></div></div></div>
+          <div class="view s5b">
+            <div class="detail active" style="position:relative;flex:1;min-height:0;">
+              <div class="dtop"><span class="close">&lsaquo;</span><span class="dctx">Monthly shift</span></div>
+              <div class="droll">
+                <div class="dname" style="color:var(--bloom)">GREEN LIGHT</div>
+                <div class="dmean">lucky growth · the fog lifts</div>
+                <div class="ddates">
+                  <div class="dchip start" style="border-color:var(--bloom)"><span class="dl">Starts</span><span class="dd">12 Aug 2026</span></div>
+                  <div class="dconn"><span>&rarr;</span></div>
+                  <div class="dchip"><span class="dl">Ends</span><span class="dd">29 Oct 2026</span></div>
+                </div>
+                <div class="dintro">For about eleven weeks the pressure eases and momentum comes back. Doors that felt stuck start to give. This is your reward for the grind — don&rsquo;t sleep on it.</div>
+
+                <div class="sect gift"><span class="node" style="background:var(--bloom);box-shadow:0 0 10px -1px var(--bloom)"></span>
+                  <div class="hl">What&rsquo;s rising</div>
+                  <p>Opportunity comes looking for you — a person, an offer, an opening. Your optimism is actually realistic right now. Say yes to the big thing.</p>
+                </div>
+                <div class="sect trap"><span class="node" style="background:var(--radiance);box-shadow:0 0 10px -1px var(--radiance)"></span>
+                  <div class="hl">The trap</div>
+                  <p>Good luck makes you say yes to everything and finish nothing. Abundance feels endless — it isn&rsquo;t. What you overcommit to now, you&rsquo;ll pay for in the next heavy stretch.</p>
+                </div>
+                <div class="sect move"><span class="node" style="background:var(--bloom);box-shadow:0 0 10px -1px var(--bloom)"></span>
+                  <div class="hl">The move</div>
+                  <p>Pick the one opening that actually grows your empire and pour into it. Let the good-but-distracting offers pass. Depth is what turns luck into results.</p>
+                </div>
+                <div class="sect watch"><span class="node" style="background:var(--velvet);box-shadow:0 0 10px -1px var(--velvet)"></span>
+                  <div class="hl">Watch for</div>
+                  <p>People show up when things are going well. Some are real, some are here for the shine. Keep your circle honest.</p>
+                </div>
+
+                <div class="remedy-card" style="background:linear-gradient(160deg,rgba(126,214,155,0.16),rgba(126,214,155,0.05));border-color:rgba(126,214,155,0.3);">
+                  <div class="rh"><span class="star" style="color:var(--bloom)">&#10022;</span><span class="label" style="color:var(--bloom)">The remedy</span></div>
+                  <p>Write your top 3 goals before this window opens, and hold every new &ldquo;yes&rdquo; up against them. Then teach or help someone — this energy grows when you share it.</p>
+                </div>
+
+                <div class="blend-note">In your <b>Heavy Lifting</b> season, this isn&rsquo;t a vacation — it&rsquo;s the payoff for the build. What you plant now actually holds.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SCREEN 7 · BLUEPRINT ============ -->
+    <div class="slot">
+      <div class="slot-label"><span class="slot-num">07</span><span class="slot-name">Blueprint</span></div>
+      <div class="slot-desc">The identity piece people screenshot and share — the energies you were born carrying, rendered as one clean, ownable card. Quiet growth loop, no jargon.</div>
+      <div class="device">
+        <div class="island"></div>
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><div class="dots"><span></span><div class="batt"></div></div></div>
+          <div class="view s6">
+            <div class="hd">
+              <h2>Your blueprint</h2>
+              <div class="sub">The energies you were born carrying.</div>
+            </div>
+            <div class="bpcard">
+              <div class="cardmark"><span class="glyph"></span> aura · Kai</div>
+
+              <div class="bprow">
+                <span class="en-dot" style="background:radial-gradient(circle at 35% 30%, var(--slate), #2a2c46 75%)"></span>
+                <div class="txt"><div class="rel">Anchored by</div><div class="en-nm" style="color:var(--slate)">HEAVY LIFTING</div><div class="desc">You build things that are meant to last.</div></div>
+              </div>
+              <div class="bprow">
+                <span class="en-dot" style="background:radial-gradient(circle at 35% 30%, var(--smoke), #2c2544 75%)"></span>
+                <div class="txt"><div class="rel">Driven by</div><div class="en-nm" style="color:var(--smoke)">NEVER ENOUGH</div><div class="desc">Your hunger is the engine. Aim it well.</div></div>
+              </div>
+              <div class="bprow">
+                <span class="en-dot" style="background:radial-gradient(circle at 35% 30%, var(--velvet), #3a2632 75%)"></span>
+                <div class="txt"><div class="rel">Softened by</div><div class="en-nm" style="color:var(--velvet)">SOFT SPOT</div><div class="desc">You pull people in without trying.</div></div>
+              </div>
+              <div class="bprow">
+                <span class="en-dot" style="background:radial-gradient(circle at 35% 30%, var(--tide), #23304a 75%)"></span>
+                <div class="txt"><div class="rel">Guided by</div><div class="en-nm" style="color:var(--tide)">BIG FEELINGS</div><div class="desc">You feel a room before you read it.</div></div>
+              </div>
+
+              <div class="share">
+                <div class="share-btn">Share your blueprint ↗</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot-note">nine energies · main character · big feelings · fired up · busy mind · green light · soft spot · heavy lifting · never enough · letting go</div>
+
+  <script>
+  (function(){
+    // ---- forecast tabs ----
+    document.querySelectorAll('.s5b .tabs').forEach(function(bar){
+      var view = bar.closest('.s5b');
+      bar.querySelectorAll('.tab').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var t = btn.dataset.tab;
+          bar.querySelectorAll('.tab').forEach(function(b){ b.classList.toggle('active', b === btn); });
+          view.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('active', p.dataset.panel === t); });
+        });
+      });
+    });
+
+    // ---- expandable reading (tap a shift) ----
+    var data = {
+      'NEVER ENOUGH': {color:'--smoke', mean:'restless hunger \u00b7 craving & fog',
+        intro:'A stretch of hunger and mental noise. You want more, faster \u2014 and the mind won\u2019t stop running. Aimed at one thing, it moves mountains.',
+        gift:['--smoke','What\u2019s rising','This drive is rocket fuel if you point it. Big ambition, unconventional wins, real hustle all live here.'],
+        trap:['--smoke','The trap','You feel behind and chase the next shiny thing. The anxiety is loud, but it\u2019s a story, not a fact.'],
+        move:['--radiance','The move','Pick one target and starve the noise. Say no to a shiny distraction on purpose.'],
+        remedy:'Fix your sleep window \u2014 up early, down early \u2014 for 7 days. The fog feeds on late nights. Morning light beats any plan.'},
+      'GREEN LIGHT': {color:'--bloom', mean:'lucky growth \u00b7 the fog lifts',
+        intro:'For about eleven weeks the pressure eases and momentum returns. Doors that felt stuck start to give. This is your reward for the grind.',
+        gift:['--bloom','What\u2019s rising','Opportunity comes looking for you \u2014 a person, an offer, an opening. Your optimism is realistic for once. Say yes to the big thing.'],
+        trap:['--radiance','The trap','Good luck makes you say yes to everything and finish nothing. What you overcommit to now, you pay for in the next heavy stretch.'],
+        move:['--bloom','The move','Pick the one opening that grows your empire and pour into it. Let distracting offers pass. Depth turns luck into results.'],
+        remedy:'Write your top 3 goals before this opens, and hold every new \u201cyes\u201d against them. Then teach or help someone \u2014 this energy grows when shared.'},
+      'MAIN CHARACTER': {color:'--radiance', mean:'being seen \u00b7 your moment to lead',
+        intro:'Eyes are on you. Recognition, visibility, a chance to step forward. People follow your energy now \u2014 use it.',
+        gift:['--radiance','What\u2019s rising','Confidence and presence. This is the time to lead, pitch, post, and be seen. Take the visible role.'],
+        trap:['--smoke','The trap','You start needing the applause. Attention isn\u2019t the same as worth. Don\u2019t perform just for validation.'],
+        move:['--radiance','The move','Say the idea out loud. Take the seat at the front. Lead without waiting for permission.'],
+        remedy:'Get morning sunlight within 30 minutes of waking. It anchors your confidence from the inside, so you shine without needing the crowd.'},
+      'BIG FEELINGS': {color:'--tide', mean:'your feelings \u00b7 softer, closer, deeper',
+        intro:'Emotions run close to the surface. Home, rest and comfort matter more than usual. A tender, intuitive stretch.',
+        gift:['--tide','What\u2019s rising','Deep intuition and empathy. Great for creativity, healing, and getting close to the people who matter.'],
+        trap:['--smoke','The trap','You treat every feeling as fact. Moods swing, and you\u2019re tempted to make big calls on a wave.'],
+        move:['--tide','The move','Let the wave pass before deciding anything big. Protect your rest. Reconnect with people who feel like home.'],
+        remedy:'One-line mood note each night, plus steady meals and water. Mood swings ride blood-sugar swings more than you\u2019d think.'}
+    };
+
+    var overlay = document.getElementById('fxDetail');
+    function sect(cls, arr){
+      return '<div class="sect '+cls+'"><span class="node" style="background:var('+arr[0]+');box-shadow:0 0 10px -1px var('+arr[0]+')"></span>'+
+             '<div class="hl">'+arr[1]+'</div><p>'+arr[2]+'</p></div>';
+    }
+    function openDetail(name, s, e, ctx){
+      var d = data[name]; if(!d || !overlay) return;
+      overlay.innerHTML =
+        '<div class="dtop"><span class="close">\u2039</span><span class="dctx">'+ctx+'</span></div>'+
+        '<div class="droll">'+
+          '<div class="dname" style="color:var('+d.color+')">'+name+'</div>'+
+          '<div class="dmean">'+d.mean+'</div>'+
+          '<div class="ddates">'+
+            '<div class="dchip start" style="border-color:var('+d.color+')"><span class="dl">Starts</span><span class="dd">'+s+'</span></div>'+
+            '<div class="dconn"><span>\u2192</span></div>'+
+            '<div class="dchip"><span class="dl">Ends</span><span class="dd">'+e+'</span></div>'+
+          '</div>'+
+          '<div class="dintro">'+d.intro+'</div>'+
+          sect('gift', d.gift)+sect('trap', d.trap)+sect('move', d.move)+
+          '<div class="remedy-card" style="background:linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border-color:var('+d.color+');">'+
+            '<div class="rh"><span class="star" style="color:var('+d.color+')">\u2726</span><span class="label" style="color:var('+d.color+')">The remedy</span></div>'+
+            '<p>'+d.remedy+'</p></div>'+
+          '<div class="blend-note">In your <b>Heavy Lifting</b> season, this stretch sits inside a long build \u2014 it\u2019s momentum, not a finish line.</div>'+
+        '</div>';
+      overlay.classList.add('active');
+      overlay.querySelector('.close').addEventListener('click', function(){ overlay.classList.remove('active'); });
+    }
+
+    var fxView = overlay ? overlay.closest('.s5b') : null;
+    if(fxView){
+      fxView.querySelectorAll('.period').forEach(function(pd){
+        pd.addEventListener('click', function(){
+          var en = pd.querySelector('.en');
+          if(!en) return;
+          var dds = pd.querySelectorAll('.dd');
+          var at = fxView.querySelector('.tab.active');
+          openDetail(en.textContent.trim(),
+                     dds[0]?dds[0].textContent.trim():'',
+                     dds[1]?dds[1].textContent.trim():'',
+                     (at?at.textContent.trim():'Shift')+' shift');
+        });
+      });
+    }
+  })();
+  </script>
+
+</body>
+</html>
