@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
-  AstronomiaEphemeris, computeChart, computeReadingInput, generateReading, detectCrisis,
-  type BirthData, type Chart, type Checkin, type LifeArea,
+  Aura, AstronomiaEphemeris, detectCrisis,
+  type BirthData, type Chart, type Checkin, type DailyBundle, type LifeArea,
 } from '@aura/engine';
 import { Onboarding } from './screens/Onboarding';
 import { Today } from './screens/Today';
@@ -11,73 +11,48 @@ import { Forecast } from './screens/Forecast';
 import { Blueprint } from './screens/Blueprint';
 import { Settings } from './screens/Settings';
 import { Support } from './screens/Support';
-import { BottomNav, type Screen } from './components/Chrome';
-import { isoDay } from './ui';
+import { Sidebar, TopBar, BottomNav, type Screen } from './components/Chrome';
+import { loadProfile, saveProfile, loadReads, bumpReads, clearAll, type ReadsState } from './services/storage';
 
-const ephem = new AstronomiaEphemeris();
-const STORAGE_KEY = 'aura.v1';
+// The engine facade — one dependency-injected service the UI talks to (offline ephemeris).
+const aura = new Aura(new AstronomiaEphemeris());
 
-interface Saved { birth: BirthData; goalArea: LifeArea; goalName: string; }
-function loadSaved(): Saved | null {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch { return null; }
-}
+const WIDE: Screen[] = ['today', 'forecast', 'blueprint'];
 
 export function App() {
-  const saved = useMemo(loadSaved, []);
+  const saved = useMemo(loadProfile, []);
   const [screen, setScreen] = useState<Screen>(saved ? 'today' : 'onboarding');
   const [birth, setBirth] = useState<BirthData | null>(saved?.birth ?? null);
   const [goalArea, setGoalArea] = useState<LifeArea>(saved?.goalArea ?? 'career');
   const [goalName, setGoalName] = useState(saved?.goalName ?? 'my goal');
   const [checkin, setCheckin] = useState<Checkin | undefined>();
+  const [reads, setReads] = useState<ReadsState>(loadReads);
   const [error, setError] = useState<string | null>(null);
-
-  // Non-resetting lifetime reading count (Q-09): counts distinct days a reading opened.
-  const READS_KEY = 'aura.reads';
-  const [reads, setReads] = useState<{ count: number; lastDay: string }>(() => {
-    try { return JSON.parse(localStorage.getItem(READS_KEY) || '') as { count: number; lastDay: string }; }
-    catch { return { count: 0, lastDay: '' }; }
-  });
-  const openReading = () => {
-    const today = isoDay(new Date());
-    if (reads.lastDay !== today) {
-      const next = { count: reads.count + 1, lastDay: today };
-      setReads(next);
-      try { localStorage.setItem(READS_KEY, JSON.stringify(next)); } catch { /* ignore */ }
-    }
-    setScreen('reading');
-  };
 
   const now = useMemo(() => new Date(), []);
   const chart: Chart | null = useMemo(() => {
     if (!birth) return null;
-    try { return computeChart(birth, ephem); } catch (e) { setError(String(e)); return null; }
+    try { return aura.chart(birth); } catch (e) { setError(String(e)); return null; }
   }, [birth]);
 
-  const readingInput = useMemo(() => {
+  const daily: DailyBundle | null = useMemo(() => {
     if (!chart) return null;
-    try { return computeReadingInput(chart, now, ephem, { ...(checkin ? { checkin } : {}), goalArea }); }
+    try { return aura.daily(chart, now, { goalArea, ...(checkin ? { checkin } : {}) }); }
     catch (e) { setError(String(e)); return null; }
   }, [chart, now, checkin, goalArea]);
 
-  const reading = useMemo(() => {
-    if (!readingInput || !chart) return null;
-    return generateReading(readingInput, isoDay(now), chart.lagnaLong, { goalArea });
-  }, [readingInput, chart, now, goalArea]);
-
   const onComplete = (b: BirthData, area: LifeArea, name: string) => {
-    // Free-text safety check (SPEC §11.3): never "read" a crisis — route to support.
     if (detectCrisis(name)) { setScreen('support'); return; }
     setError(null); setGoalArea(area); setGoalName(name); setBirth(b); setScreen('today');
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ birth: b, goalArea: area, goalName: name })); } catch { /* ignore */ }
+    saveProfile({ birth: b, goalArea: area, goalName: name });
   };
+  const onDelete = () => { clearAll(); setReads({ count: 0, lastDay: '' }); setBirth(null); setCheckin(undefined); setError(null); setScreen('onboarding'); };
+  const openReading = () => { setReads((r) => bumpReads(r)); setScreen('reading'); };
+  const go = (s: Screen) => setScreen(s);
 
-  const onDelete = () => {
-    try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(READS_KEY); } catch { /* ignore */ }
-    setReads({ count: 0, lastDay: '' });
-    setBirth(null); setCheckin(undefined); setError(null); setScreen('onboarding');
-  };
-
-  const withNav = screen === 'today' || screen === 'forecast' || screen === 'blueprint';
+  const inApp = !!chart && screen !== 'onboarding' && screen !== 'support';
+  const showBottomNav = inApp && WIDE.includes(screen);
+  const narrow = !WIDE.includes(screen);
 
   let body: React.ReactNode;
   if (screen === 'support') {
@@ -86,39 +61,37 @@ export function App() {
     body = <Settings place={birth?.place ?? 'this device'} onDelete={onDelete} onBack={() => setScreen('today')} />;
   } else if (error) {
     body = (
-      <div className="view" style={{ padding: 30, justifyContent: 'center' }}>
-        <div className="serif-h" style={{ fontSize: 22, marginBottom: 12 }}>Something didn’t compute.</div>
-        <div className="disclaimer" style={{ textAlign: 'left' }}>{error}</div>
-        <button className="btn" style={{ marginTop: 20 }} onClick={onDelete}>Start over</button>
+      <div className="view" style={{ paddingTop: 40 }}>
+        <div className="serif-h" style={{ fontSize: 24, marginBottom: 12 }}>Something didn’t compute.</div>
+        <div className="disclaimer" style={{ textAlign: 'left', padding: 0 }}>{error}</div>
+        <button className="btn" style={{ marginTop: 20, maxWidth: 240 }} onClick={onDelete}>Start over</button>
       </div>
     );
-  } else if (!chart || !readingInput || !reading) {
+  } else if (!chart || !daily) {
     body = <Onboarding onComplete={onComplete} />;
   } else if (screen === 'today') {
-    body = <Today input={readingInput} now={now} chartSeed={chart.lagnaLong} totalReads={reads.count}
-      onOpenReading={openReading} onCheckin={() => setScreen('checkin')}
-      onSettings={() => setScreen('settings')} />;
+    body = <Today input={daily.input} now={now} todayLine={daily.todayLine} remedyShort={daily.remedyShort}
+      onOpenReading={openReading} onCheckin={() => setScreen('checkin')} />;
   } else if (screen === 'reading') {
-    body = <Reading reading={reading} now={now} onBack={() => setScreen('today')} />;
+    body = <Reading reading={daily.reading} now={now} onBack={() => setScreen('today')} />;
   } else if (screen === 'checkin') {
-    body = <CheckinScreen major={readingInput.majorEnergy} passing={readingInput.passingEnergy}
+    body = <CheckinScreen major={daily.input.majorEnergy} passing={daily.input.passingEnergy}
       onDone={(c) => { setCheckin(c); setScreen('reading'); }}
       onSkip={() => { setCheckin(undefined); setScreen('reading'); }} />;
   } else if (screen === 'forecast') {
-    body = <Forecast chart={chart} now={now} chartSeed={chart.lagnaLong} goalArea={goalArea} major={readingInput.majorEnergy} />;
+    body = <Forecast aura={aura} chart={chart} now={now} goalArea={goalArea} major={daily.input.majorEnergy} />;
   } else {
-    body = <Blueprint chart={chart} goalName={goalName} />;
+    body = <Blueprint aura={aura} chart={chart} goalName={goalName} />;
   }
 
   return (
-    <div className="app-shell">
-      <div className="device">
-        <div className="island" />
-        <div className="screen">
-          {body}
-          {withNav ? <BottomNav screen={screen} go={setScreen} /> : null}
-        </div>
-      </div>
+    <div className="app">
+      {inApp ? <Sidebar screen={screen} go={go} totalReads={reads.count} onSettings={() => setScreen('settings')} /> : null}
+      <main className="main">
+        {inApp ? <TopBar totalReads={reads.count} onSettings={() => setScreen('settings')} /> : null}
+        <div className={`content${narrow ? ' narrow' : ''}`}>{body}</div>
+        {showBottomNav ? <BottomNav screen={screen} go={go} /> : null}
+      </main>
     </div>
   );
 }

@@ -1,4 +1,7 @@
 // @aura/engine — public API. UI/app code imports from here.
+// The `Aura` facade is the recommended entry point for app code.
+
+export { Aura, type DailyBundle, type AuraOptions } from './aura.js';
 
 export * from './types.js';
 export * from './constants.js';

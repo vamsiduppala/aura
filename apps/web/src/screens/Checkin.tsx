@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import type { Checkin, LifeArea } from '@aura/engine';
-import { StatusBar } from '../components/Chrome';
 import { OrbChip } from '../components/AuraOrb';
 import { energyColor } from '../ui';
 import type { Energy } from '@aura/engine';
@@ -31,7 +30,6 @@ export function Checkin({ major, passing, onDone, onSkip }: {
 
   return (
     <>
-      <StatusBar />
       <div className="view s4">
         <OrbChip e1={energyColor(major)} e2={energyColor(passing)} size={44} />
         <h2>Before I read you —<br />where’s your head?</h2>

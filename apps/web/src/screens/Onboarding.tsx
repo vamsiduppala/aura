@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { BirthData, LifeArea } from '@aura/engine';
 import { DISCLAIMER } from '@aura/engine';
-import { StatusBar } from '../components/Chrome';
 
 interface City { name: string; lat: number; lng: number; tz: number; }
 // Preset cities (offline). tz = current standard offset in minutes; real apps geocode
@@ -46,7 +45,6 @@ export function Onboarding({ onComplete }: {
 
   return (
     <>
-      <StatusBar />
       <div className="view s1">
         <div className="mark"><span className="glyph" /> aura</div>
         <h2>Let’s read<br />your timing.</h2>

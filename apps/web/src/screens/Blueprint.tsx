@@ -1,15 +1,12 @@
-import type { Chart } from '@aura/engine';
-import { buildBlueprint } from '@aura/engine';
-import { StatusBar } from '../components/Chrome';
+import type { Aura, Chart } from '@aura/engine';
 import { energyColor, energyLabel } from '../ui';
 
-export function Blueprint({ chart, goalName }: { chart: Chart; goalName: string }) {
-  const rows = buildBlueprint(chart);
+export function Blueprint({ aura, chart, goalName }: { aura: Aura; chart: Chart; goalName: string }) {
+  const rows = aura.blueprint(chart);
   const who = goalName.split('’')[0]!.split("'")[0]!.trim() || 'you';
 
   return (
     <>
-      <StatusBar />
       <div className="view s6">
         <div className="hd">
           <h2>Your blueprint</h2>

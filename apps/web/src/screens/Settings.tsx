@@ -1,5 +1,4 @@
 import { DISCLAIMER } from '@aura/engine';
-import { StatusBar } from '../components/Chrome';
 
 /** About / privacy / delete (SPEC §11.1, §11.6). */
 export function Settings({ place, onDelete, onBack }: {
@@ -7,8 +6,7 @@ export function Settings({ place, onDelete, onBack }: {
 }) {
   return (
     <>
-      <StatusBar />
-      <div className="view" style={{ padding: '10px 26px 26px' }}>
+      <div className="view" style={{ paddingTop: 6 }}>
         <div className="s3-top" style={{ padding: 0, marginBottom: 20 }}>
           <button className="back" onClick={onBack}>‹</button>
           <span className="ttl">Settings</span>

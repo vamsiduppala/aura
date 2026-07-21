@@ -1,12 +1,10 @@
 import { SUPPORT_MESSAGE, SUPPORT_RESOURCES } from '@aura/engine';
-import { StatusBar } from '../components/Chrome';
 
 /** Shown instead of a reading when free text signals crisis (SPEC §11.3). */
 export function Support({ onBack }: { onBack: () => void }) {
   return (
     <>
-      <StatusBar />
-      <div className="view" style={{ padding: '10px 26px 26px' }}>
+      <div className="view" style={{ paddingTop: 24 }}>
         <div className="s3-top" style={{ padding: 0, marginBottom: 20 }}>
           <button className="back" onClick={onBack}>‹</button>
           <span className="ttl">A moment</span>

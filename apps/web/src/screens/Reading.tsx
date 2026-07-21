@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import type { Reading } from '@aura/engine';
-import { StatusBar } from '../components/Chrome';
 import { energyColor, energyLabel, fmtDow } from '../ui';
 
 // Fixed beat-marker colors (mockup visual language, independent of the energy).
@@ -25,7 +24,6 @@ export function Reading({ reading, now, onBack }: { reading: Reading; now: Date;
 
   return (
     <>
-      <StatusBar />
       <div className="s3-top">
         <button className="back" onClick={onBack}>‹</button>
         <span className="ttl">Today’s reading</span>
