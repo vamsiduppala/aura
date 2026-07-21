@@ -85,6 +85,24 @@ Last updated: 2026-07-21 ~11:20 CDT (session 1). Phases 1–5 complete; 52 engin
 
 ---
 
+## Session 2 (owner active, ~11:30 CDT) — new directives
+- [x] Q-09: dropped streak → non-resetting "Total readings".
+- [x] **Accuracy (dir 2):** Navamsa (D9) + vargottama, Shadbala-inspired strength (D1+D9
+      dignity, dig/cheshta/naisargika/paksha), Ashtakavarga (BAV+SAV, 337 invariant). All wired
+      into the lattice + tested. 66 engine tests.
+- [x] **Enterprise arch (dir 1):** `Aura` engine facade (DI) + web storage service; App is a thin
+      router. (Zustand store = optional next step; facade+service already separate concerns.)
+- [x] **Responsive redesign (dir: 4 platforms):** removed the fake phone frame; `apps/web` is now
+      fluid — desktop sidebar + wide layout, mobile top/bottom nav, modal expanded reading.
+- [x] Design system abstracted → `docs/DESIGN_SYSTEM.md`; 4-platform strategy → `docs/PLATFORMS.md`.
+- [x] Native skeletons: `apps/ios/Aura/AuraApp.swift` (SwiftUI), `apps/android/aura/AuraApp.kt`
+      (Compose) — design system translated + native nav; compile against a ported engine core.
+- [x] Live HMR dev server at :5173 (dir 4) so the owner watches changes land.
+- [ ] shadcn adoption (dir 3): pending — see notes. Recommended incremental path documented.
+
 ## Session log
 - **S1 2026-07-21 04:01 CDT:** Env check, scaffolding, handoff docs, decisions/questions.
   Building engine core next. Token budget: working until exhaustion; cloud resume scheduled.
+- **S2 2026-07-21 ~11:30 CDT:** Owner returned early, answered all questions + 4 new directives.
+  Accuracy techniques, enterprise facade/service, responsive redesign (no phone frame), design
+  system + native skeletons. Engine 66 tests green; web builds + HMR live.
