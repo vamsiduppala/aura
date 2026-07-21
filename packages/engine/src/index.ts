@@ -45,3 +45,14 @@ export { buildBlueprint, natalProminence, type BlueprintRow } from './synthesis/
 
 // Content (Tier 6)
 export { CONTENT, type EnergyContent } from './content/templates.js';
+
+// Safety / guardrails (Tier 8)
+export {
+  detectCrisis, checkNoDoom, SUPPORT_RESOURCES, SUPPORT_MESSAGE, DISCLAIMER,
+  type SupportResource, type DoomCheck,
+} from './safety/guardrails.js';
+
+// Optional guarded LLM polish (Tier 6, off by default)
+export {
+  polishReading, POLISH_SYSTEM_PROMPT, NOOP_POLISH, type PolishAdapter,
+} from './content/polish.js';

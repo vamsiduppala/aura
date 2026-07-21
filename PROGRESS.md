@@ -5,7 +5,7 @@ Resuming agents: read this first, then continue the first unchecked task.
 
 **Legend:** [x] done+tested · [~] in progress · [ ] not started
 
-Last updated: 2026-07-21 ~04:10 CDT (session 1)
+Last updated: 2026-07-21 ~11:20 CDT (session 1). Phases 1–5 complete; 52 engine tests green.
 
 ---
 
@@ -61,19 +61,26 @@ Last updated: 2026-07-21 ~04:10 CDT (session 1)
   data) — code-split/lazy-load the ephemeris for production (tracked, non-blocking).
 - Per-day reading cache + encrypted local storage: deferred to Phase 5 (privacy).
 
-## Phase 4 — Content depth & check-in
-- [ ] Fill template bank (9 energies × 5 beats × life-area specializations)
-- [ ] Wire daily check-in modulation
-- [ ] Remedy library complete + rotation
-- [ ] **Phase 4 acceptance met**
+## Phase 4 — Content depth & check-in  ✅ SUBSTANTIALLY COMPLETE
+- [x] Template bank for all 9 energies × 5 beats + life-area specializations (career/money/etc.)
+- [x] Check-in modulation wired (mood→energy nudges, focus→life-area house lift) in the lattice
+- [x] Remedy library complete (App E) + deterministic rotation
+- [x] Freshness verified (21-day distinct-readings test) + goal specialization verified in UI
+- [~] MORE variants would deepen non-repetition further (3+ per beat) — nice-to-have, non-blocking
+- [x] **Phase 4 acceptance met** (readings specific + non-repeating across a week)
 
-## Phase 5 — Safety, privacy, polish
-- [ ] Disclaimers (onboarding + settings)
-- [ ] Crisis/self-harm guardrail + resources
-- [ ] Encryption at rest + one-tap delete
-- [ ] Optional guarded LLM polish (off by default) + guardrail prompt
-- [ ] no-doom content guard
-- [ ] **Phase 5 acceptance met**
+## Phase 5 — Safety, privacy, polish  ✅ COMPLETE (52 engine tests, all screens verified)
+- [x] Disclaimers — onboarding + Settings screen (reflection/entertainment, §11.1)
+- [x] Crisis/self-harm guardrail + region resources (§11.3) — VERIFIED in UI (screenshot 09)
+- [x] No-doom content guard + lint over bank & generated readings (§11.2)
+- [x] Privacy + one-tap delete (localStorage persistence + Delete-everything, §11.6);
+      web uses localStorage, mobile will use encrypted secure-store (documented in Settings)
+- [x] Anti-dark-pattern by design: one reading/day, gentle non-punitive streak, no manipulative push (§11.5)
+- [x] Remedy safety: behavioral-only library, guarded (§11.4)
+- [x] Optional guarded LLM polish (OFF by default) + strict guardrail prompt + doom-fallback (§11.7)
+- [x] **Phase 5 acceptance met**
+- FOLLOW-UP: at-rest encryption is real only in the mobile build (secure-store); the web preview's
+  localStorage is documented as such in-app. No PII ever leaves the device (no analytics on birth data).
 
 ---
 

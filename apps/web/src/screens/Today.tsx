@@ -4,13 +4,14 @@ import { StatusBar, Wordmark } from '../components/Chrome';
 import { AuraOrb } from '../components/AuraOrb';
 import { energyColor, energyLabel, energyGloss, fmtDow, isoDay } from '../ui';
 
-export function Today({ input, now, chartSeed, streak, onOpenReading, onCheckin }: {
+export function Today({ input, now, chartSeed, streak, onOpenReading, onCheckin, onSettings }: {
   input: ReadingInput;
   now: Date;
   chartSeed: number;
   streak: number;
   onOpenReading: () => void;
   onCheckin: () => void;
+  onSettings: () => void;
 }) {
   const iso = isoDay(now);
   const major = input.majorEnergy;
@@ -24,6 +25,8 @@ export function Today({ input, now, chartSeed, streak, onOpenReading, onCheckin 
       <Wordmark right={<>
         <span className="streak">🔥 <b>{streak}</b></span>
         <span>{fmtDow(now)}</span>
+        <button onClick={onSettings} title="Settings & privacy"
+          style={{ background: 'none', border: 'none', color: 'var(--mist-3)', cursor: 'pointer', fontSize: 15, padding: '0 0 0 4px' }}>⚙</button>
       </>} />
       <div className="view s2">
         <AuraOrb e1={energyColor(major)} e2={energyColor(passing)} size={186} />

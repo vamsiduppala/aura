@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { BirthData, LifeArea } from '@aura/engine';
+import { DISCLAIMER } from '@aura/engine';
 import { StatusBar } from '../components/Chrome';
 
 interface City { name: string; lat: number; lng: number; tz: number; }
@@ -87,6 +88,7 @@ export function Onboarding({ onComplete }: {
         <div className="cta-zone">
           <button className="btn" onClick={submit}>Read my energy <span>→</span></button>
           <div className="fineprint">Private. Yours only. Delete anytime.</div>
+          <div className="disclaimer" style={{ paddingTop: 12 }}>{DISCLAIMER}</div>
         </div>
       </div>
     </>

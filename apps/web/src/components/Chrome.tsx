@@ -1,4 +1,4 @@
-export type Screen = 'onboarding' | 'today' | 'reading' | 'checkin' | 'forecast' | 'blueprint';
+export type Screen = 'onboarding' | 'today' | 'reading' | 'checkin' | 'forecast' | 'blueprint' | 'settings' | 'support';
 
 export function StatusBar() {
   return (
