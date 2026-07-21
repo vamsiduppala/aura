@@ -51,8 +51,10 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     remedyShort: ['Morning light within 30 min of waking', 'Do one thing just for you today'],
     moveByArea: {
       career: ['Put your name on the work. Pitch the thing, take the lead role — visibility compounds now.'],
-      self: ['Back yourself out loud today. State what you want plainly, once, without over-explaining.'],
+      money: ['Ask for the raise or set the higher rate. Your worth is visible today — price it accordingly.'],
       partnership: ['Show up fully instead of managing how you land. Presence beats performance here.'],
+      health: ['Move your body somewhere you can be seen — a class, a court. Being watched fuels you today.'],
+      self: ['Back yourself out loud today. State what you want plainly, once, without over-explaining.'],
     },
   },
 
@@ -81,9 +83,12 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     ],
     remedyShort: ['One-line mood note tonight + steady meals', 'Early, unhurried wind-down tonight'],
     moveByArea: {
-      home: ['Tend your space and the people in it. Home is where your energy refills this week.'],
+      career: ['Lead with your read on the room — your instinct about people is the asset today. Don’t force a big call on a low mood.'],
+      money: ['Don’t make a money decision on a feeling today. Sit with it one night; the tide passes.'],
       partnership: ['Say the soft true thing you’ve been holding. Closeness is the whole opportunity now.'],
-      creativity: ['Make something from the feeling instead of stewing in it. The mood is raw material.'],
+      health: ['Protect your rest and eat steadily — your body is running your mood today. Gentle movement, not punishment.'],
+      self: ['Be as kind to yourself as you are to everyone else. Name the feeling; don’t obey it.'],
+      home: ['Tend your space and the people in it. Home is where your energy refills this week.'],
     },
   },
 

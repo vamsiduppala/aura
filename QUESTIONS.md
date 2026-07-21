@@ -1,3 +1,13 @@
+# ✅ ALL RESOLVED by owner (2026-07-21 ~11:30 CDT)
+> Q-01 aura/cosmicmentor ✓ · Q-02/03/06 on-device offline Moshier-class, no backend ✓ ·
+> Q-04 bundled offline dataset + local tz lookup ✓ · Q-05 template-only, LLM stub disabled ✓ ·
+> Q-07 target iOS/Android via Expo, **web = non-priority** (we iterate on web now, ship Expo later) ·
+> Q-08 validate discrete facts ✓ · Q-10 owner manages resume ✓ ·
+> **Q-09 OVERRIDE — drop the streak entirely** (done: replaced with non-resetting "Total readings").
+> New owner directives (2026-07-21 ~11:28): enterprise architecture · higher astrology accuracy
+> (Navamsa/Shadbala/Ashtakavarga) · adopt shadcn, drop Playwright · live HMR browser at :5173.
+> Details of each below (kept for the rationale/undo trail).
+
 # Open questions for the owner (vamsi) — answered with defaults, revert if wrong
 
 Per standing orders I did NOT ask these. Each has a **chosen default** so the build proceeds.

@@ -31,6 +31,22 @@ export function App() {
   const [checkin, setCheckin] = useState<Checkin | undefined>();
   const [error, setError] = useState<string | null>(null);
 
+  // Non-resetting lifetime reading count (Q-09): counts distinct days a reading opened.
+  const READS_KEY = 'aura.reads';
+  const [reads, setReads] = useState<{ count: number; lastDay: string }>(() => {
+    try { return JSON.parse(localStorage.getItem(READS_KEY) || '') as { count: number; lastDay: string }; }
+    catch { return { count: 0, lastDay: '' }; }
+  });
+  const openReading = () => {
+    const today = isoDay(new Date());
+    if (reads.lastDay !== today) {
+      const next = { count: reads.count + 1, lastDay: today };
+      setReads(next);
+      try { localStorage.setItem(READS_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+    }
+    setScreen('reading');
+  };
+
   const now = useMemo(() => new Date(), []);
   const chart: Chart | null = useMemo(() => {
     if (!birth) return null;
@@ -56,7 +72,8 @@ export function App() {
   };
 
   const onDelete = () => {
-    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+    try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(READS_KEY); } catch { /* ignore */ }
+    setReads({ count: 0, lastDay: '' });
     setBirth(null); setCheckin(undefined); setError(null); setScreen('onboarding');
   };
 
@@ -78,8 +95,8 @@ export function App() {
   } else if (!chart || !readingInput || !reading) {
     body = <Onboarding onComplete={onComplete} />;
   } else if (screen === 'today') {
-    body = <Today input={readingInput} now={now} chartSeed={chart.lagnaLong} streak={7}
-      onOpenReading={() => setScreen('reading')} onCheckin={() => setScreen('checkin')}
+    body = <Today input={readingInput} now={now} chartSeed={chart.lagnaLong} totalReads={reads.count}
+      onOpenReading={openReading} onCheckin={() => setScreen('checkin')}
       onSettings={() => setScreen('settings')} />;
   } else if (screen === 'reading') {
     body = <Reading reading={reading} now={now} onBack={() => setScreen('today')} />;

@@ -4,11 +4,12 @@ import { StatusBar, Wordmark } from '../components/Chrome';
 import { AuraOrb } from '../components/AuraOrb';
 import { energyColor, energyLabel, energyGloss, fmtDow, isoDay } from '../ui';
 
-export function Today({ input, now, chartSeed, streak, onOpenReading, onCheckin, onSettings }: {
+export function Today({ input, now, chartSeed, totalReads, onOpenReading, onCheckin, onSettings }: {
   input: ReadingInput;
   now: Date;
   chartSeed: number;
-  streak: number;
+  /** Non-resetting lifetime count — never a streak, never a reset (SPEC §11.5, Q-09). */
+  totalReads: number;
   onOpenReading: () => void;
   onCheckin: () => void;
   onSettings: () => void;
@@ -23,7 +24,7 @@ export function Today({ input, now, chartSeed, streak, onOpenReading, onCheckin,
     <>
       <StatusBar />
       <Wordmark right={<>
-        <span className="streak">🔥 <b>{streak}</b></span>
+        {totalReads > 0 ? <span className="streak"><b>{totalReads}</b>&nbsp;{totalReads === 1 ? 'reading' : 'readings'}</span> : null}
         <span>{fmtDow(now)}</span>
         <button onClick={onSettings} title="Settings & privacy"
           style={{ background: 'none', border: 'none', color: 'var(--mist-3)', cursor: 'pointer', fontSize: 15, padding: '0 0 0 4px' }}>⚙</button>

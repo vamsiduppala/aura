@@ -140,6 +140,27 @@ describe('external validation vs published Vedic sources (Einstein)', () => {
   });
 });
 
+describe('unknown birth time → solar chart (SPEC §4.1)', () => {
+  it('computes a solar-precision chart at noon without a birth time', () => {
+    const birth: BirthData = {
+      date: '1993-09-30', unknownTime: true,
+      place: 'Chennai', lat: 13.08, lng: 80.27, tzOffsetMinutes: 330,
+    };
+    const chart = computeChart(birth, ephem);
+    expect(chart.precision).toBe('solar');
+    // Moon nakshatra + starting dasha lord are still well-defined from the noon Moon.
+    expect(chart.moonNakshatra).toBeGreaterThanOrEqual(0);
+    expect(chart.moonNakshatra).toBeLessThan(27);
+    expect(startingMahaLord(chart.planets.moon.siderealLong)).toBe(
+      NAKSHATRAS[chart.moonNakshatra]!.lord,
+    );
+    // whole-sign invariant still holds
+    for (const g of GRAHAS) {
+      expect(chart.planets[g].house).toBe(houseFrom(chart.planets[g].sign, chart.lagnaSign));
+    }
+  });
+});
+
 describe('deterministic chart with FixedEphemeris', () => {
   it('assigns houses by the whole-sign rule and detects combustion', () => {
     // Put Sun and Mercury at the same tropical longitude → Mercury combust.
