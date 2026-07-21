@@ -1,0 +1,4 @@
+/* Tailwind utilities layer (preflight disabled in tailwind.config.js). Loaded after
+   styles.css so utility classes on shadcn/Radix primitives compose with the design system. */
+@tailwind components;
+@tailwind utilities;

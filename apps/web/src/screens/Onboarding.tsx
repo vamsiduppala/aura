@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { BirthData, LifeArea } from '@aura/engine';
 import { DISCLAIMER } from '@aura/engine';
+import { Button } from '@/components/ui/button';
 
 interface City { name: string; lat: number; lng: number; tz: number; }
 // Preset cities (offline). tz = current standard offset in minutes; real apps geocode
@@ -84,7 +85,7 @@ export function Onboarding({ onComplete }: {
         </div>
 
         <div className="cta-zone">
-          <button className="btn" onClick={submit}>Read my energy <span>→</span></button>
+          <Button onClick={submit}>Read my energy <span>→</span></Button>
           <div className="fineprint">Private. Yours only. Delete anytime.</div>
           <div className="disclaimer" style={{ paddingTop: 12 }}>{DISCLAIMER}</div>
         </div>

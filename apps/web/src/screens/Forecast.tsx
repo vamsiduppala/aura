@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import type { Aura, Chart, Energy, ForecastPeriod, LifeArea } from '@aura/engine';
 import { energyColor, energyLabel, energyGloss, fmtFull, fmtShort, fmtMonthYear } from '../ui';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogClose, DialogTitle } from '@/components/ui/dialog';
 
 const FX_HEAD: Record<Energy, string> = {
   build: 'The heaviness has an exit.', crave: 'The noise settles into a shape.',
@@ -64,13 +66,13 @@ export function Forecast({ aura, chart, now, goalArea, major }: {
         </div>
       </div>
 
-      <div className="tabs">
-        {(['daily', 'weekly', 'monthly', 'custom'] as Tab[]).map((t) => (
-          <button key={t} className={`tab${tab === t ? ' active' : ''}`} onClick={() => setTab(t)}>
-            {t[0]!.toUpperCase() + t.slice(1)}
-          </button>
-        ))}
-      </div>
+      <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
+        <TabsList className="mx-auto mt-[18px] w-full max-w-[720px]">
+          {(['daily', 'weekly', 'monthly', 'custom'] as Tab[]).map((t) => (
+            <TabsTrigger key={t} value={t}>{t[0]!.toUpperCase() + t.slice(1)}</TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {tab === 'custom' ? (
         <>
@@ -87,27 +89,29 @@ export function Forecast({ aura, chart, now, goalArea, major }: {
         {rows.map((p, i) => <PeriodRow key={i} p={p} onOpen={setDetail} />)}
       </div>
 
-      {detail ? (
-        <DetailOverlay p={detail} major={major} aura={aura} chart={chart} goalArea={goalArea} tab={tab} onClose={() => setDetail(null)} />
-      ) : null}
+      <Dialog open={!!detail} onOpenChange={(o) => { if (!o) setDetail(null); }}>
+        <DialogContent aria-describedby={undefined}>
+          {detail ? <DetailPanel p={detail} major={major} aura={aura} chart={chart} goalArea={goalArea} tab={tab} /> : null}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
 
-function DetailOverlay({ p, major, aura, chart, goalArea, tab, onClose }: {
-  p: ForecastPeriod; major: Energy; aura: Aura; chart: Chart; goalArea?: LifeArea; tab: Tab; onClose: () => void;
+function DetailPanel({ p, major, aura, chart, goalArea, tab }: {
+  p: ForecastPeriod; major: Energy; aura: Aura; chart: Chart; goalArea?: LifeArea; tab: Tab;
 }) {
   const r = aura.expanded(p.energy, major, p.start, p.end, chart, goalArea ? { goalArea } : {});
   const c = energyColor(p.energy);
   const beat = { gift: '#7ED69B', trap: '#AE8FE6', move: '#FFD070', watch: '#FF6E58' };
   return (
-    <div className="detail" onClick={onClose}>
-      <div className="detail-panel" onClick={(e) => e.stopPropagation()}>
-        <div className="dtop">
-          <button className="close" onClick={onClose}>‹</button>
-          <span className="dctx">{tab} shift</span>
-        </div>
-        <div className="droll">
+    <>
+      <DialogTitle className="sr-only">{energyLabel(p.energy)} — {tab} shift</DialogTitle>
+      <div className="dtop">
+        <DialogClose asChild><button className="close" aria-label="Close">‹</button></DialogClose>
+        <span className="dctx">{tab} shift</span>
+      </div>
+      <div className="droll">
           <div className="dname" style={{ color: c }}>{energyLabel(p.energy).toUpperCase()}</div>
           <div className="dmean">{energyGloss(p.energy)}</div>
           <div className="ddates">
@@ -128,7 +132,6 @@ function DetailOverlay({ p, major, aura, chart, goalArea, tab, onClose }: {
           </div>
           {r.blendNote ? <div className="blend-note">{r.blendNote}</div> : null}
         </div>
-      </div>
-    </div>
+    </>
   );
 }

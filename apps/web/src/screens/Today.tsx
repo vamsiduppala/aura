@@ -1,5 +1,6 @@
 import type { ReadingInput } from '@aura/engine';
 import { AuraOrb } from '../components/AuraOrb';
+import { Button } from '@/components/ui/button';
 import { energyColor, energyLabel, energyGloss } from '../ui';
 
 export function Today({ input, todayLine, remedyShort, onOpenReading, onCheckin }: {
@@ -41,8 +42,8 @@ export function Today({ input, todayLine, remedyShort, onOpenReading, onCheckin 
           </div>
         </div>
         <div className="today-cta">
-          <button className="btn" onClick={onOpenReading}>Open today’s reading <span>→</span></button>
-          <button className="btn ghost" onClick={onCheckin} style={{ marginTop: 6 }}>How’s your head today? — tune it</button>
+          <Button onClick={onOpenReading}>Open today’s reading <span>→</span></Button>
+          <Button variant="ghost" onClick={onCheckin} style={{ marginTop: 6 }}>How’s your head today? — tune it</Button>
         </div>
       </div>
     </div>
