@@ -90,7 +90,10 @@ resuming session can pick up exactly where it left off.
 - [x] Ch 21 Drigdasa (11565–11727): aspect-based from the 9th house (rasi drishti walk,
       foot-direction per house) → `drigdasa`, verified vs Example 80. API: /dasha/drigdasa
 - [ ] Ch 22 Niryaana Shoola Dasa (11728–11993)
-- [ ] Ch 23 Shoola Dasa (11994–12195)
+- [x] Ch 23 Shoola Dasa (11994–12195): from the seed (stronger of lagna/7th), always
+      zodiacal, 9 years each (gestation-based); 12 equal antardasas of 9 months →
+      `data/rasidasha.ts` `shoolaDasa`/`shoolaAntardashas`, verified vs Examples 89/91.
+      API: /dasha/shoola. (Death-timing; never surfaced as a prediction — ethics §37.)
 - [ ] Ch 24 Kalachakra Dasa (12196–13163)
 
 ## Part 3 — Transit Analysis

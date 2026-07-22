@@ -41,6 +41,24 @@ export function sudasa(slSign: number, slDegree: number): Sudasa {
 }
 
 // ── Ch 21: Drigdasa (aspect-based) progression ────────────────────────────────
+export interface RasiSpan { rasi: number; years: number }
+
+/**
+ * Shoola dasa (Ch 23): from the dasa seed (stronger of lagna/7th), ALWAYS zodiacal; each
+ * dasa is `yearsPerDasa` (default 9 = the human gestation in months). Used to time death /
+ * suffering (with the strongest ethics caveat — never surfaced as a prediction).
+ */
+export function shoolaDasa(seed: number, yearsPerDasa = 9): RasiSpan[] {
+  const s = mod12(seed);
+  return Array.from({ length: 12 }, (_, k) => ({ rasi: mod12(s + k), years: yearsPerDasa }));
+}
+
+/** The 12 equal Shoola antardasas: zodiacal from the antardasa seed, each `yearsPerDasa` months. */
+export function shoolaAntardashas(antarSeed: number, yearsPerDasa = 9): { rasi: number; months: number }[] {
+  const s = mod12(antarSeed);
+  return Array.from({ length: 12 }, (_, k) => ({ rasi: mod12(s + k), months: yearsPerDasa }));
+}
+
 /**
  * Drigdasa (Ch 21): from the 9th house, take it + the 3 signs it aspects (rasi drishti),
  * in the walk direction set by that house's foot; then the same for the 10th and 11th.

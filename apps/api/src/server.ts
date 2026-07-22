@@ -25,7 +25,7 @@ import {
   type LifeSpan,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
   narayanaProgression, narayanaDasaLength, narayanaAntardashas,
-  lagnaKendradiDasa, sudasa, drigdasa,
+  lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -137,6 +137,14 @@ export function buildServer() {
     const q = req.query as { lagnaSign?: string };
     if (q.lagnaSign == null) return reply.code(400).send({ error: 'lagnaSign (0-11) required' });
     return { progression: drigdasa(Number(q.lagnaSign)) };
+  });
+  app.get('/dasha/shoola', async (req, reply) => {
+    const q = req.query as { seed?: string; years?: string; antarSeed?: string };
+    if (q.seed == null) return reply.code(400).send({ error: 'seed (0-11) required; optional years, antarSeed' });
+    const years = q.years ? Number(q.years) : 9;
+    const out: Record<string, unknown> = { dasas: shoolaDasa(Number(q.seed), years) };
+    if (q.antarSeed != null) out.antardashas = shoolaAntardashas(Number(q.antarSeed), years);
+    return out;
   });
 
   // Avasthas (Ch 15). Baladi (age) from longitude; Jagradi/Deeptadi from dignity.

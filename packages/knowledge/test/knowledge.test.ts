@@ -20,7 +20,7 @@ import {
   marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
   narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
-  lagnaKendradiDasa, sudasa, drigdasa,
+  lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -231,6 +231,11 @@ describe('rasi dasas Ch 19/20/21 — verified against Examples 76/77/80', () => 
   });
   it('Drigdasa (Ch 21): aspect-based, from the 9th house (Example 80, Libra lagna)', () => {
     expect(drigdasa(6)).toEqual([2, 5, 8, 11, 3, 1, 10, 7, 4, 0, 9, 6]);
+  });
+  it('Shoola dasa (Ch 23): always zodiacal, 9 years each (Examples 89/91)', () => {
+    expect(shoolaDasa(7).map((d) => d.rasi)).toEqual([7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6]); // from Sc
+    expect(shoolaDasa(9).map((d) => d.rasi).slice(0, 4)).toEqual([9, 10, 11, 0]); // from Cp
+    expect(shoolaDasa(7)[0]!.years).toBe(9);
   });
 });
 
