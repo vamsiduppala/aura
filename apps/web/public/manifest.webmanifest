@@ -1,0 +1,13 @@
+{
+  "name": "aura — your energy, read",
+  "short_name": "aura",
+  "description": "One honest reading a day, on a real Vedic engine. No charts, no jargon.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#09080F",
+  "theme_color": "#09080F",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
