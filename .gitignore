@@ -36,3 +36,9 @@ coverage/
 *.key
 *.mobileprovision
 *.orig.*
+
+# Phase 2 local database
+apps/api/data/
+*.db
+*.db-wal
+*.db-shm

@@ -6,6 +6,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Fastify from 'fastify';
+import { openDb, getProfile, upsertProfile, type ProfileRow } from './db.js';
+import { register, login, userForToken, AuthError } from './auth.js';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
@@ -41,16 +43,70 @@ type Dignity = Parameters<typeof jagradiAvastha>[0];
 
 export function buildServer() {
   const app = Fastify({ logger: false });
+  openDb(); // local SQLite (users, sessions, profiles)
 
   // wide-open CORS for local use
   app.addHook('onRequest', async (req, reply) => {
     reply.header('Access-Control-Allow-Origin', '*');
-    reply.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-    reply.header('Access-Control-Allow-Headers', 'Content-Type');
+    reply.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    reply.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
     if (req.method === 'OPTIONS') reply.send();
   });
 
   app.get('/health', async () => ({ ok: true, service: 'aura-knowledge', version: '0.1.0' }));
+
+  // ── Auth + profiles (Phase 2: local accounts) ───────────────────────────────
+  const bearer = (req: { headers: Record<string, unknown> }): string | undefined => {
+    const h = req.headers['authorization'];
+    return typeof h === 'string' && h.startsWith('Bearer ') ? h.slice(7) : undefined;
+  };
+  const rowToProfile = (r: ProfileRow) => ({
+    birth: {
+      date: r.birth_date, time: r.birth_time ?? undefined, unknownTime: !!r.unknown_time,
+      place: r.place, lat: r.lat, lng: r.lng, tzOffsetMinutes: r.tz_offset,
+    },
+    goalArea: r.goal_area, goalName: r.goal_name,
+  });
+
+  app.post('/auth/register', async (req, reply) => {
+    const b = req.body as { email?: string; password?: string };
+    try { return register(b?.email ?? '', b?.password ?? ''); }
+    catch (e) { return reply.code(e instanceof AuthError ? 400 : 500).send({ error: (e as Error).message }); }
+  });
+  app.post('/auth/login', async (req, reply) => {
+    const b = req.body as { email?: string; password?: string };
+    try { return login(b?.email ?? '', b?.password ?? ''); }
+    catch (e) { return reply.code(e instanceof AuthError ? 401 : 500).send({ error: (e as Error).message }); }
+  });
+  app.get('/auth/me', async (req, reply) => {
+    const user = userForToken(bearer(req));
+    if (!user) return reply.code(401).send({ error: 'not authenticated' });
+    const p = getProfile(user.id);
+    return { user, profile: p ? rowToProfile(p) : null };
+  });
+  app.get('/profile', async (req, reply) => {
+    const user = userForToken(bearer(req));
+    if (!user) return reply.code(401).send({ error: 'not authenticated' });
+    const p = getProfile(user.id);
+    return p ? rowToProfile(p) : reply.code(404).send({ error: 'no profile yet' });
+  });
+  app.put('/profile', async (req, reply) => {
+    const user = userForToken(bearer(req));
+    if (!user) return reply.code(401).send({ error: 'not authenticated' });
+    const b = req.body as { birth?: Record<string, unknown>; goalArea?: string; goalName?: string };
+    const birth = b?.birth;
+    if (!birth || !birth.date || birth.lat == null || birth.lng == null || birth.tzOffsetMinutes == null || !birth.place) {
+      return reply.code(400).send({ error: 'birth { date, place, lat, lng, tzOffsetMinutes } required' });
+    }
+    upsertProfile({
+      user_id: user.id,
+      birth_date: String(birth.date), birth_time: (birth.time as string) ?? null,
+      unknown_time: birth.unknownTime ? 1 : 0, place: String(birth.place),
+      lat: Number(birth.lat), lng: Number(birth.lng), tz_offset: Number(birth.tzOffsetMinutes),
+      goal_area: b.goalArea ?? 'career', goal_name: b.goalName ?? '', updated_at: '',
+    });
+    return { ok: true };
+  });
 
   // reference data
   app.get('/grahas', async () => Object.values(GRAHAS));
@@ -400,9 +456,11 @@ export function buildServer() {
   return app;
 }
 
-// Start when run directly.
-const port = Number(process.env.PORT ?? 8787);
-buildServer()
-  .listen({ port, host: '0.0.0.0' })
-  .then(() => console.log(`aura knowledge API on http://localhost:${port}`))
-  .catch((e) => { console.error(e); process.exit(1); });
+// Start only when run directly (not when imported by tests).
+if (process.env.AURA_NO_LISTEN !== '1' && !process.env.VITEST) {
+  const port = Number(process.env.PORT ?? 8787);
+  buildServer()
+    .listen({ port, host: '0.0.0.0' })
+    .then(() => console.log(`aura knowledge API on http://localhost:${port}`))
+    .catch((e) => { console.error(e); process.exit(1); });
+}
