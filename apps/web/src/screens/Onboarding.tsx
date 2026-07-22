@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { BirthData, LifeArea } from '@aura/engine';
 import { DISCLAIMER } from '@aura/engine';
 import { Button } from '@/components/ui/button';
+import { Pressable } from '../components/Pressable';
 
 interface City { name: string; lat: number; lng: number; tz: number; }
 // Preset cities (offline). tz = current standard offset in minutes; real apps geocode
@@ -59,9 +60,9 @@ export function Onboarding({ onComplete }: {
           <span className="k">Born at</span>
           <input type="time" value={time} disabled={unknownTime} onChange={(e) => setTime(e.target.value)} aria-label="Birth time" />
         </div>
-        <div className="unknown" onClick={() => setUnknownTime((v) => !v)}>
+        <Pressable className="unknown" active={unknownTime} onPress={() => setUnknownTime((v) => !v)}>
           <span className={`box${unknownTime ? ' on' : ''}`} /> I don’t know my time — read me by day
-        </div>
+        </Pressable>
         <div className="field">
           <span className="k">Born in</span>
           <select
@@ -77,7 +78,7 @@ export function Onboarding({ onComplete }: {
         <div className="subq">What are you building?</div>
         <div className="chips">
           {GOALS.map((g) => (
-            <span key={g.area} className={`chip${goal === g.area ? ' on' : ''}`} onClick={() => setGoal(g.area)}>{g.label}</span>
+            <Pressable key={g.area} className={`chip${goal === g.area ? ' on' : ''}`} active={goal === g.area} onPress={() => setGoal(g.area)}>{g.label}</Pressable>
           ))}
         </div>
         <div className="empire">

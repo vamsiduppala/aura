@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Checkin, LifeArea } from '@aura/engine';
 import { OrbChip } from '../components/AuraOrb';
+import { Pressable } from '../components/Pressable';
 import { energyColor } from '../ui';
 import type { Energy } from '@aura/engine';
 
@@ -38,16 +39,16 @@ export function Checkin({ major, passing, onDone, onSkip }: {
         <div className="qh">The mood</div>
         <div className="moodgrid">
           {MOODS.map((m) => (
-            <div key={m.key} className={`mood${mood === m.key ? ' on' : ''}`} onClick={() => setMood((v) => v === m.key ? undefined : m.key)}>
+            <Pressable key={m.key} className={`mood${mood === m.key ? ' on' : ''}`} active={mood === m.key} onPress={() => setMood((v) => v === m.key ? undefined : m.key)}>
               <span className="em">{m.em}</span>{m.label}
-            </div>
+            </Pressable>
           ))}
         </div>
 
         <div className="qh">What matters today</div>
         <div className="chips">
           {FOCUS.map((f) => (
-            <span key={f.area} className={`chip${focus === f.area ? ' on' : ''}`} onClick={() => setFocus((v) => v === f.area ? undefined : f.area)}>{f.label}</span>
+            <Pressable key={f.area} className={`chip${focus === f.area ? ' on' : ''}`} active={focus === f.area} onPress={() => setFocus((v) => v === f.area ? undefined : f.area)}>{f.label}</Pressable>
           ))}
         </div>
 
