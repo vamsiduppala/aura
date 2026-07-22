@@ -52,7 +52,10 @@ resuming session can pick up exactly where it left off.
 - [~] Ch 11 Yogas (4621–5363): Ravi (Vesi/Vosi/Ubhayachara/Budha-Aditya), Chandra (Sunapha/Anapha/
       Duradhara/Kemadruma/Chandra-Mangala/Adhi/Gajakesari), 5 Mahapurusha, Raja/Dhana/Vipareeta/
       Neechabhanga → `data/yogas.ts` (20 yogas, rule+effect). TODO: full Naabhasa (32) + more Raja variants
-- [ ] Ch 12 Ashtakavarga (5364–7833): BAV/SAV/prastaara/sodhya pindas
+- [~] Ch 12 Ashtakavarga (5364–7833): Bhinnashtakavarga (per-planet bindus, BPHS benefic-
+      point tables) + Sarvashtakavarga (sum, 337 invariant) → `data/ashtakavarga.ts`
+      (standalone from the engine's copy). API: POST /ashtakavarga. TODO: prastaara,
+      trikona/ekadhipatya sodhana, sodhya pindas.
 - [~] Ch 13 Interpreting Charts (7834–8433): functional nature per lagna (Table 30) + yogakaraka
       + baadhaka rule → `data/functional.ts` DONE. TODO: analysis method (13.4) + examples
 - [ ] Ch 14 Longevity (8434–8656): marakas, rudra/trishoola, three pairs, 8th-lord

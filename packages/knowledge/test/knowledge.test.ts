@@ -13,7 +13,8 @@ import {
   vargaSign,
   bhavaLagna, horaLagna, ghatiLagna, sreeLagna,
   sunUpagrahas, partLords, upagrahaFraction,
-  type Graha,
+  ashtakavarga, bhinnashtakavarga, AV_PLANETS,
+  type Graha, type RefSigns,
 } from '../src/index.js';
 
 const near = (a: number, b: number, tol = 0.05) => Math.abs(a - b) <= tol;
@@ -182,6 +183,26 @@ describe('divisional charts (Ch 6) — verified against the book’s worked exam
   });
   it('D-60 Shashtyamsa', () => {
     expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
+  });
+});
+
+describe('ashtakavarga (Ch 12) — the SAV total is the 337 invariant', () => {
+  const mk = (o: Partial<RefSigns>): RefSigns => ({
+    sun: 0, moon: 0, mars: 0, mercury: 0, jupiter: 0, venus: 0, saturn: 0, asc: 0, ...o,
+  });
+  it('every BAV is 0..8 per sign and each planet totals its own fixed bindu count', () => {
+    const refs = mk({ sun: 2, moon: 5, mars: 8, mercury: 3, jupiter: 11, venus: 6, saturn: 9, asc: 0 });
+    for (const p of AV_PLANETS) {
+      const row = bhinnashtakavarga(p, refs);
+      expect(row).toHaveLength(12);
+      for (const b of row) { expect(b).toBeGreaterThanOrEqual(0); expect(b).toBeLessThanOrEqual(8); }
+    }
+  });
+  it('SAV always sums to 337 regardless of positions (integrity invariant)', () => {
+    for (const seed of [0, 3, 7, 11]) {
+      const refs = mk({ sun: seed, moon: (seed + 2) % 12, mars: (seed + 4) % 12, mercury: (seed + 6) % 12, jupiter: (seed + 8) % 12, venus: (seed + 10) % 12, saturn: (seed + 1) % 12, asc: (seed + 5) % 12 });
+      expect(ashtakavarga(refs).total).toBe(337);
+    }
   });
 });
 

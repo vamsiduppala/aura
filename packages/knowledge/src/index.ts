@@ -43,6 +43,10 @@ export {
   sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART, UPAGRAHA_NOTES,
   type SunUpagrahas,
 } from './data/upagrahas.js';
+export {
+  ashtakavarga, bhinnashtakavarga, AV_TABLE, AV_PLANETS,
+  type AVPlanet, type AVRef, type RefSigns, type AshtakavargaResult,
+} from './data/ashtakavarga.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

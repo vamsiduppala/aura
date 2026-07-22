@@ -17,6 +17,7 @@ import {
   vargaSign, allVargas, VARGA_DIVISORS,
   specialLagnas, SPECIAL_LAGNA_USE,
   sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART,
+  ashtakavarga, type RefSigns,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -92,6 +93,16 @@ export function buildServer() {
     const q = req.query as { longitude?: string };
     if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
     return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+
+  // Ashtakavarga (Ch 12). POST the 8 reference signs → BAV per planet + SAV (+ 337 total).
+  app.post('/ashtakavarga', async (req, reply) => {
+    const b = req.body as { signs?: Partial<RefSigns> };
+    const need = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'asc'];
+    if (!b?.signs || need.some((k) => b.signs![k as keyof RefSigns] == null)) {
+      return reply.code(400).send({ error: `signs must include all of: ${need.join(', ')} (each 0-11)` });
+    }
+    return ashtakavarga(b.signs as RefSigns);
   });
 
   // Upagrahas (Ch 4). Sun-based longitudes + time-based part-lords / rising fraction.
