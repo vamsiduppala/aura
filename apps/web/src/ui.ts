@@ -51,6 +51,11 @@ export function fmtMonthYear(iso: string | Date): string {
   const d = new Date(iso);
   return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
 }
+/** "Apr 26" — month + 2-digit year, for the tiny phase-date labels. */
+export function fmtMonYY(iso: string | Date): string {
+  const d = new Date(iso);
+  return `${MONTHS[d.getUTCMonth()]} ${String(d.getUTCFullYear()).slice(-2)}`;
+}
 /** "Mon 20" */
 export function fmtDow(d: Date): string {
   const dow = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getUTCDay()];

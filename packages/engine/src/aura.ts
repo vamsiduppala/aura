@@ -40,7 +40,7 @@ export interface AuraOptions {
   checkin?: Checkin;
 }
 
-export interface PhaseWindow { energy: Energy; start: Date; end: Date }
+export interface PhaseWindow { energy: Energy; lord: Graha; start: Date; end: Date }
 export interface PhaseWindows { major: PhaseWindow; passing: PhaseWindow }
 
 /** Facade over the whole engine. Inject an Ephemeris (offline astronomia by default). */
@@ -95,14 +95,12 @@ export class Aura {
 
     const major = windowFor('maha');
     if (!major) return null;
-    // The passing energy came from antar or pratyantar — pick whichever lord's energy matches.
-    const passingLevel: DashaLevel =
-      GRAHA_TO_ENERGY[input.stack.antar] === input.passingEnergy ? 'antar' : 'pratyantar';
-    const passing = windowFor(passingLevel) ?? major;
+    // Major = mahadasha, Passing = antardasha (the two levels the Today screen names).
+    const passing = windowFor('antar') ?? major;
 
     return {
-      major: { energy: input.majorEnergy, start: major.start, end: major.end },
-      passing: { energy: input.passingEnergy, start: passing.start, end: passing.end },
+      major: { energy: GRAHA_TO_ENERGY[major.lord], lord: major.lord, start: major.start, end: major.end },
+      passing: { energy: GRAHA_TO_ENERGY[passing.lord], lord: passing.lord, start: passing.start, end: passing.end },
     };
   }
 

@@ -16,10 +16,11 @@ describe('phaseWindows (Today phase dates)', () => {
   const input = aura.daily(chart, now, { goalArea: 'career' }).input;
   const pw = aura.phaseWindows(input, chart, now)!;
 
-  it('returns windows for the same energies the reading displays', () => {
+  it('maps major → mahadasha and passing → antardasha', () => {
     expect(pw).not.toBeNull();
-    expect(pw.major.energy).toBe(input.majorEnergy);
-    expect(pw.passing.energy).toBe(input.passingEnergy);
+    expect(pw.major.lord).toBe(input.stack.maha);
+    expect(pw.passing.lord).toBe(input.stack.antar);
+    expect(pw.major.energy).toBe(input.majorEnergy); // maha energy == displayed major
   });
 
   it('the major (maha) window brackets today', () => {

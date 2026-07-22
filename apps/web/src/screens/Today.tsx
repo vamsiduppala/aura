@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
 import type { PhaseWindows, ReadingInput } from '@aura/engine';
 import { AuraOrb } from '../components/AuraOrb';
 import { PlanetTag } from '../components/PlanetTag';
 import { Button } from '@/components/ui/button';
-import { energyColor, energyLabel, energyGloss, fmtShort } from '../ui';
+import { energyColor, energyLabel, energyGloss, grahaColor, grahaOfEnergy, fmtMonYY } from '../ui';
+import { nicknameFor } from '../nicknames';
 
 export function Today({ input, phases, todayLine, remedyShort, onOpenReading, onCheckin }: {
   input: ReadingInput;
@@ -13,30 +15,39 @@ export function Today({ input, phases, todayLine, remedyShort, onOpenReading, on
   onOpenReading: () => void;
   onCheckin: () => void;
 }) {
-  const major = input.majorEnergy;
-  const passing = input.passingEnergy;
+  // Major = mahadasha, Passing = antardasha (from phases; fall back to the reading input).
+  const major = phases?.major.energy ?? input.majorEnergy;
+  const passing = phases?.passing.energy ?? input.passingEnergy;
+
+  // A playful nickname matching the current antardasha planet — fresh each reload.
+  const antarGraha = grahaOfEnergy(passing);
+  const nickname = useMemo(() => nicknameFor(antarGraha), [antarGraha]);
 
   return (
     <div className="today-hero">
+      <div className="today-greet">
+        Hey, <span style={{ color: grahaColor(antarGraha) }}>{nickname}</span>
+      </div>
+
       <div className="today-orb">
         <AuraOrb e1={energyColor(major)} e2={energyColor(passing)} size={210} />
         <div className="blend">
           <div className="en">
-            <div className="label">Major energy</div>
+            <div className="label">Major energy · mahadasha</div>
             <div className="name" style={{ color: energyColor(major) }}>{energyLabel(major).toUpperCase()}</div>
             <PlanetTag energy={major} />
             <div className="gloss">{energyGloss(major).split('·')[0]!.trim()}</div>
             {phases ? (
-              <div className="phase-dates">{fmtShort(phases.major.start)} → {fmtShort(phases.major.end)}</div>
+              <div className="phase-dates">{fmtMonYY(phases.major.start)} – {fmtMonYY(phases.major.end)}</div>
             ) : null}
           </div>
           <div className="en">
-            <div className="label">Passing through</div>
+            <div className="label">Passing · antardasha</div>
             <div className="name" style={{ color: energyColor(passing) }}>{energyLabel(passing).toUpperCase()}</div>
             <PlanetTag energy={passing} />
             <div className="gloss">{energyGloss(passing).split('·')[0]!.trim()}</div>
             {phases ? (
-              <div className="phase-dates">{fmtShort(phases.passing.start)} → {fmtShort(phases.passing.end)}</div>
+              <div className="phase-dates">{fmtMonYY(phases.passing.start)} – {fmtMonYY(phases.passing.end)}</div>
             ) : null}
           </div>
         </div>
@@ -53,7 +64,7 @@ export function Today({ input, phases, todayLine, remedyShort, onOpenReading, on
         </div>
         <div className="today-cta">
           <Button onClick={onOpenReading}>Open today’s reading <span>→</span></Button>
-          <Button variant="ghost" onClick={onCheckin} style={{ marginTop: 6 }}>new challenge again? i can explain!</Button>
+          <Button variant="ghost" onClick={onCheckin} style={{ marginTop: 6 }}>New Challenge Again? I Can Explain!</Button>
         </div>
       </div>
     </div>
