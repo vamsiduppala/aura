@@ -12,18 +12,53 @@ import { dateFromJd } from '../astro/julian.js';
 import { getPeriodsAt } from '../dasha/vimshottari.js';
 import type { Ephemeris } from '../astro/ephemeris.js';
 
-/** Past-tense "what likely happened" per energy. `{area}` is filled at build time. */
-const RETRO: Record<Energy, string> = {
-  main: 'your visibility spiked around {area} — a real moment to be seen, or a bruising fight to be recognized for what you were actually doing.',
-  feel: 'your feelings ran the show around {area} — a tender, turbulent stretch where a single mood could tip a whole decision.',
-  fire: 'friction flared around {area} — you pushed hard, maybe clashed with someone, or forced a result that really needed another beat of patience.',
-  mind: 'your mind wouldn’t settle around {area} — overthinking, second-guessing, a decision you kept re-opening long after it was made.',
-  grow: 'a door opened around {area} — an opportunity or lucky break arrived, and part of you almost didn’t trust it enough to walk through.',
-  love: 'connection and comfort pulled focus around {area} — something warmed up, or you smoothed a thing over instead of actually solving it.',
-  build: 'the weight sat squarely on {area} — you were grinding without recognition, likely passed over for something you’d earned, or feeling invisible despite doing the work.',
-  crave: 'a restless hunger gripped {area} — you chased more, faster, and somehow felt behind no matter how much you got done.',
-  let: 'something loosened around {area} — an ending, a stepping-back, or a quiet loss you had to make your peace with.',
+/** Past-tense "what likely happened" per energy (multiple variants → feels tailored).
+ *  `{area}` is filled at build time; a variant is chosen deterministically per period. */
+const RETRO: Record<Energy, string[]> = {
+  main: [
+    'your visibility spiked around {area} — a real moment to be seen, or a bruising fight to be recognized for what you were actually doing.',
+    'it was all about being seen around {area} — you either stepped into a spotlight, or burned energy proving you mattered to someone who wasn’t looking.',
+  ],
+  feel: [
+    'your feelings ran the show around {area} — a tender, turbulent stretch where a single mood could tip a whole decision.',
+    'everything around {area} hit you in the chest first — you were reading rooms, taking things personally, needing comfort more than usual.',
+  ],
+  fire: [
+    'friction flared around {area} — you pushed hard, maybe clashed with someone, or forced a result that really needed another beat of patience.',
+    'you were running hot around {area} — a lot of drive, a shorter fuse, and at least one fight you half-wish you’d handled slower.',
+  ],
+  mind: [
+    'your mind wouldn’t settle around {area} — overthinking, second-guessing, a decision you kept re-opening long after it was made.',
+    'you were stuck in your head about {area} — too many tabs, too many drafts, talking yourself in and out of the same call.',
+  ],
+  grow: [
+    'a door opened around {area} — an opportunity or lucky break arrived, and part of you almost didn’t trust it enough to walk through.',
+    'things loosened up around {area} — momentum came back, maybe an offer or an opening, and the hard part was just saying a clean yes.',
+  ],
+  love: [
+    'connection and comfort pulled focus around {area} — something warmed up, or you smoothed a thing over instead of actually solving it.',
+    'the soft stuff took over around {area} — you leaned into closeness, or kept the peace by swallowing the thing you actually needed to say.',
+  ],
+  build: [
+    'the weight sat squarely on {area} — you were grinding without recognition, likely passed over for something you’d earned, or feeling invisible despite doing the work.',
+    'it got heavy and slow around {area} — a long stretch of carrying it alone, doing the unglamorous work while it felt like no one noticed.',
+  ],
+  crave: [
+    'a restless hunger gripped {area} — you chased more, faster, and somehow felt behind no matter how much you got done.',
+    'you couldn’t sit still about {area} — comparing, reaching, chasing the next thing, running on too little sleep and too much wanting.',
+  ],
+  let: [
+    'something loosened around {area} — an ending, a stepping-back, or a quiet loss you had to make your peace with.',
+    'you were letting go of something around {area} — pulling back, closing a chapter, or quietly detaching from what used to matter more.',
+  ],
 };
+
+/** Small deterministic hash for variant selection. */
+function pickHash(s: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return h >>> 0;
+}
 
 export interface RetroItem {
   energy: Energy;
@@ -87,13 +122,18 @@ export function buildRetrospective(
   }
   const top = chosen.sort((a, b) => a.p.start.getTime() - b.p.start.getTime());
 
-  return top.map(({ p, energy, area }) => ({
-    energy,
-    area,
-    start: p.start.toISOString(),
-    end: p.end.toISOString(),
-    statement: RETRO[energy].replace('{area}', AREA_META[area].label.toLowerCase()),
-  }));
+  const seed = Math.round(chart.lagnaLong * 1000);
+  return top.map(({ p, energy, area }) => {
+    const variants = RETRO[energy];
+    const v = variants[pickHash(`${seed}|${p.start.toISOString()}|${energy}`) % variants.length]!;
+    return {
+      energy,
+      area,
+      start: p.start.toISOString(),
+      end: p.end.toISOString(),
+      statement: v.replace('{area}', AREA_META[area].label.toLowerCase()),
+    };
+  });
 }
 
 export { RETRO };

@@ -8,8 +8,10 @@ import {
 } from '../src/synthesis/reading.js';
 import { computeChart } from '../src/chart/chart.js';
 import { computeReadingInput } from '../src/engine.js';
+import { buildRetrospective } from '../src/synthesis/retrospective.js';
+import { answerMentorQuery } from '../src/mentor/query.js';
 import { AstronomiaEphemeris } from '../src/astro/ephemeris.js';
-import type { BirthData } from '../src/types.js';
+import type { BirthData, LifeArea } from '../src/types.js';
 
 // Astrology terms that must NEVER reach a user-facing string (SPEC §1, §12).
 const FORBIDDEN: RegExp[] = [
@@ -91,6 +93,21 @@ describe('no-jargon lint (SPEC §12)', () => {
     // Forecast glosses.
     const fc = buildForecast(chart, new Date('2026-07-21T00:00:00Z'));
     for (const p of [...fc.daily, ...fc.weekly, ...fc.monthly]) scan('forecast.gloss', p.gloss, offenders);
+
+    // Retrospective statements + Cosmic Mentor answers (pivot features).
+    const nowD = new Date('2026-07-21T00:00:00Z');
+    const areas: LifeArea[] = ['partnership', 'career', 'money', 'self'];
+    for (const focusArea of areas) {
+      for (const r of buildRetrospective(chart, nowD, ephem, { focusArea })) {
+        scan('retro.statement', r.statement, offenders);
+      }
+      for (const tf of ['past', 'now', 'future'] as const) {
+        const a = answerMentorQuery(chart, { focus: focusArea, timeframe: tf }, nowD, ephem);
+        scan('mentor.focusPhrase', a.focusPhrase, offenders);
+        scan('mentor.keyEnergyMeaning', a.keyEnergyMeaning, offenders);
+        if (a.transitNote) scan('mentor.transitNote', a.transitNote, offenders);
+      }
+    }
 
     expect(offenders).toEqual([]);
   });
