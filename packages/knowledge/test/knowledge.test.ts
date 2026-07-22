@@ -11,8 +11,11 @@ import {
   grahaAspectsFrom, rasiDrishti, argalaOn,
   arudhaOf, allArudhas,
   vargaSign,
+  bhavaLagna, horaLagna, ghatiLagna, sreeLagna,
   type Graha,
 } from '../src/index.js';
+
+const near = (a: number, b: number, tol = 0.05) => Math.abs(a - b) <= tol;
 
 describe('reference data completeness', () => {
   it('has all 9 grahas, 12 rasis, 12 bhavas, 27 nakshatras', () => {
@@ -178,6 +181,20 @@ describe('divisional charts (Ch 6) — verified against the book’s worked exam
   });
   it('D-60 Shashtyamsa', () => {
     expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
+  });
+});
+
+describe('special lagnas (Ch 5) — verified against the book’s worked examples', () => {
+  // Example 7-9: Sun at sunrise 294°17' (24°17' Cp), 766 minutes after sunrise.
+  const sunSR = 270 + 24 + 17 / 60; // 294.2833
+  it('bhava / hora / ghati lagna', () => {
+    expect(near(bhavaLagna(sunSR, 766), 330 + 10 + 17 / 60)).toBe(true); // 10°17' Pisces
+    expect(near(horaLagna(sunSR, 766), 300 + 17 + 17 / 60)).toBe(true);  // 17°17' Aquarius
+    expect(near(ghatiLagna(sunSR, 766), 150 + 21 + 47 / 60)).toBe(true); // 21°47' Virgo
+  });
+  it('sree lagna from the Moon’s nakshatra fraction', () => {
+    // Moon 13°06' Libra (193.1°), lagna 25°05' Virgo (175.083°) → SL 18°47' Pisces.
+    expect(near(sreeLagna(180 + 13 + 6 / 60, 150 + 25 + 5 / 60), 330 + 18 + 47 / 60, 0.05)).toBe(true);
   });
 });
 

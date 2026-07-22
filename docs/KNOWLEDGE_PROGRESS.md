@@ -24,7 +24,9 @@ resuming session can pick up exactly where it left off.
       relationships 3.4 (natural Table 7 + temporary + compound) → `data/relationships.ts`.
       API: `/dignities`, `/classify?graha=&sign=`, and `/interpret` now auto-derives dignity.
 - [ ] Ch 4 Upagrahas (1920–2223): Sun-based + other upagrahas
-- [ ] Ch 5 Special Lagnas (2224–2397): Bhava/Hora/Ghati/Sree lagna
+- [x] Ch 5 Special Lagnas (2224–2397): Bhava/Hora/Ghati (from Sun's sunrise longitude) +
+      Sree lagna (Moon's nakshatra fraction) → `data/lagnas.ts`, verified against the book's
+      worked examples (BL 10°17'Pi, HL 17°17'Aq, GL 21°47'Vi, SL 18°47'Pi). API: /lagnas/special
 - [x] Ch 6 Divisional Charts (2398–2848): significations (Table 11) → `data/divisionals.ts`;
       **computation of all 20 vargas** (D-1..D-60, incl. unequal D-30 Trimsamsa & D-60) →
       `data/varga.ts` `vargaSign(longitude, divisor)` / `allVargas()`, verified against the

@@ -35,6 +35,10 @@ export {
 export {
   vargaSign, allVargas, VARGA_DIVISORS, type VargaDivisor,
 } from './data/varga.js';
+export {
+  bhavaLagna, horaLagna, ghatiLagna, sreeLagna, specialLagnas,
+  SPECIAL_LAGNA_USE, type SpecialLagnas,
+} from './data/lagnas.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

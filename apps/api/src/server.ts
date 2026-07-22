@@ -15,6 +15,7 @@ import {
   grahaAspectsFrom, rasiDrishti, argalaOn, ASPECT_NOTES,
   arudhaTable, ARUDHA_NAMES,
   vargaSign, allVargas, VARGA_DIVISORS,
+  specialLagnas, SPECIAL_LAGNA_USE,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -90,6 +91,14 @@ export function buildServer() {
     const q = req.query as { longitude?: string };
     if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
     return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+
+  // Special lagnas (Ch 5) — Bhava/Hora/Ghati (from sunrise) + Sree (from Moon fraction).
+  app.get('/lagnas/special', async (req, reply) => {
+    const q = req.query as Record<string, string>;
+    const need = ['sunLongSunrise', 'minutesSinceSunrise', 'moonLong', 'lagnaLong'];
+    if (need.some((k) => q[k] == null)) return reply.code(400).send({ error: `required: ${need.join(', ')}`, use: SPECIAL_LAGNA_USE });
+    return specialLagnas(Number(q.sunLongSunrise), Number(q.minutesSinceSunrise), Number(q.moonLong), Number(q.lagnaLong));
   });
 
   // Arudha padas (Ch 9). POST the lagna sign + each planet's sign; get all 12 arudhas.
