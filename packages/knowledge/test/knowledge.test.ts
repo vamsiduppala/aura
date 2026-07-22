@@ -4,6 +4,7 @@ import {
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
   TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
+  naturalRelation, temporaryRelation, compoundRelation,
   getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord,
 } from '../src/index.js';
@@ -122,6 +123,22 @@ describe('transits (gochara from Moon)', () => {
     expect(sadeSatiPhase(1)).toBe('peak');
     expect(sadeSatiPhase(2)).toBe('setting');
     expect(sadeSatiPhase(6)).toBeNull();
+  });
+});
+
+describe('planetary relationships', () => {
+  it('encodes the classical natural friendships', () => {
+    expect(naturalRelation('sun', 'saturn')).toBe('enemy');
+    expect(naturalRelation('sun', 'jupiter')).toBe('friend');
+    expect(naturalRelation('mercury', 'moon')).toBe('enemy');
+    expect(naturalRelation('moon', 'mars')).toBe('neutral');
+  });
+  it('temporary + compound relationships combine correctly', () => {
+    expect(temporaryRelation(3)).toBe('friend');   // 3rd from a planet
+    expect(temporaryRelation(6)).toBe('enemy');    // 6th from a planet
+    expect(compoundRelation('friend', 'friend')).toBe('great-friend');
+    expect(compoundRelation('enemy', 'enemy')).toBe('great-enemy');
+    expect(compoundRelation('friend', 'enemy')).toBe('neutral');
   });
 });
 
