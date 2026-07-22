@@ -11,6 +11,7 @@ const mod360 = (n: number): number => ((n % 360) + 360) % 360;
 export const ASHTOTTARI_ORDER: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'saturn', 'jupiter', 'rahu', 'venus'];
 export const ASHTOTTARI_YEARS: Record<Graha, number> = {
   sun: 6, moon: 15, mars: 8, mercury: 17, saturn: 10, jupiter: 19, rahu: 12, venus: 21,
+  ketu: 0, // Ketu has no Ashtottari dasa
 };
 export const ASHTOTTARI_TOTAL = 108;
 
