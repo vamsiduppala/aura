@@ -23,6 +23,11 @@ export {
 } from './data/relationships.js';
 export { REMEDIES, behaviouralRemedy, type Remedy } from './data/remedies.js';
 export { DIGNITIES, dignityOf, type DignityDef } from './data/dignities.js';
+export {
+  GRAHA_DRISHTI, advanceHouse, grahaAspectsFrom, rasiDrishti,
+  ARGALA_PRIMARY, ARGALA_SECONDARY, VIRODHARGALA, ARGALA_MEANING, argalaOn,
+  ASPECT_NOTES, type ArgalaSource,
+} from './data/aspects.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

@@ -8,6 +8,7 @@ import {
   REMEDIES, behaviouralRemedy,
   getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord, classifyDignity,
+  grahaAspectsFrom, rasiDrishti, argalaOn,
 } from '../src/index.js';
 
 describe('reference data completeness', () => {
@@ -67,6 +68,34 @@ describe('interpretation engine', () => {
     expect(classifyDignity('jupiter', 3)).toBe('exalted');       // Jupiter in Cancer
     expect(classifyDignity('sun', 4)).toBe('moolatrikona');      // Sun in Leo (its moolatrikona)
     expect(classifyDignity('mars', 7)).toBe('own');              // Mars in Scorpio (own, not MT)
+  });
+});
+
+describe('aspects & argalas (Ch 10)', () => {
+  it('graha drishti: everyone aspects the 7th; Mars/Jupiter/Saturn have special aspects', () => {
+    // Sun in the 1st (house 1) aspects the 7th.
+    expect(grahaAspectsFrom('sun', 1)).toEqual([7]);
+    // Jupiter in the 1st aspects 5th, 7th, 9th.
+    expect(grahaAspectsFrom('jupiter', 1).sort((a, b) => a - b)).toEqual([5, 7, 9]);
+    // Mars in the 1st aspects 4th, 7th, 8th; Saturn 3rd, 7th, 10th.
+    expect(grahaAspectsFrom('mars', 1).sort((a, b) => a - b)).toEqual([4, 7, 8]);
+    expect(grahaAspectsFrom('saturn', 1).sort((a, b) => a - b)).toEqual([3, 7, 10]);
+  });
+  it('graha drishti wraps around the wheel', () => {
+    // Jupiter in the 10th: 5th/7th/9th from the 10th = 2nd, 4th, 6th.
+    expect(grahaAspectsFrom('jupiter', 10).sort((a, b) => a - b)).toEqual([2, 4, 6]);
+  });
+  it('rasi drishti follows the modality rules', () => {
+    expect(rasiDrishti(0).sort((a, b) => a - b)).toEqual([4, 7, 10]);  // Aries → Leo, Scorpio, Aquarius
+    expect(rasiDrishti(1).sort((a, b) => a - b)).toEqual([3, 6, 9]);   // Taurus → Cancer, Libra, Capricorn
+    expect(rasiDrishti(2).sort((a, b) => a - b)).toEqual([5, 8, 11]);  // Gemini → Virgo, Sag, Pisces
+  });
+  it('argala: primary from 2/4/11, secondary from 5, each with its obstruction', () => {
+    const a = argalaOn(1); // argala on the 1st house
+    const houses = a.map((x) => x.house).sort((x, y) => x - y);
+    expect(houses).toEqual([2, 4, 5, 11]);
+    const twelfthObstructs = a.find((x) => x.house === 2)!;
+    expect(twelfthObstructs.obstructedBy).toBe(12); // argala from 2nd obstructed by 12th
   });
 });
 

@@ -33,7 +33,11 @@ resuming session can pick up exactly where it left off.
 - [x] Ch 8 Karakas (3114–3551): chara (8, AK..DK by longitude), sthira (relatives), naisargika
       (per-house significators) → `data/karakas.ts`
 - [ ] Ch 9 Arudha Padas (3552–4042): bhava/graha arudhas + use
-- [ ] Ch 10 Aspects & Argalas (4043–4620): graha/rasi drishti, argala, virodhargala
+- [x] Ch 10 Aspects & Argalas (4043–4620): graha drishti (7th + Mars/Jup/Sat specials),
+      rasi drishti (modality rules), argala (2/4/11 primary + 5 secondary) & virodhargala
+      (12/10/3/9) with meanings + Ketu/3rd-malefic notes → `data/aspects.ts` + compute
+      helpers (grahaAspectsFrom, rasiDrishti, argalaOn). API: /aspects/graha, /aspects/rasi,
+      /aspects/notes, /argala.
 - [~] Ch 11 Yogas (4621–5363): Ravi (Vesi/Vosi/Ubhayachara/Budha-Aditya), Chandra (Sunapha/Anapha/
       Duradhara/Kemadruma/Chandra-Mangala/Adhi/Gajakesari), 5 Mahapurusha, Raja/Dhana/Vipareeta/
       Neechabhanga → `data/yogas.ts` (20 yogas, rule+effect). TODO: full Naabhasa (32) + more Raja variants
