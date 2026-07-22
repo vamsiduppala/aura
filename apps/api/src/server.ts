@@ -30,6 +30,7 @@ import {
   taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS,
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
+  ithasala, ishkavala, induvara, TAJAKA_YOGAS,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -215,6 +216,21 @@ export function buildServer() {
     }
     return computeSahams(b.ctx, b.day !== false);
   });
+
+  // Tajaka yogas (Ch 29) — ithasala/eesarpha + house-distribution yogas.
+  app.get('/tajaka/ithasala', async (req, reply) => {
+    const q = req.query as { pa?: string; degA?: string; pb?: string; degB?: string };
+    if (!q.pa || q.degA == null || !q.pb || q.degB == null) return reply.code(400).send({ error: 'pa, degA, pb, degB required (planets aspecting)' });
+    if (!GRAHAS[q.pa] || !GRAHAS[q.pb]) return reply.code(404).send({ error: 'unknown graha' });
+    return ithasala(q.pa as Graha, Number(q.degA), q.pb as Graha, Number(q.degB));
+  });
+  app.get('/tajaka/distribution-yoga', async (req, reply) => {
+    const q = req.query as { houses?: string };
+    if (!q.houses) return reply.code(400).send({ error: 'houses=comma,separated occupied houses (1-12)' });
+    const houses = q.houses.split(',').map(Number);
+    return { ishkavala: ishkavala(houses), induvara: induvara(houses) };
+  });
+  app.get('/tajaka/yogas', async () => TAJAKA_YOGAS);
 
   // Transit taras & special nakshatras (Ch 26) — all counted from the janma nakshatra.
   app.get('/transit/tara', async (req, reply) => {

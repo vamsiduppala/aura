@@ -24,6 +24,7 @@ import {
   kalachakraPada, isSavya,
   taraOf, specialNakshatra, nakshatraAspectsFrom,
   muntha, harshaBala, saham, computeSahams,
+  ithasala, ishkavala, induvara, fasterPlanet,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -219,6 +220,26 @@ describe('Narayana dasa (Ch 18) — verified against the book’s Examples 63–
     const a = narayanaAntardashas(1, 5); // start Ta (even sign) → backward, 5 months each
     expect(a.map((x) => x.rasi)).toEqual([1, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
     expect(a[0]!.months).toBe(5);
+  });
+});
+
+describe('Tajaka yogas (Ch 29) — verified against the book’s Moon/Venus examples', () => {
+  it('speed order: Moon is faster than Venus', () => {
+    expect(fasterPlanet('moon', 'venus')).toBe('moon');
+  });
+  it('ithasala (applying) vs eesarpha (separating)', () => {
+    // Moon 14° Le, Venus 19° Li: faster Moon behind → ithasala
+    expect(ithasala('moon', 14, 'venus', 19).kind).toBe('ithasala');
+    // Moon 18°25' Le, Venus 19° Li: within 1° → poorna ithasala
+    expect(ithasala('moon', 18 + 25 / 60, 'venus', 19).poorna).toBe(true);
+    // Moon 23° Le, Venus 19° Li: faster Moon ahead → eesarpha
+    expect(ithasala('moon', 23, 'venus', 19).kind).toBe('eesarpha');
+  });
+  it('Ishkavala vs Induvara by house distribution', () => {
+    expect(ishkavala([1, 4, 2, 7])).toBe(true);   // only kendras/panapharas
+    expect(ishkavala([1, 3])).toBe(false);        // 3rd is apoklima
+    expect(induvara([3, 6, 9, 12])).toBe(true);   // only apoklimas
+    expect(induvara([3, 4])).toBe(false);
   });
 });
 

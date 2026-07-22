@@ -121,7 +121,10 @@ resuming session can pick up exactly where it left off.
       API: /tajaka/{muntha,harsha,aspects}. Sahams (28.8): saham() point calc (A−B+C with
       day/night + 30° rule) + Table 74 subset (Punya/Vidya/Yasas/Mitra/…) → `data/sahams.ts`,
       verified vs the artha-saham example. API: /tajaka/saham, /tajaka/sahams. TODO: panchavargeeya bala
-- [ ] Ch 29 Tajaka Yogas (17265–17434)
+- [x] Ch 29 Tajaka Yogas (17265–17434): Ithasala (applying, faster-behind → fulfilment) vs
+      Eesarpha (separating), poorna check, Nakta; Ishkavala/Induvara (house distribution);
+      planet speed order → `data/tajakayoga.ts`, verified vs the Moon/Venus examples.
+      API: /tajaka/{ithasala,distribution-yoga,yogas}
 - [ ] Ch 30 Annual Dasas (17435–18098)
 - [ ] Ch 31 Sudarsana Chakra Dasa (18099–18366)
 
