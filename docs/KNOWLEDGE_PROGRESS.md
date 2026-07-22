@@ -106,7 +106,11 @@ resuming session can pick up exactly where it left off.
 ## Part 3 — Transit Analysis
 - [~] Ch 25 Transits & Natal References (13172–15364): gochara favourable houses per planet from
       Moon + Sade Sati phase → `data/transits.ts` DONE. TODO: full result tables, vedha, ashtakavarga transit
-- [ ] Ch 26 Transits: Miscellaneous (15365–16282): murthis, vedha, taras, latta, sarvatobhadra
+- [~] Ch 26 Transits: Miscellaneous (15365–16282): 9-fold taras (Table 64), special
+      nakshatras (karma/jaati/naidhana… 26.4.2), nakshatra-based aspects (26.5) → `data/taras.ts`
+      (taraOf/specialNakshatra/nakshatraAspectsFrom), verified vs the Bill Gates example.
+      API: /transit/{tara,special-nakshatras,nakshatra-aspects}. TODO: murthis, rasi-vedha,
+      latta, body-part tables, sarvatobhadra chakra
 
 ## Part 4 — Tajaka Analysis
 - [ ] Ch 27 Tajaka Chart Basics (16295–16620)

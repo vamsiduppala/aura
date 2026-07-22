@@ -83,6 +83,10 @@ export {
   kalachakraPada, isSavya, KALACHAKRA_RASI_YEARS, MIRROR_SIGN, SAVYA_24, APASAVYA_24,
   type KalachakraPada,
 } from './data/kalachakra.js';
+export {
+  TARAS, taraOf, SPECIAL_NAKSHATRAS, specialNakshatra,
+  NAKSHATRA_ASPECTS, nakshatraAspectsFrom, type Tara, type TaraResult,
+} from './data/taras.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

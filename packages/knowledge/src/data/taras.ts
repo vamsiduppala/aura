@@ -1,0 +1,69 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Transit taras & special nakshatras — Ch 26. All counted from the janma (natal Moon)
+// nakshatra. Taras (9-fold star strength, Table 64), the special nakshatras (karma,
+// jaati…), and nakshatra-based aspects (26.5). Verified against the book's Bill Gates
+// example (Krittika = Pratyak, Mrigasira = Naidhana from Uttarabhadrapada).
+// ─────────────────────────────────────────────────────────────────────────────
+
+import type { Graha } from '../types.js';
+
+const mod27 = (n: number): number => ((n % 27) + 27) % 27;
+
+export interface Tara { name: string; meaning: string; good: boolean }
+
+/** The nine taras, in order (index 0 = Janma). */
+export const TARAS: Tara[] = [
+  { name: 'Janma', meaning: 'birth', good: false },        // mixed
+  { name: 'Sampat', meaning: 'wealth', good: true },
+  { name: 'Vipat', meaning: 'danger', good: false },
+  { name: 'Kshema', meaning: 'well-being', good: true },
+  { name: 'Pratyak', meaning: 'obstacles', good: false },
+  { name: 'Saadhana', meaning: 'achievement', good: true },
+  { name: 'Naidhana', meaning: 'death/loss', good: false }, // aka Vadha
+  { name: 'Mitra', meaning: 'friend', good: true },
+  { name: 'Parama Mitra', meaning: 'best friend', good: true },
+];
+
+export interface TaraResult { count: number; index: number; name: string; meaning: string; good: boolean }
+
+/** The tara of a transit nakshatra relative to the janma (natal Moon) nakshatra (both 0..26). */
+export function taraOf(janmaNak: number, transitNak: number): TaraResult {
+  const count = mod27(transitNak - janmaNak) + 1; // 1..27
+  const idx = (count - 1) % 9;                     // 0..8
+  return { count, index: idx + 1, name: TARAS[idx]!.name, meaning: TARAS[idx]!.meaning, good: TARAS[idx]!.good };
+}
+
+/** Special nakshatras (26.4.2): the Nth nakshatra from janma, each governing a life area. */
+export const SPECIAL_NAKSHATRAS: Record<string, { nth: number; shows: string }> = {
+  janma: { nth: 1, shows: 'general well-being' },
+  jaati: { nth: 4, shows: 'community' },
+  naidhana: { nth: 7, shows: 'death and suffering' },
+  karma: { nth: 10, shows: 'profession and workplace' },
+  desa: { nth: 12, shows: 'country' },
+  abhisheka: { nth: 13, shows: 'power and authority' }, // aka Raajya
+  sanghaatika: { nth: 16, shows: 'group/social activity' },
+  saamudaayika: { nth: 18, shows: 'crowd/group activity' },
+  aadhaana: { nth: 19, shows: 'well-being of family' },
+  vainaasika: { nth: 22, shows: 'destruction' },
+  maanasa: { nth: 25, shows: 'mental state' },
+};
+
+/** The nakshatra index (0..26) of a named special nakshatra for a given janma nakshatra. */
+export function specialNakshatra(janmaNak: number, which: keyof typeof SPECIAL_NAKSHATRAS): number {
+  return mod27(janmaNak + SPECIAL_NAKSHATRAS[which]!.nth - 1);
+}
+
+/** Nakshatra-based aspects (26.5): the Nth nakshatras each planet aspects from its own. */
+export const NAKSHATRA_ASPECTS: Record<Graha, number[]> = {
+  sun: [14, 15], moon: [14, 15],
+  mars: [1, 3, 7, 8, 15],
+  mercury: [1, 15], venus: [1, 15],
+  jupiter: [10, 15, 19],
+  saturn: [3, 5, 15, 19],
+  rahu: [], ketu: [], // nodes not assigned nakshatra aspects here
+};
+
+/** The nakshatra indices (0..26) a planet aspects while transiting `nak`. */
+export function nakshatraAspectsFrom(graha: Graha, nak: number): number[] {
+  return NAKSHATRA_ASPECTS[graha].map((n) => mod27(nak + n - 1));
+}

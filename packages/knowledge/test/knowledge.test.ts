@@ -22,6 +22,7 @@ import {
   narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
   kalachakraPada, isSavya,
+  taraOf, specialNakshatra, nakshatraAspectsFrom,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -217,6 +218,24 @@ describe('Narayana dasa (Ch 18) — verified against the book’s Examples 63–
     const a = narayanaAntardashas(1, 5); // start Ta (even sign) → backward, 5 months each
     expect(a.map((x) => x.rasi)).toEqual([1, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
     expect(a[0]!.months).toBe(5);
+  });
+});
+
+describe('transit taras & special nakshatras (Ch 26) — verified vs the Bill Gates example', () => {
+  // Bill Gates: janma nakshatra = Uttarabhadrapada (index 25).
+  it('tara from janma nakshatra (Table 64)', () => {
+    expect(taraOf(25, 2).name).toBe('Pratyak');   // Krittika (5th) → obstacles
+    expect(taraOf(25, 4).name).toBe('Naidhana');  // Mrigasira (7th) → death
+    expect(taraOf(25, 25).name).toBe('Janma');    // same nakshatra → 1st
+    expect(taraOf(25, 2).good).toBe(false);
+  });
+  it('special nakshatras count from janma (karma = 10th, jaati = 4th)', () => {
+    expect(specialNakshatra(25, 'karma')).toBe(7);  // U.Bhadra(25) → Pushyami(7)
+    expect(specialNakshatra(25, 'jaati')).toBe(1);  // U.Bhadra(25) → Bharani(1)
+  });
+  it('nakshatra-based aspects (26.5): Jupiter aspects the 10th/15th/19th', () => {
+    expect(nakshatraAspectsFrom('jupiter', 0)).toEqual([9, 14, 18]); // from Aswini
+    expect(nakshatraAspectsFrom('sun', 0)).toEqual([13, 14]);
   });
 });
 

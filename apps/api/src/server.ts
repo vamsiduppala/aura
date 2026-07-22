@@ -27,6 +27,7 @@ import {
   narayanaProgression, narayanaDasaLength, narayanaAntardashas,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa,
   kalachakraPada,
+  taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -183,6 +184,26 @@ export function buildServer() {
     const cats = b.pairs.map(([x, y]) => pairLongevity(signModality(x), signModality(y))) as [LifeSpan, LifeSpan, LifeSpan];
     const combined = combineThreePairs(cats);
     return { pairs: cats, combined, years: LONGEVITY_RANGES[combined] };
+  });
+
+  // Transit taras & special nakshatras (Ch 26) — all counted from the janma nakshatra.
+  app.get('/transit/tara', async (req, reply) => {
+    const q = req.query as { janmaNak?: string; transitNak?: string };
+    if (q.janmaNak == null || q.transitNak == null) return reply.code(400).send({ error: 'janmaNak and transitNak (0-26) required' });
+    return taraOf(Number(q.janmaNak), Number(q.transitNak));
+  });
+  app.get('/transit/special-nakshatras', async (req, reply) => {
+    const q = req.query as { janmaNak?: string };
+    if (q.janmaNak == null) return reply.code(400).send({ error: 'janmaNak (0-26) required' });
+    const jn = Number(q.janmaNak);
+    return Object.fromEntries(Object.keys(SPECIAL_NAKSHATRAS).map((k) =>
+      [k, { nakshatra: specialNakshatra(jn, k as keyof typeof SPECIAL_NAKSHATRAS), shows: SPECIAL_NAKSHATRAS[k as keyof typeof SPECIAL_NAKSHATRAS]!.shows }]));
+  });
+  app.get('/transit/nakshatra-aspects', async (req, reply) => {
+    const q = req.query as { graha?: string; nak?: string };
+    if (!q.graha || q.nak == null) return reply.code(400).send({ error: 'graha and nak (0-26) required' });
+    if (!GRAHAS[q.graha]) return reply.code(404).send({ error: 'unknown graha' });
+    return { graha: q.graha, nak: Number(q.nak), aspects: nakshatraAspectsFrom(q.graha as Graha, Number(q.nak)) };
   });
 
   // Dasa systems (Ch 16 Vimsottari, Ch 17 Ashtottari) — birth balance + antardasas.
