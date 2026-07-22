@@ -19,6 +19,7 @@ export interface KundaliRow {
   sign: number;       // 0..11
   signName: string;
   dignity: Dignity;
+  strength: number;   // natal strength as 0..100 %
   retrograde: boolean;
   combust: boolean;
   vargottama: boolean;
@@ -30,7 +31,9 @@ export interface KundaliRow {
 export interface Kundali {
   lagnaSign: number;
   lagnaSignName: string;
+  lagnaSignNote: string;   // a few plain traits of the rising sign
   lagnaLord: Graha;
+  lagnaLordStrength: number; // 0..100 %
   lagnaLordText: string;
   rows: KundaliRow[]; // ordered by house asc, then classical order (co-tenants sit together)
 }
@@ -53,6 +56,8 @@ export function buildKundali(chart: Chart): Kundali {
   const lord = chart.planets[lagnaLord];
   const lagnaLordText = interpretLagnaLord(lagnaLord, lord.house, lord.sign).text;
 
+  const pct = (g: Graha) => Math.round((chart.planets[g].strength ?? 0) * 100);
+
   const rows: KundaliRow[] = ORDER
     .map((g): KundaliRow => {
       const p = chart.planets[g];
@@ -63,7 +68,7 @@ export function buildKundali(chart: Chart): Kundali {
       });
       return {
         graha: g, house: p.house, sign: p.sign, signName: getRasi(p.sign).english,
-        dignity, retrograde: p.retrograde, combust: p.combust, vargottama: p.vargottama,
+        dignity, strength: pct(g), retrograde: p.retrograde, combust: p.combust, vargottama: p.vargottama,
         title: interp.title, text: interp.text, keywords: interp.keywords,
       };
     })
@@ -72,7 +77,9 @@ export function buildKundali(chart: Chart): Kundali {
   return {
     lagnaSign: chart.lagnaSign,
     lagnaSignName: getRasi(chart.lagnaSign).english,
+    lagnaSignNote: getRasi(chart.lagnaSign).indications.slice(0, 3).join(', '),
     lagnaLord,
+    lagnaLordStrength: pct(lagnaLord),
     lagnaLordText,
     rows,
   };
