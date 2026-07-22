@@ -5,6 +5,7 @@ import {
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
   TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
   naturalRelation, temporaryRelation, compoundRelation,
+  REMEDIES, behaviouralRemedy,
   getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord,
 } from '../src/index.js';
@@ -139,6 +140,20 @@ describe('planetary relationships', () => {
     expect(compoundRelation('friend', 'friend')).toBe('great-friend');
     expect(compoundRelation('enemy', 'enemy')).toBe('great-enemy');
     expect(compoundRelation('friend', 'enemy')).toBe('neutral');
+  });
+});
+
+describe('remedies (behavioural-only surfacing)', () => {
+  it('every planet has a free behavioural remedy', () => {
+    expect(Object.keys(REMEDIES)).toHaveLength(9);
+    for (const g of Object.keys(REMEDIES) as (keyof typeof REMEDIES)[]) {
+      expect(behaviouralRemedy(g).length).toBeGreaterThan(20);
+    }
+  });
+  it('behavioural remedies never mention purchases/gemstones/fasting/rituals (SPEC §11.4)', () => {
+    for (const g of Object.keys(REMEDIES) as (keyof typeof REMEDIES)[]) {
+      expect(behaviouralRemedy(g).toLowerCase()).not.toMatch(/gem|ruby|sapphire|pearl|coral|emerald|diamond|buy|purchase|fast|mantra|ritual/);
+    }
   });
 });
 

@@ -21,6 +21,7 @@ export {
   NATURAL_RELATIONS, naturalRelation, temporaryRelation, compoundRelation,
   type Relation, type CompoundRelation,
 } from './data/relationships.js';
+export { REMEDIES, behaviouralRemedy, type Remedy } from './data/remedies.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, type Placement, type Interpretation, type Dignity,

@@ -67,7 +67,9 @@ resuming session can pick up exactly where it left off.
 ## Part 5 — Special Topics
 - [ ] Ch 32 Birthtime Error (18385–19046)
 - [ ] Ch 33 Rational Thinking (19047–19182)
-- [ ] Ch 34 Remedial Measures (19183–19468): gemstones, good deeds, propitiation
+- [~] Ch 34 Remedial Measures (19183–19468): behavioural "good deeds" per planet (product-approved,
+      healthy) + gemstone/deity as flagged REFERENCE-ONLY → `data/remedies.ts` DONE. Mantras
+      (Devanagari) intentionally NOT encoded; product never recommends gems/fasting/rituals (§11.4).
 - [ ] Ch 35 Mundane Astrology (19469–19798)
 - [ ] Ch 36 Muhurta (19799–20090)
 - [ ] Ch 37 Ethics of a Jyotishi (20091–20118)
