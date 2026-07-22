@@ -3,7 +3,7 @@
 // isn't running — the app still works on-device (guest mode) via services/storage.
 import type { BirthData, LifeArea } from '@aura/engine';
 
-const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'http://localhost:8787';
+export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'http://localhost:8787';
 const TOKEN_KEY = 'aura.token';
 
 export interface AuthUser { id: number; email: string }

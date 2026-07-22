@@ -49,4 +49,7 @@ available on the same server for the Cosmic Mentor and future live-data wiring.
 - [x] Local SQLite DB + auth (register/login) + profile save/load — `apps/api` (6 tests)
 - [x] Web register/login screen + guest mode; profile persists to the API when signed in
 - [x] Settings shows account + sign-out; App gates on auth state
-- [ ] Wire more web surfaces to live API data (blueprint kundali, mentor lookups, dasha timelines)
+- [x] Blueprint "Your timing clocks" — Vimshottari/Ashtottari/Narayana pulled from the API
+      (`/dasha/*`) when the server is up, computed on-device otherwise (`services/liveData.ts`,
+      shows a live/on-device badge). The mentor already consumes `@aura/knowledge` for grounded lookups.
+- [ ] Wire further surfaces to live API data (full dasha timelines, tajaka annual view)

@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Aura, Chart } from '@aura/engine';
 import { energyColor, grahaColor, grahaLabel } from '../ui';
 import { buildHouses, dignityChip, type HouseCard as HouseCardData } from '../kundali';
+import { loadChartDashas, type DashaSnapshot } from '../services/liveData';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
@@ -65,6 +66,49 @@ export function Blueprint({ aura, chart }: { aura: Aura; chart: Chart; goalName:
             ))}
           </div>
         ) : null}
+
+        <TimingSystems chart={chart} />
+      </div>
+    </div>
+  );
+}
+
+// Surfaces the multi-system dasha backend (via apps/api when running, else on-device).
+function TimingSystems({ chart }: { chart: Chart }) {
+  const [d, setD] = useState<DashaSnapshot | null>(null);
+  useEffect(() => {
+    let alive = true;
+    loadChartDashas(chart).then((snap) => { if (alive) setD(snap); });
+    return () => { alive = false; };
+  }, [chart]);
+
+  if (!d) return null;
+  return (
+    <div style={{ marginTop: 24 }}>
+      <div className="label" style={{ marginBottom: 6 }}>Your timing clocks</div>
+      <div className="bp-meta" style={{ marginBottom: 12 }}>
+        the traditional dasha systems your chart runs on · {d.source === 'server' ? 'live from your aura server' : 'computed on-device'}
+      </div>
+
+      <div className="clock-row">
+        <span className="clock-dot" style={{ background: grahaColor(d.vimshottari.lord) }} />
+        <div className="clock-txt">
+          <b>Vimshottari</b> — born in <span style={{ color: grahaColor(d.vimshottari.lord) }}>{grahaLabel(d.vimshottari.lord)}</span>’s
+          great period, with {d.vimshottari.yearsLeft.toFixed(1)} years of it left at birth.
+        </div>
+      </div>
+      <div className="clock-row">
+        <span className="clock-dot" style={{ background: grahaColor(d.ashtottari.lord) }} />
+        <div className="clock-txt">
+          <b>Ashtottari</b> — the 108-year clock opened in <span style={{ color: grahaColor(d.ashtottari.lord) }}>{grahaLabel(d.ashtottari.lord)}</span>’s
+          period ({d.ashtottari.yearsLeft.toFixed(1)} yrs remaining at birth).
+        </div>
+      </div>
+      <div className="clock-row">
+        <span className="clock-dot" style={{ background: 'var(--slate)' }} />
+        <div className="clock-txt">
+          <b>Narayana</b> (rasi dasa) runs your signs in the order: {d.narayanaNames.slice(0, 6).join(' → ')} →…
+        </div>
       </div>
     </div>
   );
