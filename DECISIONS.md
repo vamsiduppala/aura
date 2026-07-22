@@ -51,6 +51,27 @@ no transpile config). TypeScript `strict: true`.
 the kind of sign/index bugs that would corrupt dasha math.
 **Undo:** Swap to pnpm/jest if desired; test files are framework-light.
 
+## [2026-07-21] D-10 — Cosmic Mentor chat uses Gemini (owner-provided key), not Claude
+**Decided:** The chat LLM is Gemini (`gemini-2.0-flash`), because the owner provided a Gemini
+key. The pivot spec said "Claude Haiku or similar" — "or similar" covers this. The engine's
+mentor prompt + tool schema are LLM-neutral; only `apps/web/src/services/chat.ts` is Gemini-shaped.
+**Key handling:** stored in `apps/web/.env.local` (GITIGNORED, verified never staged). NOTE:
+`VITE_`-prefixed vars are embedded in the client bundle → visible to users. Fine for the owner's
+throwaway dev key; **production must proxy LLM calls through a server**. The key authenticates
+(HTTP 429 = valid but free-tier quota exhausted at test time).
+**Undo:** Swap `services/chat.ts` to Anthropic's Messages API (tool-use) or any provider; the
+engine side (`answerMentorQuery`, `MENTOR_SYSTEM_PROMPT`, `MENTOR_TOOL_SCHEMA`) is unchanged.
+
+## [2026-07-21] D-11 — Chat = forced function-calling + deterministic fallback
+**Decided:** The LLM is a strict narration layer: `functionCallingConfig.mode = ANY` forces it to
+call `query_energy`; the app runs the local 108-engine (`aura.mentorAnswer`) and returns JSON;
+the LLM narrates it. It can never invent astrology. If the key/network/quota fails, the chat
+falls back to a deterministic engine-only reply (keyword intent → engine → templated aura voice),
+so the feature works fully offline too. Crisis check on input + no-doom guard on output.
+**Why:** honors the pivot's "LLM must never hallucinate Jyotish math" and Q-06 (offline-first);
+the LLM is pure polish. **Undo:** relax to `mode AUTO` if you want the LLM to answer meta
+questions without a reading.
+
 ## [2026-07-21] D-09 — Phase 3 UI built as a Vite web app (apps/web), not Expo mobile (yet)
 **Decided:** Built the 7 screens as a Vite + React + TypeScript web app wired to `@aura/engine`,
 porting the mockup's exact CSS. Not the spec's React Native + Expo (§10) — yet.

@@ -100,6 +100,21 @@ Last updated: 2026-07-21 ~11:20 CDT (session 1). Phases 1–5 complete; 52 engin
 - [x] Live HMR dev server at :5173 (dir 4) so the owner watches changes land.
 - [ ] shadcn adoption (dir 3): pending — see notes. Recommended incremental path documented.
 
+## Session 3 (strategic pivot: retention + trust) — DONE
+- [x] **Feature 1 — "Prove It" retrospective:** engine run backwards ~18mo → 3 distinct past
+      shifts, past-tense "what happened" copy, biased to focus area. New Audit screen between
+      onboarding and Today. (synthesis/retrospective.ts, screens/Audit.tsx)
+- [x] **Feature 2 — sharper Trap:** each energy gets a pointed behavioral call-out (the text
+      message, isolating under pressure, smoothing-over vs the honest sentence, the highlight
+      reel), framed as a temporary loop with the way out. Passes no-jargon + no-doom.
+- [x] **Feature 3 — Cosmic Mentor chat (8th screen):** Gemini forced function-calling over the
+      real engine; LLM narrates only. Deterministic fallback so it works offline. Crisis + no-doom
+      guarded. (mentor/query.ts, mentor/prompt.ts, services/chat.ts, screens/Chat.tsx). Nav updated.
+- Engine tests: 72 green. Web typecheck + build clean. Gemini key authenticates (quota-limited).
+- Key stored in apps/web/.env.local (gitignored, verified untracked). See D-10, D-11.
+- NOTE: chat currently renders the deterministic fallback (Gemini free-tier quota exhausted); the
+  LLM narration turns on automatically when quota resets or a fresh key is set.
+
 ## Session log
 - **S1 2026-07-21 04:01 CDT:** Env check, scaffolding, handoff docs, decisions/questions.
   Building engine core next. Token budget: working until exhaustion; cloud resume scheduled.
