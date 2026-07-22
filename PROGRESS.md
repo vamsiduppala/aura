@@ -110,10 +110,14 @@ Last updated: 2026-07-21 ~11:20 CDT (session 1). Phases 1–5 complete; 52 engin
 - [x] **Feature 3 — Cosmic Mentor chat (8th screen):** Gemini forced function-calling over the
       real engine; LLM narrates only. Deterministic fallback so it works offline. Crisis + no-doom
       guarded. (mentor/query.ts, mentor/prompt.ts, services/chat.ts, screens/Chat.tsx). Nav updated.
-- Engine tests: 72 green. Web typecheck + build clean. Gemini key authenticates (quota-limited).
+- Deepening (same session): retrospective variety (2 variants/energy, seeded); classical **Yogas**
+  → "Born gifts" on the Blueprint; the Mentor now offers the user's REAL born-gift strength as the
+  way out; **web integration smoke tests** (jsdom) driving the whole flow + crisis routing; users
+  can paste their own **Gemini key in Settings**; app state centralized in a **Zustand store**
+  (App = thin router). Engine 75 tests + web 2 tests, all green; both typechecks clean.
 - Key stored in apps/web/.env.local (gitignored, verified untracked). See D-10, D-11.
-- NOTE: chat currently renders the deterministic fallback (Gemini free-tier quota exhausted); the
-  LLM narration turns on automatically when quota resets or a fresh key is set.
+- NOTE: chat renders the deterministic fallback (Gemini free-tier quota exhausted); LLM narration
+  turns on automatically when quota resets or a fresh key is set in Settings.
 
 ## Session log
 - **S1 2026-07-21 04:01 CDT:** Env check, scaffolding, handoff docs, decisions/questions.
