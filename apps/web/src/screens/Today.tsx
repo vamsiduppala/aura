@@ -43,7 +43,7 @@ export function Today({ input, todayLine, remedyShort, onOpenReading, onCheckin 
         </div>
         <div className="today-cta">
           <Button onClick={onOpenReading}>Open today’s reading <span>→</span></Button>
-          <Button variant="ghost" onClick={onCheckin} style={{ marginTop: 6 }}>How’s your head today? — tune it</Button>
+          <Button variant="ghost" onClick={onCheckin} style={{ marginTop: 6 }}>new challenge again? i can explain!</Button>
         </div>
       </div>
     </div>
