@@ -136,14 +136,22 @@ resuming session can pick up exactly where it left off.
       → Scorpio). API: /dasha/sudarsana, /dasha/sudarsana/all. **Part 4 Tajaka COMPLETE.**
 
 ## Part 5 — Special Topics
-- [ ] Ch 32 Birthtime Error (18385–19046)
-- [ ] Ch 33 Rational Thinking (19047–19182)
+- [~] Ch 32 Birthtime Error (18385–19046): concept + rectification methods (event-based,
+      special-lagna-based) → `data/reference.ts` BIRTHTIME_RECTIFICATION. API: /reference.
+      (Exact rectification math is engine/ephemeris territory.)
+- [x] Ch 33 Rational Thinking (19047–19182): principles (free will, data quality, discriminating
+      techniques, cross-checking) → `data/reference.ts` RATIONAL_PRINCIPLES. API: /reference
 - [~] Ch 34 Remedial Measures (19183–19468): behavioural "good deeds" per planet (product-approved,
       healthy) + gemstone/deity as flagged REFERENCE-ONLY → `data/remedies.ts` DONE. Mantras
       (Devanagari) intentionally NOT encoded; product never recommends gems/fasting/rituals (§11.4).
-- [ ] Ch 35 Mundane Astrology (19469–19798)
-- [ ] Ch 36 Muhurta (19799–20090)
-- [ ] Ch 37 Ethics of a Jyotishi (20091–20118)
+- [x] Ch 35 Mundane Astrology (19469–19798): principles (ingress/eclipse/founding charts,
+      compressed dasas) → `data/reference.ts` MUNDANE_PRINCIPLES. API: /reference
+- [x] Ch 36 Muhurta (19799–20090): per-task guidelines (Table 79 subset: tithi/weekday/
+      nakshatra) + a computable quality check (guideline match + good tara + rikta flag) →
+      `data/muhurta.ts` `muhurtaCheck`. API: /muhurta, /muhurta/guidelines
+- [x] Ch 37 Ethics of a Jyotishi (20091–20118): encoded as ETHICS_PRINCIPLES (always positive;
+      never scare; negatives only with a remedy) — directly backs aura's no-doom guardrail →
+      `data/reference.ts`. API: /reference. **Part 5 essentially COMPLETE (Part 6 = examples).**
 
 ## Part 6 — Real-life Examples (20119–21029)
 - [ ] Example chart walk-throughs (reference only — not encoded as rules)

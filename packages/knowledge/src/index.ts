@@ -105,6 +105,13 @@ export {
 export {
   sudarsanaDasa, sudarsanaAllRefs, type SudarsanaDasa, type SudarsanaAllRefs,
 } from './data/sudarsana.js';
+export {
+  MUHURTA_GUIDELINES, RIKTA_TITHIS, muhurtaCheck,
+  type MuhurtaGuideline, type MuhurtaCheck,
+} from './data/muhurta.js';
+export {
+  ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES, BIRTHTIME_RECTIFICATION, MUNDANE_PRINCIPLES,
+} from './data/reference.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

@@ -32,6 +32,8 @@ import {
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
   ithasala, ishkavala, induvara, TAJAKA_YOGAS,
   muddaDasa, sudarsanaDasa, sudarsanaAllRefs,
+  muhurtaCheck, MUHURTA_GUIDELINES,
+  ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES, BIRTHTIME_RECTIFICATION, MUNDANE_PRINCIPLES,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -217,6 +219,22 @@ export function buildServer() {
     }
     return computeSahams(b.ctx, b.day !== false);
   });
+
+  // Muhurta (Ch 36) — electional quality check + the per-task guidelines.
+  app.get('/muhurta/guidelines', async () => MUHURTA_GUIDELINES);
+  app.get('/muhurta', async (req, reply) => {
+    const q = req.query as { task?: string; tithiDay?: string; weekday?: string; nakshatra?: string; janmaNak?: string };
+    if (!q.task || q.tithiDay == null || q.weekday == null || q.nakshatra == null || q.janmaNak == null) {
+      return reply.code(400).send({ error: 'task, tithiDay (1-15), weekday (0-6), nakshatra (0-26), janmaNak (0-26) required', tasks: Object.keys(MUHURTA_GUIDELINES) });
+    }
+    if (!MUHURTA_GUIDELINES[q.task]) return reply.code(404).send({ error: 'unknown task', tasks: Object.keys(MUHURTA_GUIDELINES) });
+    return muhurtaCheck(q.task, Number(q.tithiDay), Number(q.weekday), Number(q.nakshatra), Number(q.janmaNak));
+  });
+  // Reference principles (Ch 32/33/35/37) — ethics, rational thinking, mundane, birthtime.
+  app.get('/reference', async () => ({
+    ethics: ETHICS_PRINCIPLES, rational: RATIONAL_PRINCIPLES,
+    birthtimeRectification: BIRTHTIME_RECTIFICATION, mundane: MUNDANE_PRINCIPLES,
+  }));
 
   // Sudarsana Chakra dasa (Ch 31) — one house per solar year, from lagna/Moon/Sun.
   app.get('/dasha/sudarsana', async (req, reply) => {

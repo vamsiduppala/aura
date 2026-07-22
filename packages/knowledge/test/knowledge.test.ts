@@ -26,6 +26,7 @@ import {
   muntha, harshaBala, saham, computeSahams,
   ithasala, ishkavala, induvara, fasterPlanet,
   muddaDasa, muddaDays, sudarsanaDasa, sudarsanaAllRefs,
+  muhurtaCheck, ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -221,6 +222,27 @@ describe('Narayana dasa (Ch 18) — verified against the book’s Examples 63–
     const a = narayanaAntardashas(1, 5); // start Ta (even sign) → backward, 5 months each
     expect(a.map((x) => x.rasi)).toEqual([1, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
     expect(a[0]!.months).toBe(5);
+  });
+});
+
+describe('muhurta + Part 5 reference (Ch 32/33/36/37)', () => {
+  it('muhurtaCheck flags a good vs bad electional time', () => {
+    // house-entering: tithi 3, Thursday(4), Rohini(3); janma nakshatra Rohini → Janma tara (not "good")
+    const bad = muhurtaCheck('house-entering', 3, 4, 3, 3);
+    expect(bad.tithiOk).toBe(true);
+    expect(bad.weekdayOk).toBe(true);
+    expect(bad.nakshatraOk).toBe(true);
+    expect(bad.taraOk).toBe(false); // Rohini from Rohini = Janma tara
+    // Same but janma nakshatra Aswini(0) → Rohini is the 4th (Kshema, good) → auspicious
+    const good = muhurtaCheck('house-entering', 3, 4, 3, 0);
+    expect(good.auspicious).toBe(true);
+    // Rikta tithi (4) is flagged
+    expect(muhurtaCheck('house-entering', 4, 4, 3, 0).rikta).toBe(true);
+  });
+  it('ethics principles back the no-doom guardrail', () => {
+    expect(ETHICS_PRINCIPLES.length).toBeGreaterThan(3);
+    expect(ETHICS_PRINCIPLES.some((p) => /never scare|remedy|preventive/i.test(p))).toBe(true);
+    expect(RATIONAL_PRINCIPLES.some((p) => /free will|effort/i.test(p))).toBe(true);
   });
 });
 
