@@ -21,6 +21,8 @@ import {
   panchanga, horaLord,
   dashaBalanceAtBirth, antardashas, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas,
+  marakaLords, MARAKA_HOUSES, signModality, pairLongevity, combineThreePairs, LONGEVITY_RANGES,
+  type LifeSpan,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -96,6 +98,21 @@ export function buildServer() {
     const q = req.query as { longitude?: string };
     if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
     return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+
+  // Longevity (Ch 14). Marakas (killer planets/houses) + the three-pairs range estimate.
+  app.get('/longevity/marakas', async (req, reply) => {
+    const q = req.query as { lagnaSign?: string };
+    if (q.lagnaSign == null) return reply.code(400).send({ error: 'lagnaSign (0-11) is required' });
+    return { marakaHouses: MARAKA_HOUSES, marakaLords: marakaLords(Number(q.lagnaSign)) };
+  });
+  // POST { pairs: [[signA,signB],[signC,signD],[signE,signF]] } → each pair's span + combined.
+  app.post('/longevity/estimate', async (req, reply) => {
+    const b = req.body as { pairs?: [number, number][] };
+    if (!b?.pairs || b.pairs.length !== 3) return reply.code(400).send({ error: 'pairs: exactly 3 [signA,signB] pairs required' });
+    const cats = b.pairs.map(([x, y]) => pairLongevity(signModality(x), signModality(y))) as [LifeSpan, LifeSpan, LifeSpan];
+    const combined = combineThreePairs(cats);
+    return { pairs: cats, combined, years: LONGEVITY_RANGES[combined] };
   });
 
   // Dasa systems (Ch 16 Vimsottari, Ch 17 Ashtottari) — birth balance + antardasas.

@@ -61,6 +61,11 @@ export {
   ashtottariBalanceAtBirth, ashtottariAntardashas,
   type AshtottariBalance,
 } from './data/ashtottari.js';
+export {
+  MARAKA_HOUSES, marakaLords, RUDRA_8TH_SIGN, rudra8thSign, signModality,
+  pairLongevity, LONGEVITY_RANGES, combineThreePairs, LONGEVITY_NOTES,
+  type LifeSpan, type Modality,
+} from './data/longevity.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

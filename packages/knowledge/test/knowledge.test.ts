@@ -17,6 +17,7 @@ import {
   tithiOf, nityaYoga, karanaOf, horaLord,
   dashaBalanceAtBirth, dashaSequence, antardashas, nakshatraLord, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
+  marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -186,6 +187,27 @@ describe('divisional charts (Ch 6) — verified against the book’s worked exam
   });
   it('D-60 Shashtyamsa', () => {
     expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
+  });
+});
+
+describe('longevity (Ch 14) — marakas, Rudra 8th, three-pairs', () => {
+  it('maraka lords are the lords of the 2nd and 7th signs from the lagna', () => {
+    // Leo lagna (4): 2nd = Virgo → Mercury, 7th = Aquarius → Saturn.
+    expect(marakaLords(4)).toEqual(['mercury', 'saturn']);
+  });
+  it('Rudra special 8th house (Table 32)', () => {
+    expect(rudra8thSign(0)).toBe(7);  // Aries → Scorpio
+    expect(rudra8thSign(1)).toBe(2);  // Taurus → Gemini (anti-zodiacal)
+    expect(rudra8thSign(6)).toBe(1);  // Libra → Taurus
+  });
+  it('three-pairs longevity category (Table 33) + combination', () => {
+    expect(pairLongevity('movable', 'movable')).toBe('long');
+    expect(pairLongevity('fixed', 'fixed')).toBe('short');
+    expect(pairLongevity('dual', 'dual')).toBe('middle');
+    expect(pairLongevity('fixed', 'dual')).toBe('long');
+    expect(pairLongevity('movable', 'dual')).toBe('short');
+    expect(signModality(0)).toBe('movable');
+    expect(combineThreePairs(['long', 'long', 'short'])).toBe('long'); // majority
   });
 });
 
