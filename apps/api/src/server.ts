@@ -30,6 +30,7 @@ import {
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa,
   kalachakraPada,
   taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS,
+  charaKarakas,
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
   ithasala, ishkavala, induvara, TAJAKA_YOGAS,
@@ -132,6 +133,12 @@ export function buildServer() {
     return d ?? reply.code(404).send({ error: 'unknown divisional' });
   });
   app.get('/karakas', async () => ({ chara: CHARA_KARAKAS, sthira: STHIRA_KARAKAS }));
+  // Chara-karaka assignment (Ch 8): POST { longitudes: { sun, moon, …, rahu } } → AK..DK.
+  app.post('/karakas/chara', async (req, reply) => {
+    const b = req.body as { longitudes?: Partial<Record<Graha, number>> };
+    if (!b?.longitudes) return reply.code(400).send({ error: 'longitudes { graha: sidereal degrees } required (Ketu ignored)' });
+    return charaKarakas(b.longitudes);
+  });
   app.get('/functional-nature', async () => FUNCTIONAL_NATURE);
   app.get('/functional-nature/:lagna', async (req) => functionalNatureFor(Number((req.params as { lagna: string }).lagna)));
   app.get('/transits', async () => TRANSIT_FROM_MOON);

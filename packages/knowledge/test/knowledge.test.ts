@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
-  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
+  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, charaKarakas,
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
   TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
   naturalRelation, temporaryRelation, compoundRelation,
@@ -578,6 +578,32 @@ describe('yogas', () => {
   });
   it('yogas are searchable', () => {
     expect(search('raja').some((h) => h.kind === 'yoga')).toBe(true);
+  });
+});
+
+describe('chara karakas (Ch 8) — verified against the book’s Chart 34 (Reagan)', () => {
+  // Longitudes (sign*30 + deg) from Chart 34.
+  const L = {
+    sun: 9 * 30 + 23 + 49 / 60,    // 23°49' Cp
+    moon: 0 * 30 + 19 + 49 / 60,   // 19°49' Ar
+    mars: 8 * 30 + 11 + 19 / 60,   // 11°19' Sg
+    mercury: 8 * 30 + 28 + 49 / 60,// 28°49' Sg
+    jupiter: 6 * 30 + 21 + 7 / 60, // 21°07' Li
+    venus: 10 * 30 + 10 + 56 / 60, // 10°56' Aq
+    saturn: 0 * 30 + 8 + 12 / 60,  // 8°12' Ar
+    rahu: 0 * 30 + 21 + 54 / 60,   // 21°54' Ar (counted reversed)
+  };
+  it('assigns AK..DK by descending karaka degree (Rahu reversed)', () => {
+    const ck = charaKarakas(L);
+    const byCode = Object.fromEntries(ck.map((k) => [k.code, k.graha]));
+    expect(byCode.AK).toBe('mercury');   // 28°49' Sg — highest
+    expect(byCode.AmK).toBe('sun');       // 23°49'
+    expect(byCode.BK).toBe('jupiter');    // 21°07'
+    expect(byCode.MK).toBe('moon');       // 19°49'
+    expect(byCode.PiK).toBe('mars');      // 11°19'
+    expect(byCode.PK).toBe('venus');      // 10°56'
+    expect(byCode.GK).toBe('saturn');     // 8°12'
+    expect(byCode.DK).toBe('rahu');       // 30−21°54' = 8°06' — lowest
   });
 });
 

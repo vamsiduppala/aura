@@ -19,6 +19,31 @@ export const CHARA_KARAKAS: CharaKaraka[] = [
   { rank: 8, code: 'DK', name: 'Darakaraka', signifies: 'the spouse and close partnerships' },
 ];
 
+/** The 8 bodies ranked for chara karakas (Ketu excluded). */
+const KARAKA_BODIES: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu'];
+
+export interface CharaKarakaAssignment {
+  graha: Graha; code: string; name: string;
+  /** Advancement used for ranking (Rahu counted as 30° − its degree). */
+  karakaDegree: number;
+}
+
+/**
+ * Assign the chara (Jaimini) karakas from sidereal longitudes: rank the 7 planets + Rahu by
+ * their degree-within-sign (descending), Rahu reversed (30° − deg). Highest = Atmakaraka,
+ * then Amatya, Bhratri, Matri, Pitri, Putra, Gnati, Dara. Verified against the book's charts.
+ */
+export function charaKarakas(longitudes: Partial<Record<Graha, number>>): CharaKarakaAssignment[] {
+  const scored = KARAKA_BODIES
+    .filter((g) => longitudes[g] != null)
+    .map((g) => {
+      const dis = (((longitudes[g]! % 30) + 30) % 30);
+      return { graha: g, karakaDegree: g === 'rahu' ? 30 - dis : dis };
+    })
+    .sort((a, b) => b.karakaDegree - a.karakaDegree);
+  return scored.map((s, i) => ({ graha: s.graha, code: CHARA_KARAKAS[i]!.code, name: CHARA_KARAKAS[i]!.name, karakaDegree: s.karakaDegree }));
+}
+
 /** Sthira (fixed) karakas — represent relatives’ bodies (used for timing their events). */
 export interface SthiraKaraka { relative: string; planet: Graha | Graha[]; note?: string }
 

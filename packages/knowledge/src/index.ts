@@ -8,8 +8,8 @@ export { NAKSHATRAS, NAKSHATRA_BY_INDEX } from './data/nakshatras.js';
 export { YOGAS, YOGA_BY_KEY } from './data/yogas.js';
 export { DIVISIONALS, DIVISIONAL_BY_N, type DivisionalKnowledge } from './data/divisionals.js';
 export {
-  CHARA_KARAKAS, STHIRA_KARAKAS, NAISARGIKA_HOUSE_KARAKA,
-  type CharaKaraka, type SthiraKaraka,
+  CHARA_KARAKAS, STHIRA_KARAKAS, NAISARGIKA_HOUSE_KARAKA, charaKarakas,
+  type CharaKaraka, type SthiraKaraka, type CharaKarakaAssignment,
 } from './data/karakas.js';
 export {
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse, type FunctionalNature,

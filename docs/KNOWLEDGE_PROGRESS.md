@@ -41,8 +41,10 @@ resuming session can pick up exactly where it left off.
 - [~] Ch 7 Houses (2849–3113): significations 7.2 + categories (kendra/trikona/dusthana/upachaya/
       maraka) + natural karakas + body-parts → `data/bhavas.ts` DONE. TODO: reference lagnas 7.3
       + interpretation engine (`interpret.ts`: interpretPlacement/interpretLagnaLord) DONE + API service
-- [x] Ch 8 Karakas (3114–3551): chara (8, AK..DK by longitude), sthira (relatives), naisargika
-      (per-house significators) → `data/karakas.ts`
+- [x] Ch 8 Karakas (3114–3551): chara (8, AK..DK) — now with `charaKarakas(longitudes)` that
+      assigns them by descending karaka-degree (Rahu reversed), verified against the book's
+      Chart 34 (Reagan) — plus sthira (relatives) & naisargika (per-house) → `data/karakas.ts`.
+      API: POST /karakas/chara
 - [x] Ch 9 Arudha Padas (3552–4042): bhava arudha computation (verified against the book's
       Chart 1 — all 12 padas incl. 1st/7th→10th exception + dual-lord Aq/Sc handling),
       Table 18 names, AL/UL use → `data/arudhas.ts` (arudhaOf/allArudhas/arudhaTable).
