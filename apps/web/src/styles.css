@@ -211,6 +211,24 @@ body::before{
 .mini-date .l{font-family:var(--grotesk);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist-3);margin-bottom:3px;}
 .mini-date .d{font-family:var(--grotesk);font-size:11px;font-weight:500;color:var(--mist-2);}
 .mini-date.turn .d{color:var(--signal);}
+
+/* live mahadasha progress bar */
+.dasha-prog{max-width:720px;width:100%;margin:16px auto 0;padding:15px 17px;border-radius:16px;background:linear-gradient(160deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015));border:1px solid var(--line-2);}
+.dp-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.dp-title{font-family:var(--grotesk);font-weight:600;font-size:14px;letter-spacing:.05em;}
+.dp-strength{font-family:var(--grotesk);font-weight:600;font-size:13px;}
+.dp-theme{font-size:12.5px;color:var(--mist-2);line-height:1.5;margin-bottom:14px;}
+.dp-track{position:relative;height:8px;border-radius:6px;background:rgba(255,255,255,0.07);margin-bottom:10px;}
+.dp-fill{height:100%;border-radius:6px;}
+.dp-dot{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);}
+.dp-nextseg{position:absolute;right:0;top:0;height:100%;width:9%;border-radius:0 6px 6px 0;opacity:.5;}
+.dp-foot{display:flex;justify-content:space-between;gap:10px;font-family:var(--grotesk);font-size:10px;letter-spacing:.03em;color:var(--mist-3);}
+.dp-next{text-align:right;}
+
+/* strength chips (rows + detail) */
+.period .pstrength{font-family:var(--grotesk);font-weight:600;font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid;flex:none;}
+.dstrength{font-family:var(--grotesk);font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid;}
+
 .tabs{display:flex;max-width:720px;width:100%;margin:18px auto 0;border-bottom:1px solid var(--line);}
 .tab{flex:1;text-align:center;padding:12px 2px;font-family:var(--grotesk);font-size:13px;font-weight:500;color:var(--mist-3);position:relative;background:none;border:none;cursor:pointer;}
 .tab.active{color:var(--mist);}
@@ -252,7 +270,7 @@ body::before{
 .dtop .dctx{font-family:var(--grotesk);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist-3);}
 .droll{flex:1;overflow-y:auto;padding:0 24px 28px;}
 .dname{font-family:var(--grotesk);font-weight:600;font-size:23px;letter-spacing:.02em;margin:10px 0 5px;}
-.dmean{font-size:12.5px;color:var(--mist-2);margin-bottom:15px;}
+.dmean{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--mist-2);margin-bottom:15px;}
 .ddates{display:flex;align-items:stretch;gap:9px;margin-bottom:20px;}
 .dintro{font-size:13.5px;line-height:1.62;color:var(--mist);margin-bottom:20px;}
 .blend-note{margin:4px 0 24px;padding:13px 15px;border-radius:14px;border:1px solid var(--line);background:var(--card);font-size:12.5px;line-height:1.55;color:var(--mist-2);}
