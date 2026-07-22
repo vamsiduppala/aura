@@ -25,8 +25,10 @@ resuming session can pick up exactly where it left off.
       API: `/dignities`, `/classify?graha=&sign=`, and `/interpret` now auto-derives dignity.
 - [ ] Ch 4 Upagrahas (1920–2223): Sun-based + other upagrahas
 - [ ] Ch 5 Special Lagnas (2224–2397): Bhava/Hora/Ghati/Sree lagna
-- [~] Ch 6 Divisional Charts (2398–2848): significations (Table 11, D-1..D-60 → which life area)
-      → `data/divisionals.ts` DONE. TODO: per-varga computation rules (engine has D9/D10) + varga groups
+- [x] Ch 6 Divisional Charts (2398–2848): significations (Table 11) → `data/divisionals.ts`;
+      **computation of all 20 vargas** (D-1..D-60, incl. unequal D-30 Trimsamsa & D-60) →
+      `data/varga.ts` `vargaSign(longitude, divisor)` / `allVargas()`, verified against the
+      book's worked examples (one D-27 book erratum documented). API: /varga, /vargas.
 - [~] Ch 7 Houses (2849–3113): significations 7.2 + categories (kendra/trikona/dusthana/upachaya/
       maraka) + natural karakas + body-parts → `data/bhavas.ts` DONE. TODO: reference lagnas 7.3
       + interpretation engine (`interpret.ts`: interpretPlacement/interpretLagnaLord) DONE + API service

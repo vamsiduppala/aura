@@ -10,6 +10,7 @@ import {
   interpretPlacement, interpretLagnaLord, classifyDignity,
   grahaAspectsFrom, rasiDrishti, argalaOn,
   arudhaOf, allArudhas,
+  vargaSign,
   type Graha,
 } from '../src/index.js';
 
@@ -127,6 +128,56 @@ describe('arudha padas (Ch 9) — verified against the book’s Chart 1', () => 
     expect(a[10]).toBe(5);  // A10 → Virgo (7th exception)
     expect(a[11]).toBe(1);  // A11 → Taurus
     expect(a[12]).toBe(6);  // UL  → Libra
+  });
+});
+
+describe('divisional charts (Ch 6) — verified against the book’s worked examples', () => {
+  const at = (sign: number, deg: number) => sign * 30 + deg; // sidereal longitude helper
+  const GE = 2, SC = 7, TA = 1, VI = 5, AR = 0;
+
+  it('D-1 is the plain rasi', () => {
+    expect(vargaSign(at(GE, 11), 1)).toBe(GE);
+  });
+  it('D-3 Drekkana (1st/5th/9th)', () => {
+    expect(vargaSign(at(GE, 3), 3)).toBe(2);   // Ge
+    expect(vargaSign(at(GE, 19), 3)).toBe(6);  // Li
+    expect(vargaSign(at(GE, 21), 3)).toBe(10); // Aq
+  });
+  it('D-4 Chaturthamsa', () => {
+    expect(vargaSign(at(TA, 3), 4)).toBe(1);   // Ta
+    expect(vargaSign(at(TA, 14), 4)).toBe(4);  // Le
+    expect(vargaSign(at(TA, 23), 4)).toBe(10); // Aq
+  });
+  it('D-6 / D-7 / D-9 / D-10 / D-11 / D-12', () => {
+    expect(vargaSign(at(GE, 11), 6)).toBe(2);   expect(vargaSign(at(SC, 19), 6)).toBe(9);
+    expect(vargaSign(at(GE, 10), 7)).toBe(4);   expect(vargaSign(at(VI, 19), 7)).toBe(3);
+    expect(vargaSign(at(GE, 11), 9)).toBe(9);   expect(vargaSign(at(SC, 19), 9)).toBe(8);
+    expect(vargaSign(at(GE, 10), 10)).toBe(5);  expect(vargaSign(at(SC, 19), 10)).toBe(9);
+    expect(vargaSign(at(GE, 11), 11)).toBe(2);  expect(vargaSign(at(SC, 19), 11)).toBe(11);
+    expect(vargaSign(at(GE, 11), 12)).toBe(6);  expect(vargaSign(at(SC, 19), 12)).toBe(2);
+  });
+  it('D-16 / D-20 / D-24 / D-27 / D-40 / D-45', () => {
+    expect(vargaSign(at(GE, 11), 16)).toBe(1);  expect(vargaSign(at(SC, 19), 16)).toBe(2);
+    expect(vargaSign(at(GE, 11), 20)).toBe(11); expect(vargaSign(at(SC, 19), 20)).toBe(8);
+    expect(vargaSign(at(GE, 11), 24)).toBe(0);  expect(vargaSign(at(SC, 19), 24)).toBe(6);
+    // Ge 11° → 10th nakshatramsa from Libra (inclusive) = Cancer(3). (The book prints
+    // "Leo" here, but that contradicts inclusive counting — its own Jupiter case in the
+    // same example confirms inclusive — so this is a book erratum; the algorithm is right.)
+    expect(vargaSign(at(GE, 11), 27)).toBe(3);  expect(vargaSign(at(SC, 19), 27)).toBe(2);
+    expect(vargaSign(at(GE, 11), 40)).toBe(2);  expect(vargaSign(at(SC, 19), 40)).toBe(7);
+    expect(vargaSign(at(GE, 11), 45)).toBe(0);  expect(vargaSign(at(SC, 19), 45)).toBe(8);
+  });
+  it('D-30 Trimsamsa (unequal arcs)', () => {
+    expect(vargaSign(at(AR, 3), 30)).toBe(0);   // odd 0-5 → Ar
+    expect(vargaSign(at(AR, 7), 30)).toBe(10);  // odd 5-10 → Aq
+    expect(vargaSign(at(AR, 15), 30)).toBe(8);  // odd 10-18 → Sg
+    expect(vargaSign(at(AR, 20), 30)).toBe(2);  // odd 18-25 → Ge
+    expect(vargaSign(at(AR, 27), 30)).toBe(6);  // odd 25-30 → Li
+    expect(vargaSign(at(TA, 8), 30)).toBe(5);   // even 5-12 → Vi
+    expect(vargaSign(at(TA, 27), 30)).toBe(7);  // even 25-30 → Sc
+  });
+  it('D-60 Shashtyamsa', () => {
+    expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
   });
 });
 

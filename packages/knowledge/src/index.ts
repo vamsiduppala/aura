@@ -32,6 +32,9 @@ export {
   arudhaOf, allArudhas, arudhaTable, ARUDHA_NAMES, ARUDHA_USE, CO_LORD,
   type ArudhaResult,
 } from './data/arudhas.js';
+export {
+  vargaSign, allVargas, VARGA_DIVISORS, type VargaDivisor,
+} from './data/varga.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

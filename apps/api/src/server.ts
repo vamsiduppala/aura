@@ -14,6 +14,7 @@ import {
   interpretPlacement, interpretLagnaLord, classifyDignity, DIGNITIES,
   grahaAspectsFrom, rasiDrishti, argalaOn, ASPECT_NOTES,
   arudhaTable, ARUDHA_NAMES,
+  vargaSign, allVargas, VARGA_DIVISORS,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -77,6 +78,20 @@ export function buildServer() {
     if (q.house == null) return reply.code(400).send({ error: 'house (1-12) is required' });
     return { house: Number(q.house), argalas: argalaOn(Number(q.house)) };
   });
+  // Divisional charts (Ch 6). Map a sidereal longitude to its sign in a varga.
+  app.get('/varga', async (req, reply) => {
+    const q = req.query as { longitude?: string; divisor?: string };
+    if (q.longitude == null || q.divisor == null) return reply.code(400).send({ error: 'longitude (0-360) and divisor are required' });
+    const d = Number(q.divisor);
+    if (!(VARGA_DIVISORS as readonly number[]).includes(d)) return reply.code(400).send({ error: `divisor must be one of ${VARGA_DIVISORS.join(',')}` });
+    return { longitude: Number(q.longitude), divisor: d, sign: vargaSign(Number(q.longitude), d) };
+  });
+  app.get('/vargas', async (req, reply) => {
+    const q = req.query as { longitude?: string };
+    if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
+    return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+
   // Arudha padas (Ch 9). POST the lagna sign + each planet's sign; get all 12 arudhas.
   app.get('/arudhas/names', async () => ARUDHA_NAMES);
   app.post('/arudhas', async (req, reply) => {
