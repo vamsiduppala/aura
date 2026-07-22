@@ -2,10 +2,11 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from '../App';
+import { useAura } from '../store/useAura';
 
 // Integration smoke test: mounts the real app (real engine, real chart math) and drives
 // the whole flow, catching runtime crashes in any screen that a build won't surface.
-beforeEach(() => localStorage.clear());
+beforeEach(() => { localStorage.clear(); useAura.getState().reset(); });
 
 describe('App smoke — the full flow renders without crashing', () => {
   it('onboarding → audit → today → forecast → mentor → blueprint', async () => {
