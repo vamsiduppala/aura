@@ -16,7 +16,7 @@ import {
   generateReading, generateExpandedReading, generateTodayLine, generateRemedyShort,
 } from './synthesis/reading.js';
 import { buildForecast, buildCustomForecast, type ForecastResult } from './synthesis/forecast.js';
-import { buildBlueprint, type BlueprintRow } from './synthesis/blueprint.js';
+import { buildBlueprint, standingStrength, type BlueprintRow } from './synthesis/blueprint.js';
 import { detectYogas, type YogaResult } from './chart/yogas.js';
 import { buildRetrospective, type RetroItem, type RetrospectiveOptions } from './synthesis/retrospective.js';
 import { answerMentorQuery, type MentorQuery, type MentorAnswer } from './mentor/query.js';
@@ -28,6 +28,8 @@ export interface DailyBundle {
   reading: Reading;
   todayLine: string;
   remedyShort: string;
+  /** The user's real standing strength to lean on (a born gift), closing the reading. */
+  edge: { name: string; note: string };
 }
 
 export interface AuraOptions {
@@ -66,6 +68,7 @@ export class Aura {
       reading: generateReading(input, iso, seed, opts.goalArea ? { goalArea: opts.goalArea } : {}),
       todayLine: generateTodayLine(input, iso, seed),
       remedyShort: generateRemedyShort(input, iso, seed),
+      edge: standingStrength(chart),
     };
   }
 

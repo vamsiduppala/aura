@@ -42,7 +42,7 @@ export function App() {
     body = <Today input={daily.input} now={now} todayLine={daily.todayLine} remedyShort={daily.remedyShort}
       onOpenReading={s.openReading} onCheckin={() => s.go('checkin')} />;
   } else if (screen === 'reading') {
-    body = <Reading reading={daily.reading} now={now} onBack={() => s.go('today')} />;
+    body = <Reading reading={daily.reading} edge={daily.edge} now={now} onBack={() => s.go('today')} />;
   } else if (screen === 'checkin') {
     body = <CheckinScreen major={daily.input.majorEnergy} passing={daily.input.passingEnergy}
       onDone={(c) => { s.setCheckin(c); s.go('reading'); }}

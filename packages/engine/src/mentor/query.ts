@@ -12,8 +12,7 @@ import { CONTENT } from '../content/templates.js';
 import { computeReadingInput } from '../engine.js';
 import { buildRetrospective } from '../synthesis/retrospective.js';
 import { buildForecast } from '../synthesis/forecast.js';
-import { detectYogas } from '../chart/yogas.js';
-import { buildBlueprint } from '../synthesis/blueprint.js';
+import { standingStrength } from '../synthesis/blueprint.js';
 import type { Ephemeris } from '../astro/ephemeris.js';
 
 export type Timeframe = 'past' | 'now' | 'future';
@@ -52,14 +51,6 @@ export interface MentorAnswer {
   transitNote?: string;
   /** The user's real standing strength to lean on — a born gift or driving energy. */
   strength: { name: string; note: string };
-}
-
-/** The user's best strength to offer as the way out (a born gift, else their driver). */
-function standingStrength(chart: Chart): { name: string; note: string } {
-  const yogas = detectYogas(chart);
-  if (yogas.length > 0) return { name: yogas[0]!.name, note: yogas[0]!.blurb };
-  const driver = buildBlueprint(chart).find((r) => r.role === 'Driven by') ?? buildBlueprint(chart)[0]!;
-  return { name: ENERGY_META[driver.energy].label, note: driver.desc };
 }
 
 function heatBand(value: number, all: number[]): 'high' | 'medium' | 'low' {

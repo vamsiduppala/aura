@@ -17,7 +17,9 @@ function Sect({ color, title, text }: { color: string; title: string; text: stri
   );
 }
 
-export function Reading({ reading, now, onBack }: { reading: Reading; now: Date; onBack: () => void }) {
+export function Reading({ reading, edge, now, onBack }: {
+  reading: Reading; edge?: { name: string; note: string }; now: Date; onBack: () => void;
+}) {
   const [done, setDone] = useState(false);
   const major = reading.energy;
   const passing = reading.passingEnergy ?? reading.energy;
@@ -50,6 +52,13 @@ export function Reading({ reading, now, onBack }: { reading: Reading; now: Date;
         </div>
 
         {reading.blendNote ? <div className="blend-note">{reading.blendNote}</div> : null}
+
+        {edge ? (
+          <div className="edge-note">
+            <div className="label" style={{ marginBottom: 6 }}>Your edge to break the loop</div>
+            <p><b>{edge.name}.</b> {edge.note}</p>
+          </div>
+        ) : null}
       </div>
     </>
   );

@@ -52,7 +52,7 @@ export {
 export {
   buildForecast, buildCustomForecast, type ForecastResult, FORECAST_GLOSS,
 } from './synthesis/forecast.js';
-export { buildBlueprint, natalProminence, type BlueprintRow } from './synthesis/blueprint.js';
+export { buildBlueprint, natalProminence, standingStrength, type BlueprintRow } from './synthesis/blueprint.js';
 export {
   buildRetrospective, type RetroItem, type RetrospectiveOptions,
 } from './synthesis/retrospective.js';

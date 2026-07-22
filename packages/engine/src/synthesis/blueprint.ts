@@ -6,8 +6,9 @@
 
 import type { Chart, Energy, Graha, House } from '../types.js';
 import { DEFAULT_CONFIG } from '../types.js';
-import { GRAHAS, GRAHA_TO_ENERGY, SIGN_LORD } from '../constants.js';
+import { GRAHAS, GRAHA_TO_ENERGY, SIGN_LORD, ENERGY_META } from '../constants.js';
 import { cellStatic } from '../lattice/compute.js';
+import { detectYogas } from '../chart/yogas.js';
 
 /** One-line identity descriptions per energy (mockup lines where given). */
 const BLUEPRINT_DESC: Record<Energy, string> = {
@@ -78,6 +79,16 @@ export function buildBlueprint(chart: Chart): BlueprintRow[] {
   rows.push(take(guide, 'Guided by'));
 
   return rows;
+}
+
+/** The user's best standing strength to offer as the way out — their top born gift,
+ *  else their driving blueprint energy. Shared by the reading, the mentor, and the app. */
+export function standingStrength(chart: Chart): { name: string; note: string } {
+  const yogas = detectYogas(chart);
+  if (yogas.length > 0) return { name: yogas[0]!.name, note: yogas[0]!.blurb };
+  const rows = buildBlueprint(chart);
+  const driver = rows.find((r) => r.role === 'Driven by') ?? rows[0]!;
+  return { name: ENERGY_META[driver.energy].label, note: driver.desc };
 }
 
 export { BLUEPRINT_DESC };
