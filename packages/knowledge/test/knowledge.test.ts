@@ -12,6 +12,7 @@ import {
   arudhaOf, allArudhas,
   vargaSign,
   bhavaLagna, horaLagna, ghatiLagna, sreeLagna,
+  sunUpagrahas, partLords, upagrahaFraction,
   type Graha,
 } from '../src/index.js';
 
@@ -181,6 +182,27 @@ describe('divisional charts (Ch 6) — verified against the book’s worked exam
   });
   it('D-60 Shashtyamsa', () => {
     expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
+  });
+});
+
+describe('upagrahas (Ch 4) — verified against the book’s worked examples', () => {
+  it('Sun-based upagrahas from the Sun’s longitude (Example 6: Sun 9°36′ Sg)', () => {
+    const u = sunUpagrahas(240 + 9 + 36 / 60); // 249.6°
+    expect(near(u.dhuma, 0 + 22 + 56 / 60)).toBe(true);      // 22°56' Aries
+    expect(near(u.vyatipaata, 330 + 7 + 4 / 60)).toBe(true); // 7°4' Pisces
+    expect(near(u.parivesha, 150 + 7 + 4 / 60)).toBe(true);  // 7°4' Virgo
+    expect(near(u.indrachaapa, 180 + 22 + 56 / 60)).toBe(true); // 22°56' Libra
+    expect(near(u.upaketu, 210 + 9 + 36 / 60)).toBe(true);   // 9°36' Scorpio (= Sun − 30)
+  });
+  it('day/night part-lords with the lord-less slot after Saturn', () => {
+    // Thursday (weekday 4) daytime: Jup, Ven, Sat, —, Sun, Moon, Mars, Merc.
+    expect(partLords(4, true)).toEqual(['jupiter', 'venus', 'saturn', null, 'sun', 'moon', 'mars', 'mercury']);
+    // Thursday night: 5th from Jupiter is Moon → Moon, Mars, Merc, Jup, Ven, Sat, —, Sun.
+    expect(partLords(4, false)).toEqual(['moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', null, 'sun']);
+  });
+  it('Yamaghantaka rises at the middle of Jupiter’s part (Thu night → 11:15pm of a 6pm–6am night)', () => {
+    const frac = upagrahaFraction(4, false, 'yamaghantaka'); // Jupiter is the 4th night part
+    expect(frac).toBeCloseTo(3.5 / 8, 6); // (index 3 + 0.5)/8 → 5.25h into a 12h night = 11:15pm
   });
 });
 

@@ -39,6 +39,10 @@ export {
   bhavaLagna, horaLagna, ghatiLagna, sreeLagna, specialLagnas,
   SPECIAL_LAGNA_USE, type SpecialLagnas,
 } from './data/lagnas.js';
+export {
+  sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART, UPAGRAHA_NOTES,
+  type SunUpagrahas,
+} from './data/upagrahas.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

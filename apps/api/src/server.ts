@@ -16,6 +16,7 @@ import {
   arudhaTable, ARUDHA_NAMES,
   vargaSign, allVargas, VARGA_DIVISORS,
   specialLagnas, SPECIAL_LAGNA_USE,
+  sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -91,6 +92,23 @@ export function buildServer() {
     const q = req.query as { longitude?: string };
     if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
     return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+
+  // Upagrahas (Ch 4). Sun-based longitudes + time-based part-lords / rising fraction.
+  app.get('/upagrahas/sun', async (req, reply) => {
+    const q = req.query as { sunLong?: string };
+    if (q.sunLong == null) return reply.code(400).send({ error: 'sunLong (0-360) is required' });
+    return sunUpagrahas(Number(q.sunLong));
+  });
+  app.get('/upagrahas/parts', async (req, reply) => {
+    const q = req.query as { weekday?: string; day?: string };
+    if (q.weekday == null) return reply.code(400).send({ error: 'weekday (0=Sun..6=Sat) is required; day=true|false' });
+    return { weekday: Number(q.weekday), isDay: q.day !== 'false', parts: partLords(Number(q.weekday), q.day !== 'false') };
+  });
+  app.get('/upagrahas/fraction', async (req, reply) => {
+    const q = req.query as { weekday?: string; day?: string; name?: string };
+    if (q.weekday == null || !q.name) return reply.code(400).send({ error: `weekday and name required; name one of ${Object.keys(UPAGRAHA_PART).join(',')}` });
+    return { name: q.name, fraction: upagrahaFraction(Number(q.weekday), q.day !== 'false', q.name) };
   });
 
   // Special lagnas (Ch 5) — Bhava/Hora/Ghati (from sunrise) + Sree (from Moon fraction).

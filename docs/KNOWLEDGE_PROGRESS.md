@@ -23,7 +23,11 @@ resuming session can pick up exactly where it left off.
       in `interpret.ts` (resolves any placement to exalted/debil/MT/own/friend/neutral/enemy);
       relationships 3.4 (natural Table 7 + temporary + compound) → `data/relationships.ts`.
       API: `/dignities`, `/classify?graha=&sign=`, and `/interpret` now auto-derives dignity.
-- [ ] Ch 4 Upagrahas (1920–2223): Sun-based + other upagrahas
+- [x] Ch 4 Upagrahas (1920–2223): 5 Sun-based (Dhuma/Vyatipaata/Parivesha/Indrachaapa/
+      Upaketu — full longitude formulas) + 6 time-based (Kaala/Mrityu/Arthaprahaara/
+      Yamaghantaka/Gulika/Maandi — day/night part-lord table + rising fraction; caller finds
+      the rising lagna) → `data/upagrahas.ts`. Verified vs Example 6 + the Yamaghantaka
+      11:15pm case. API: /upagrahas/sun, /upagrahas/parts, /upagrahas/fraction.
 - [x] Ch 5 Special Lagnas (2224–2397): Bhava/Hora/Ghati (from Sun's sunrise longitude) +
       Sree lagna (Moon's nakshatra fraction) → `data/lagnas.ts`, verified against the book's
       worked examples (BL 10°17'Pi, HL 17°17'Aq, GL 21°47'Vi, SL 18°47'Pi). API: /lagnas/special
