@@ -17,6 +17,7 @@ import {
 } from './synthesis/reading.js';
 import { buildForecast, buildCustomForecast, type ForecastResult } from './synthesis/forecast.js';
 import { buildBlueprint, type BlueprintRow } from './synthesis/blueprint.js';
+import { buildRetrospective, type RetroItem, type RetrospectiveOptions } from './synthesis/retrospective.js';
 
 const isoDay = (d: Date): string => d.toISOString().slice(0, 10);
 
@@ -90,6 +91,11 @@ export class Aura {
   /** The user's standing "blueprint" energies. */
   blueprint(chart: Chart): BlueprintRow[] {
     return buildBlueprint(chart);
+  }
+
+  /** The "Prove It" retrospective — recent past shifts, stated in past tense. */
+  retrospective(chart: Chart, now: Date, opts: RetrospectiveOptions = {}): RetroItem[] {
+    return buildRetrospective(chart, now, this.ephem, opts);
   }
 
   /** Ashtakavarga (favourable-sign map) for the chart. */

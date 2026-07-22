@@ -52,6 +52,9 @@ export {
   buildForecast, buildCustomForecast, type ForecastResult, FORECAST_GLOSS,
 } from './synthesis/forecast.js';
 export { buildBlueprint, natalProminence, type BlueprintRow } from './synthesis/blueprint.js';
+export {
+  buildRetrospective, type RetroItem, type RetrospectiveOptions,
+} from './synthesis/retrospective.js';
 
 // Content (Tier 6)
 export { CONTENT, type EnergyContent } from './content/templates.js';

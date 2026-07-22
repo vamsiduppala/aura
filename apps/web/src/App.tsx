@@ -4,6 +4,7 @@ import {
   type BirthData, type Chart, type Checkin, type DailyBundle, type LifeArea,
 } from '@aura/engine';
 import { Onboarding } from './screens/Onboarding';
+import { Audit } from './screens/Audit';
 import { Today } from './screens/Today';
 import { Reading } from './screens/Reading';
 import { Checkin as CheckinScreen } from './screens/Checkin';
@@ -43,14 +44,15 @@ export function App() {
 
   const onComplete = (b: BirthData, area: LifeArea, name: string) => {
     if (detectCrisis(name)) { setScreen('support'); return; }
-    setError(null); setGoalArea(area); setGoalName(name); setBirth(b); setScreen('today');
+    // Prove It: show the retrospective audit before Today (SPEC pivot §1).
+    setError(null); setGoalArea(area); setGoalName(name); setBirth(b); setScreen('audit');
     saveProfile({ birth: b, goalArea: area, goalName: name });
   };
   const onDelete = () => { clearAll(); setReads({ count: 0, lastDay: '' }); setBirth(null); setCheckin(undefined); setError(null); setScreen('onboarding'); };
   const openReading = () => { setReads((r) => bumpReads(r)); setScreen('reading'); };
   const go = (s: Screen) => setScreen(s);
 
-  const inApp = !!chart && screen !== 'onboarding' && screen !== 'support';
+  const inApp = !!chart && screen !== 'onboarding' && screen !== 'support' && screen !== 'audit';
   const showBottomNav = inApp && WIDE.includes(screen);
   const narrow = !WIDE.includes(screen);
 
@@ -69,6 +71,8 @@ export function App() {
     );
   } else if (!chart || !daily) {
     body = <Onboarding onComplete={onComplete} />;
+  } else if (screen === 'audit') {
+    body = <Audit aura={aura} chart={chart} now={now} goalArea={goalArea} onContinue={() => setScreen('today')} />;
   } else if (screen === 'today') {
     body = <Today input={daily.input} now={now} todayLine={daily.todayLine} remedyShort={daily.remedyShort}
       onOpenReading={openReading} onCheckin={() => setScreen('checkin')} />;
