@@ -33,6 +33,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'You carry natural authority today. Take the visible role; your clarity gives other people something to line up behind.',
     ],
     trap: [
+      'Right now you’re performing for a reaction instead of doing the work — clocking who noticed, letting one person’s silence weigh more than it should. It’s the loop this energy makes; your worth isn’t on loan from the room.',
       'You start needing the applause. Attention isn’t the same as worth — don’t perform just to be validated.',
       'Pride wants to make this about being right instead of being useful. Ego is loud today; let it advise, not decide.',
     ],
@@ -66,6 +67,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'You feel the room before you read it. Trust that radar today — it’s picking up something real.',
     ],
     trap: [
+      'Right now you’re reading a neutral message as a rejection and building a whole story on it — then reacting to the story, not the fact. The feeling is real; the conclusion is the trap this tide makes.',
       'You treat every feeling as a fact. Moods swing, and you’re tempted to make a big call on a wave.',
       'A passing low convinces you it’s the whole truth. It’s weather, not climate — don’t sign anything to it.',
     ],
@@ -100,6 +102,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'You’ve got the energy to break a stalemate. One decisive action clears what a week of thinking couldn’t.',
     ],
     trap: [
+      'Right now you’re rehearsing the sharp reply in your head instead of stating the boundary once, plainly. The heat wants a fight; the situation just needs a sentence. That’s the loop — spend the fire on the task, not the person.',
       'The same heat leaks out as friction — a sharp reply, an impatient move. Speed becomes recklessness if you don’t aim it.',
       'You mistake urgency for importance and pick a fight that costs more than it wins.',
     ],
@@ -131,6 +134,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'You can find the words today. Say the thing, write the message, make the case — it lands.',
     ],
     trap: [
+      'Right now you’re overthinking the message instead of just sending the honest version — twenty drafts, no send. The clever objection keeps beating the plain right answer. It’s a loop this energy makes, not the truth.',
       'The same speed becomes spin: twenty tabs, no decision. Cleverness argues you out of the obvious.',
       'Overthinking dresses up as diligence. You’re not analysing — you’re looping.',
     ],
@@ -162,6 +166,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'The pressure eases and momentum returns. This is the payoff stretch — don’t sleep on it.',
     ],
     trap: [
+      'Right now you’re saying yes to everything because it all looks good — and finishing none of it. Optimism is quietly turning into over-commitment; that’s the loop this energy makes, not the opportunity itself.',
       'Good luck makes you say yes to everything and finish nothing. What you overcommit to now, you pay for later.',
       'Abundance feels endless, so you get sloppy with the details. Growth without a container just leaks.',
     ],
@@ -193,6 +198,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'You draw people in without trying. Use it to connect, create, and make something feel good on purpose.',
     ],
     trap: [
+      'Right now you’re smoothing it over instead of saying the true thing — keeping the peace by quietly abandoning your own position, and you’ll resent it later. That’s the loop this energy makes; the way out is one honest sentence.',
       'You smooth things over instead of solving them. Keeping the peace becomes avoiding the truth.',
       'Comfort tips into indulgence — one more, just this once, on repeat. Pleasure quietly runs the day.',
     ],
@@ -224,6 +230,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'This is the season that builds something real. Discipline now becomes the foundation everything later stands on.',
     ],
     trap: [
+      'Right now you’re isolating because you’ve decided no one gets the pressure you’re under — carrying it all alone as if that’s strength. It isn’t; it’s the trap this heaviness sets. The load is real; the solitude is optional.',
       'The weight convinces you it’s permanent, and you start to isolate. The heaviness is real; the story that it’ll never lift is not.',
       'You mistake exhaustion for failure and push harder instead of resting. Grinding on empty isn’t discipline.',
     ],
@@ -255,6 +262,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'The restlessness can move mountains aimed at one target. Pointed, it’s the most powerful energy you’ve got.',
     ],
     trap: [
+      'Right now you’re measuring yourself against someone’s highlight reel and calling the panic “ambition.” You’re not behind — you’re running their race in your head. That’s the loop this hunger makes; pick your own one thing.',
       'You feel behind and chase the next shiny thing. The anxiety is loud, but it’s a story, not a fact — you’re being pulled by a feeling, not the facts.',
       'The hunger says “more, faster” about everything at once, so nothing gets finished. Craving pretends to be ambition.',
     ],
@@ -286,6 +294,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'This is a rare stretch for insight and letting go — endings that make room, and a quiet that’s actually peace.',
     ],
     trap: [
+      'Right now you’re calling avoidance “detachment” — quietly checking out of something that still matters and telling yourself you’re above it. Releasing is healthy; disappearing is the trap this energy sets.',
       'Detachment tips into disappearing. Letting go of a thing becomes checking out of everything.',
       'You dismiss what still matters as “not important” to avoid the effort. Numbness isn’t the same as peace.',
     ],
