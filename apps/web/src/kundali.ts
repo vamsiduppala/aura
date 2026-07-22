@@ -6,7 +6,7 @@
 import type { Chart, Graha } from '@aura/engine';
 import { SIGN_LORD } from '@aura/engine';
 import {
-  interpretPlacement, interpretLagnaLord, classifyDignity, getRasi, getBhava,
+  interpretPlacement, interpretLagnaLord, classifyDignity, getRasi, getBhava, charaKarakas,
   type Dignity,
 } from '@aura/knowledge';
 
@@ -35,8 +35,12 @@ export interface Kundali {
   lagnaLord: Graha;
   lagnaLordStrength: number; // 0..100 %
   lagnaLordText: string;
+  atmakaraka: Graha;       // Jaimini AK — the soul's core planet
+  darakaraka: Graha;       // Jaimini DK — the planet describing the spouse
   rows: KundaliRow[]; // ordered by house asc, then classical order (co-tenants sit together)
 }
+
+const KARAKA_BODIES: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu'];
 
 /** A human dignity chip label, or '' when there's nothing notable to flag. */
 export function dignityChip(d: Dignity): string {
@@ -74,6 +78,9 @@ export function buildKundali(chart: Chart): Kundali {
     })
     .sort((a, b) => a.house - b.house || ORDER.indexOf(a.graha) - ORDER.indexOf(b.graha));
 
+  const ck = charaKarakas(Object.fromEntries(KARAKA_BODIES.map((g) => [g, chart.planets[g].siderealLong])));
+  const karaka = (code: string): Graha => ck.find((k) => k.code === code)!.graha;
+
   return {
     lagnaSign: chart.lagnaSign,
     lagnaSignName: getRasi(chart.lagnaSign).english,
@@ -81,6 +88,8 @@ export function buildKundali(chart: Chart): Kundali {
     lagnaLord,
     lagnaLordStrength: pct(lagnaLord),
     lagnaLordText,
+    atmakaraka: karaka('AK'),
+    darakaraka: karaka('DK'),
     rows,
   };
 }

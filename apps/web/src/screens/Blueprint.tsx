@@ -53,6 +53,14 @@ export function Blueprint({ aura, chart }: { aura: Aura; chart: Chart; goalName:
           <p className="chart-text" style={{ marginTop: 6 }}>You meet the world with a {k.lagnaSignNote} quality — it’s the doorway everyone enters you through.</p>
         </div>
 
+        <div className="clock-row" style={{ borderTop: 'none', paddingTop: 0 }}>
+          <span className="clock-dot" style={{ background: grahaColor(k.atmakaraka) }} />
+          <div className="clock-txt">
+            <b>Soul planet</b> (Atmakaraka) — <span style={{ color: grahaColor(k.atmakaraka) }}>{grahaLabel(k.atmakaraka)}</span>, your life’s core lesson.
+            {' '}<b style={{ marginLeft: 6 }}>Partner planet</b> (Darakaraka) — <span style={{ color: grahaColor(k.darakaraka) }}>{grahaLabel(k.darakaraka)}</span>.
+          </div>
+        </div>
+
         {yogas.length > 0 ? (
           <div style={{ marginTop: 20 }}>
             <div className="label" style={{ marginBottom: 12 }}>Born gifts · rare in your chart</div>
