@@ -102,6 +102,9 @@ export {
 export {
   MUDDA_ORDER, muddaDays, muddaDasa, type MuddaSpan, type MuddaResult,
 } from './data/annualdasha.js';
+export {
+  sudarsanaDasa, sudarsanaAllRefs, type SudarsanaDasa, type SudarsanaAllRefs,
+} from './data/sudarsana.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

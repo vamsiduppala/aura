@@ -130,7 +130,10 @@ resuming session can pick up exactly where it left off.
       the Moon-nakshatra lord + completed years) → `data/annualdasha.ts` `muddaDasa`,
       verified vs Example 122 (Rahu first, 42.66-day balance). API: /dasha/mudda.
       TODO: Patyayini dasa (patyamsa-based), Varsha Narayana
-- [ ] Ch 31 Sudarsana Chakra Dasa (18099–18366)
+- [x] Ch 31 Sudarsana Chakra Dasa (18099–18366): one house per solar year, cycling every 12,
+      judged from all three references (lagna/Moon/Sun); 12 one-month antardasas from the dasa
+      sign → `data/sudarsana.ts`, verified vs 45th-year (9th house) & Example 126 (18th → 6th
+      → Scorpio). API: /dasha/sudarsana, /dasha/sudarsana/all. **Part 4 Tajaka COMPLETE.**
 
 ## Part 5 — Special Topics
 - [ ] Ch 32 Birthtime Error (18385–19046)

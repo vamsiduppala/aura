@@ -25,7 +25,7 @@ import {
   taraOf, specialNakshatra, nakshatraAspectsFrom,
   muntha, harshaBala, saham, computeSahams,
   ithasala, ishkavala, induvara, fasterPlanet,
-  muddaDasa, muddaDays,
+  muddaDasa, muddaDays, sudarsanaDasa, sudarsanaAllRefs,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -221,6 +221,24 @@ describe('Narayana dasa (Ch 18) — verified against the book’s Examples 63–
     const a = narayanaAntardashas(1, 5); // start Ta (even sign) → backward, 5 months each
     expect(a.map((x) => x.rasi)).toEqual([1, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
     expect(a[0]!.months).toBe(5);
+  });
+});
+
+describe('Sudarsana Chakra dasa (Ch 31) — verified against the book’s examples', () => {
+  it('45th year → 9th house; from Pisces lagna → Scorpio', () => {
+    const d = sudarsanaDasa(11, 45); // Pisces(11) lagna, 45th year
+    expect(d.house).toBe(9);
+    expect(d.dasaSign).toBe(7); // Scorpio
+    expect(d.antardashas[0]).toEqual({ sign: 7, months: 1 });   // Sc
+    expect(d.antardashas[1]!.sign).toBe(8);                     // Sg (zodiacal)
+  });
+  it('Example 126: 18th year → 6th house; from Gemini → Scorpio', () => {
+    expect(sudarsanaDasa(2, 18).house).toBe(6);
+    expect(sudarsanaDasa(2, 18).dasaSign).toBe(7); // Scorpio
+  });
+  it('all three references at once (lagna Pi, Moon Aq, Sun Cn; 9th house)', () => {
+    const a = sudarsanaAllRefs(11, 10, 3, 45); // Pi/Aq/Cn, 45th year → 9th house
+    expect([a.lagna, a.moon, a.sun]).toEqual([7, 6, 11]); // Sc, Li, Pi
   });
 });
 

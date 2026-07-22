@@ -31,7 +31,7 @@ import {
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
   ithasala, ishkavala, induvara, TAJAKA_YOGAS,
-  muddaDasa,
+  muddaDasa, sudarsanaDasa, sudarsanaAllRefs,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -216,6 +216,18 @@ export function buildServer() {
       return reply.code(400).send({ error: `ctx must include longitudes for: ${need.join(', ')}`, formulas: SAHAM_FORMULAS });
     }
     return computeSahams(b.ctx, b.day !== false);
+  });
+
+  // Sudarsana Chakra dasa (Ch 31) — one house per solar year, from lagna/Moon/Sun.
+  app.get('/dasha/sudarsana', async (req, reply) => {
+    const q = req.query as { refSign?: string; year?: string };
+    if (q.refSign == null || q.year == null) return reply.code(400).send({ error: 'refSign (0-11) and year (year of life) required' });
+    return sudarsanaDasa(Number(q.refSign), Number(q.year));
+  });
+  app.get('/dasha/sudarsana/all', async (req, reply) => {
+    const q = req.query as { lagna?: string; moon?: string; sun?: string; year?: string };
+    if (q.lagna == null || q.moon == null || q.sun == null || q.year == null) return reply.code(400).send({ error: 'lagna, moon, sun (0-11) and year required' });
+    return sudarsanaAllRefs(Number(q.lagna), Number(q.moon), Number(q.sun), Number(q.year));
   });
 
   // Mudda / Varsha Vimsottari dasa (Ch 30) — Vimsottari compressed to the solar-return year.
