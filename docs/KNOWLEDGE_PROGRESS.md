@@ -13,8 +13,11 @@ resuming session can pick up exactly where it left off.
 ---
 
 ## Part 1 — Chart Analysis
-- [~] Ch 1 Basic Concepts (335–1313): nakshatras (Table 2) → `data/nakshatras.ts` DONE. TODO:
-      chakras, vargas overview, solar/lunar calendar, nitya-yogas, karanas, hora, panchanga, ayanamsa
+- [~] Ch 1 Basic Concepts (335–1313): nakshatras (Table 2) → `data/nakshatras.ts`;
+      **panchanga** — tithi (30, shukla/krishna), nitya-yoga (27, Table 5), karana (11,
+      fixed+movable), hora (Chaldean planetary hour) → `data/panchanga.ts`, verified vs the
+      book (nitya-yoga Ganda; Wed-16th hora → Moon). API: /panchanga, /hora.
+      TODO: chakras, solar/lunar calendar detail, ayanamsa background
 - [x] Ch 2 Rasis (1315–1484): all 12 signs (lord, element, modality, gender, guna, dosha, direction,
       varna, body-part, indications) → `data/rasis.ts`
 - [x] Ch 3 Planets (1485–1919): characteristics 3.2 (nature, governance, cabinet, deity, gender,

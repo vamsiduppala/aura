@@ -14,6 +14,7 @@ import {
   bhavaLagna, horaLagna, ghatiLagna, sreeLagna,
   sunUpagrahas, partLords, upagrahaFraction,
   ashtakavarga, bhinnashtakavarga, AV_PLANETS,
+  tithiOf, nityaYoga, karanaOf, horaLord,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -183,6 +184,29 @@ describe('divisional charts (Ch 6) — verified against the book’s worked exam
   });
   it('D-60 Shashtyamsa', () => {
     expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
+  });
+});
+
+describe('panchanga (Ch 1) — verified against the book’s worked examples', () => {
+  it('nitya-yoga: Sun 293°50′, Moon 197°20′ → Ganda (10th)', () => {
+    const y = nityaYoga(270 + 23 + 50 / 60, 180 + 17 + 20 / 60);
+    expect(y.index).toBe(10);
+    expect(y.name).toBe('Ganda');
+  });
+  it('hora: the 16th hora on a Wednesday is ruled by the Moon', () => {
+    expect(horaLord(3, 16)).toBe('moon'); // Wed = weekday 3
+    expect(horaLord(3, 1)).toBe('mercury'); // first hora = weekday lord
+  });
+  it('tithi: elongation in 12° steps, split into shukla/krishna pakshas', () => {
+    expect(tithiOf(0, 0).index).toBe(1);           // new moon → Shukla Pratipada
+    expect(tithiOf(0, 175).name).toBe('Purnima');  // 15th tithi (elongation just under 180°)
+    const k = tithiOf(0, 12 * 16 + 1);             // 17th tithi
+    expect(k.paksha).toBe('krishna');
+    expect(k.name).toBe('Krishna Dwitiya');
+  });
+  it('karana: fixed Kimstughna at the first half-tithi, movable ones repeat', () => {
+    expect(karanaOf(0, 1).name).toBe('Kimstughna'); // slot 0
+    expect(karanaOf(0, 7).name).toBe('Bava');       // slot 1
   });
 });
 

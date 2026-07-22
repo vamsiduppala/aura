@@ -18,6 +18,7 @@ import {
   specialLagnas, SPECIAL_LAGNA_USE,
   sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART,
   ashtakavarga, type RefSigns,
+  panchanga, horaLord,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -93,6 +94,18 @@ export function buildServer() {
     const q = req.query as { longitude?: string };
     if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
     return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+
+  // Panchanga (Ch 1). Tithi + nitya-yoga + karana from Sun/Moon longitudes; hora lord.
+  app.get('/panchanga', async (req, reply) => {
+    const q = req.query as { sunLong?: string; moonLong?: string };
+    if (q.sunLong == null || q.moonLong == null) return reply.code(400).send({ error: 'sunLong and moonLong (0-360) are required' });
+    return panchanga(Number(q.sunLong), Number(q.moonLong));
+  });
+  app.get('/hora', async (req, reply) => {
+    const q = req.query as { weekday?: string; hora?: string };
+    if (q.weekday == null || q.hora == null) return reply.code(400).send({ error: 'weekday (0=Sun..6=Sat) and hora (1-24) are required' });
+    return { weekday: Number(q.weekday), hora: Number(q.hora), lord: horaLord(Number(q.weekday), Number(q.hora)) };
   });
 
   // Ashtakavarga (Ch 12). POST the 8 reference signs → BAV per planet + SAV (+ 337 total).

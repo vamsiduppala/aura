@@ -47,6 +47,10 @@ export {
   ashtakavarga, bhinnashtakavarga, AV_TABLE, AV_PLANETS,
   type AVPlanet, type AVRef, type RefSigns, type AshtakavargaResult,
 } from './data/ashtakavarga.js';
+export {
+  tithiOf, nityaYoga, karanaOf, horaLord, panchanga,
+  NITYA_YOGAS, WEEKDAY_LORD, type Tithi, type Panchanga,
+} from './data/panchanga.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,
