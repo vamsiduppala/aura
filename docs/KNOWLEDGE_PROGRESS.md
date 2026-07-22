@@ -97,7 +97,11 @@ resuming session can pick up exactly where it left off.
       zodiacal, 9 years each (gestation-based); 12 equal antardasas of 9 months →
       `data/rasidasha.ts` `shoolaDasa`/`shoolaAntardashas`, verified vs Examples 89/91.
       API: /dasha/shoola. (Death-timing; never surfaced as a prediction — ethics §37.)
-- [ ] Ch 24 Kalachakra Dasa (12196–13163)
+- [x] Ch 24 Kalachakra Dasa (12196–13163): nakshatra-pada → 9-rasi run from the savya/
+      apasavya 24-rasi wheel (main+mirrored, +9 per pada), fixed per-rasi years
+      [7,16,9,21,5,9,16,7,10,4,4,10], Deha/Jeeva (reversed for apasavya), paramayush →
+      `data/kalachakra.ts` `kalachakraPada`, verified vs Aswini pada 1 (Ar..Sg, 100y) &
+      pada 2 (Table 43/44). API: /dasha/kalachakra. **Part 2 dasa systems COMPLETE.**
 
 ## Part 3 — Transit Analysis
 - [~] Ch 25 Transits & Natal References (13172–15364): gochara favourable houses per planet from

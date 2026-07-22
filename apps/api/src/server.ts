@@ -26,6 +26,7 @@ import {
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
   narayanaProgression, narayanaDasaLength, narayanaAntardashas,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa,
+  kalachakraPada,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -137,6 +138,11 @@ export function buildServer() {
     const q = req.query as { lagnaSign?: string };
     if (q.lagnaSign == null) return reply.code(400).send({ error: 'lagnaSign (0-11) required' });
     return { progression: drigdasa(Number(q.lagnaSign)) };
+  });
+  app.get('/dasha/kalachakra', async (req, reply) => {
+    const q = req.query as { nak?: string; pada?: string };
+    if (q.nak == null || q.pada == null) return reply.code(400).send({ error: 'nak (0-26) and pada (1-4) required' });
+    return kalachakraPada(Number(q.nak), Number(q.pada));
   });
   app.get('/dasha/niryaana-shoola', async (req, reply) => {
     const q = req.query as { seed?: string };

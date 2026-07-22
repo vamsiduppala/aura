@@ -79,6 +79,10 @@ export {
   shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa, MODALITY_YEARS,
   type Sudasa, type RasiSpan,
 } from './data/rasidasha.js';
+export {
+  kalachakraPada, isSavya, KALACHAKRA_RASI_YEARS, MIRROR_SIGN, SAVYA_24, APASAVYA_24,
+  type KalachakraPada,
+} from './data/kalachakra.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

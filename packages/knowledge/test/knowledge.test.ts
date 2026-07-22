@@ -21,6 +21,7 @@ import {
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
   narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
+  kalachakraPada, isSavya,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -216,6 +217,32 @@ describe('Narayana dasa (Ch 18) — verified against the book’s Examples 63–
     const a = narayanaAntardashas(1, 5); // start Ta (even sign) → backward, 5 months each
     expect(a.map((x) => x.rasi)).toEqual([1, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
     expect(a[0]!.months).toBe(5);
+  });
+});
+
+describe('Kalachakra dasa (Ch 24) — verified against the book’s Aswini padas', () => {
+  it('savya/apasavya group split by nakshatra triple', () => {
+    expect(isSavya(0)).toBe(true);   // Aswini (triple 0)
+    expect(isSavya(3)).toBe(false);  // Rohini (triple 1)
+    expect(isSavya(6)).toBe(true);   // Punarvasu (triple 2)
+  });
+  it('Aswini pada 1: Ar…Sg, Deha Ar / Jeeva Sg, paramayush 100 (Table 44)', () => {
+    const p = kalachakraPada(0, 1);
+    expect(p.group).toBe('savya');
+    expect(p.sequence).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]); // Ar,Ta,Ge,Cn,Le,Vi,Li,Sc,Sg
+    expect(p.deha).toBe(0);   // Aries
+    expect(p.jeeva).toBe(8);  // Sagittarius
+    expect(p.paramayush).toBe(100);
+  });
+  it('Aswini pada 2: the next 9 rasis on the wheel', () => {
+    const p = kalachakraPada(0, 2);
+    expect(p.sequence).toEqual([9, 10, 11, 7, 6, 5, 3, 4, 2]); // Cp,Aq,Pi,Sc,Li,Vi,Cn,Le,Ge
+  });
+  it('apasavya reverses Deha/Jeeva (first = Jeeva, last = Deha)', () => {
+    const p = kalachakraPada(3, 1); // Rohini
+    expect(p.group).toBe('apasavya');
+    expect(p.jeeva).toBe(p.sequence[0]);
+    expect(p.deha).toBe(p.sequence[8]);
   });
 });
 
