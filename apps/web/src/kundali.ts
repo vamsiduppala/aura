@@ -6,7 +6,7 @@
 import type { Chart, Graha } from '@aura/engine';
 import { SIGN_LORD } from '@aura/engine';
 import {
-  interpretPlacement, interpretLagnaLord, classifyDignity, getRasi,
+  interpretPlacement, interpretLagnaLord, classifyDignity, getRasi, getBhava,
   type Dignity,
 } from '@aura/knowledge';
 
@@ -83,4 +83,51 @@ export function buildKundali(chart: Chart): Kundali {
     lagnaLordText,
     rows,
   };
+}
+
+// ── House-centric view: your life read house by house (which energies landed where) ──
+export interface HouseCard {
+  house: number;        // 1..12
+  name: string;         // life area, e.g. "Creativity"
+  sanskrit: string;
+  governs: string;      // what the house shapes (top significations)
+  categories: string[];
+  sign: number;
+  signName: string;
+  lord: Graha;          // ruler of the house
+  lordHouse: number;    // where that ruler sits
+  occupants: KundaliRow[]; // planets in this house, with their situational meaning
+}
+
+export interface ChartByHouse extends Kundali { houses: HouseCard[]; strengths: { graha: Graha; pct: number }[] }
+
+const CLASSICAL: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu', 'ketu'];
+
+/** The full chart organised by house (life area) — the primary Blueprint view. */
+export function buildHouses(chart: Chart): ChartByHouse {
+  const k = buildKundali(chart);
+  const byHouse = new Map<number, KundaliRow[]>();
+  for (const r of k.rows) {
+    const arr = byHouse.get(r.house) ?? [];
+    arr.push(r);
+    byHouse.set(r.house, arr);
+  }
+
+  const houses: HouseCard[] = [];
+  for (let h = 1; h <= 12; h++) {
+    const sign = (chart.lagnaSign + (h - 1)) % 12;
+    const b = getBhava(h);
+    const lord = SIGN_LORD[sign]!;
+    const lordRow = k.rows.find((r) => r.graha === lord);
+    houses.push({
+      house: h, name: b.english, sanskrit: b.sanskrit,
+      governs: b.significations.slice(0, 6).join(', '),
+      categories: b.categories, sign, signName: getRasi(sign).english,
+      lord, lordHouse: lordRow?.house ?? h,
+      occupants: byHouse.get(h) ?? [],
+    });
+  }
+
+  const strengths = CLASSICAL.map((g) => ({ graha: g, pct: Math.round((chart.planets[g].strength ?? 0) * 100) }));
+  return { ...k, houses, strengths };
 }

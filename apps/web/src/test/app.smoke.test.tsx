@@ -34,7 +34,7 @@ describe('App smoke — the full flow renders without crashing', () => {
 
     // Blueprint (+ born gifts)
     await user.click(screen.getAllByRole('button', { name: /^Blueprint$/i })[0]!);
-    await waitFor(() => expect(screen.getByRole('heading', { name: /Your blueprint/i })).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole('heading', { name: /Your chart/i })).toBeInTheDocument());
   }, 20000);
 
   it('a crisis in the goal field routes to support, not a reading', async () => {
