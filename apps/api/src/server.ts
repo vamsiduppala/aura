@@ -29,6 +29,7 @@ import {
   kalachakraPada,
   taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS,
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
+  saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -200,6 +201,20 @@ export function buildServer() {
     return { graha: q.graha, units: harshaBala(q.graha as Graha, Number(q.house), q.exaltedOrOwn === 'true', q.day === 'true') };
   });
   app.get('/tajaka/aspects', async () => ({ aspects: TAJAKA_ASPECTS, deeptamsa: DEEPTAMSA }));
+  // Sahams (28.8): a raw A−B+C point, or all tabled sahams from a context of longitudes.
+  app.get('/tajaka/saham', async (req, reply) => {
+    const q = req.query as { a?: string; b?: string; c?: string; day?: string; same?: string };
+    if (q.a == null || q.b == null || q.c == null) return reply.code(400).send({ error: 'a, b, c (longitudes 0-360) required' });
+    return { point: saham(Number(q.a), Number(q.b), Number(q.c), q.day !== 'false', q.same === 'true') };
+  });
+  app.post('/tajaka/sahams', async (req, reply) => {
+    const b = req.body as { ctx?: SahamContext; day?: boolean };
+    const need = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'lagna', 'lagnaLord'];
+    if (!b?.ctx || need.some((k) => (b.ctx as Record<string, number>)[k] == null)) {
+      return reply.code(400).send({ error: `ctx must include longitudes for: ${need.join(', ')}`, formulas: SAHAM_FORMULAS });
+    }
+    return computeSahams(b.ctx, b.day !== false);
+  });
 
   // Transit taras & special nakshatras (Ch 26) — all counted from the janma nakshatra.
   app.get('/transit/tara', async (req, reply) => {

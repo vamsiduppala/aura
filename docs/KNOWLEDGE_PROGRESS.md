@@ -118,7 +118,9 @@ resuming session can pick up exactly where it left off.
 - [~] Ch 28 Techniques of Tajaka (16621–17264): muntha (progressed lagna 1 rasi/yr), the six
       Tajaka aspects (trine/sextile/square/conjunction/opposition/semi-sextile) + deeptamsa
       orbs, and Harsha Bala (4×5-unit sources) → `data/tajaka.ts`, verified vs Example 119.
-      API: /tajaka/{muntha,harsha,aspects}. TODO: panchavargeeya bala, sahams (28.8)
+      API: /tajaka/{muntha,harsha,aspects}. Sahams (28.8): saham() point calc (A−B+C with
+      day/night + 30° rule) + Table 74 subset (Punya/Vidya/Yasas/Mitra/…) → `data/sahams.ts`,
+      verified vs the artha-saham example. API: /tajaka/saham, /tajaka/sahams. TODO: panchavargeeya bala
 - [ ] Ch 29 Tajaka Yogas (17265–17434)
 - [ ] Ch 30 Annual Dasas (17435–18098)
 - [ ] Ch 31 Sudarsana Chakra Dasa (18099–18366)

@@ -23,7 +23,7 @@ import {
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
   kalachakraPada, isSavya,
   taraOf, specialNakshatra, nakshatraAspectsFrom,
-  muntha, harshaBala,
+  muntha, harshaBala, saham, computeSahams,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -226,6 +226,16 @@ describe('Tajaka techniques (Ch 28) — verified against Example 119', () => {
   it('muntha progresses the lagna 1 rasi/year (Sc lagna, 32nd year → Gemini)', () => {
     expect(muntha(7, 32)).toBe(2);  // Scorpio + 31 → Gemini
     expect(muntha(7, 1)).toBe(7);   // 1st year = lagna itself
+  });
+  it('saham point calc: artha saham example → 212°30′ (2°30′ Sc)', () => {
+    // artha = 2nd house − 2nd lord + Lagna; A=310°50', B=19°10', C=280°50' (same day/night)
+    expect(saham(310 + 50 / 60, 19 + 10 / 60, 280 + 50 / 60, false, true)).toBeCloseTo(212.5, 3);
+  });
+  it('computeSahams resolves Punya first (Yasas depends on it)', () => {
+    const ctx = { sun: 10, moon: 100, mars: 200, mercury: 50, jupiter: 150, venus: 250, saturn: 300, lagna: 50, lagnaLord: 40 };
+    const s = computeSahams(ctx, true);
+    expect(s.punya).toBeCloseTo(saham(ctx.moon, ctx.sun, ctx.lagna, true), 3);   // Moon−Sun+Lagna
+    expect(s.yasas).toBeCloseTo(saham(ctx.jupiter, s.punya!, ctx.lagna, true), 3); // Jupiter−Punya+Lagna
   });
   it('Harsha bala matches the book (Moon 15, Mercury/Venus 10, Jupiter/Saturn 5, Sun/Mars 0)', () => {
     // Example 119: night birth; Moon 3rd, Mercury 2nd, Venus 1st, Jupiter 4th; none exalted/own.

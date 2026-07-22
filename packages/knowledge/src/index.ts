@@ -91,6 +91,10 @@ export {
   muntha, MUNTHA_IN_HOUSE, TAJAKA_ASPECTS, DEEPTAMSA, HARSHA_HOUSE, harshaBala,
   type TajakaAspect,
 } from './data/tajaka.js';
+export {
+  saham, computeSahams, SAHAM_FORMULAS,
+  type SahamToken, type SahamFormula, type SahamContext,
+} from './data/sahams.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,
