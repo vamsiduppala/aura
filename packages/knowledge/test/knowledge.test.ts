@@ -23,6 +23,7 @@ import {
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
   kalachakraPada, isSavya,
   taraOf, specialNakshatra, nakshatraAspectsFrom,
+  muntha, harshaBala,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -218,6 +219,23 @@ describe('Narayana dasa (Ch 18) — verified against the book’s Examples 63–
     const a = narayanaAntardashas(1, 5); // start Ta (even sign) → backward, 5 months each
     expect(a.map((x) => x.rasi)).toEqual([1, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
     expect(a[0]!.months).toBe(5);
+  });
+});
+
+describe('Tajaka techniques (Ch 28) — verified against Example 119', () => {
+  it('muntha progresses the lagna 1 rasi/year (Sc lagna, 32nd year → Gemini)', () => {
+    expect(muntha(7, 32)).toBe(2);  // Scorpio + 31 → Gemini
+    expect(muntha(7, 1)).toBe(7);   // 1st year = lagna itself
+  });
+  it('Harsha bala matches the book (Moon 15, Mercury/Venus 10, Jupiter/Saturn 5, Sun/Mars 0)', () => {
+    // Example 119: night birth; Moon 3rd, Mercury 2nd, Venus 1st, Jupiter 4th; none exalted/own.
+    expect(harshaBala('moon', 3, false, false)).toBe(15);
+    expect(harshaBala('mercury', 2, false, false)).toBe(10);
+    expect(harshaBala('venus', 1, false, false)).toBe(10);
+    expect(harshaBala('jupiter', 4, false, false)).toBe(5);
+    expect(harshaBala('saturn', 10, false, false)).toBe(5); // only the night-feminine +5
+    expect(harshaBala('sun', 2, false, false)).toBe(0);     // masculine, night, non-masculine house
+    expect(harshaBala('mars', 2, false, false)).toBe(0);
   });
 });
 

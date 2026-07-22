@@ -87,6 +87,10 @@ export {
   TARAS, taraOf, SPECIAL_NAKSHATRAS, specialNakshatra,
   NAKSHATRA_ASPECTS, nakshatraAspectsFrom, type Tara, type TaraResult,
 } from './data/taras.js';
+export {
+  muntha, MUNTHA_IN_HOUSE, TAJAKA_ASPECTS, DEEPTAMSA, HARSHA_HOUSE, harshaBala,
+  type TajakaAspect,
+} from './data/tajaka.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

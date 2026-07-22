@@ -28,6 +28,7 @@ import {
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa,
   kalachakraPada,
   taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS,
+  muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -185,6 +186,20 @@ export function buildServer() {
     const combined = combineThreePairs(cats);
     return { pairs: cats, combined, years: LONGEVITY_RANGES[combined] };
   });
+
+  // Tajaka annual-chart techniques (Ch 28) — muntha, harsha bala, the six aspects.
+  app.get('/tajaka/muntha', async (req, reply) => {
+    const q = req.query as { lagnaSign?: string; year?: string };
+    if (q.lagnaSign == null || q.year == null) return reply.code(400).send({ error: 'lagnaSign (0-11) and year (year of life) required' });
+    return { sign: muntha(Number(q.lagnaSign), Number(q.year)), houseMeanings: MUNTHA_IN_HOUSE };
+  });
+  app.get('/tajaka/harsha', async (req, reply) => {
+    const q = req.query as { graha?: string; house?: string; exaltedOrOwn?: string; day?: string };
+    if (!q.graha || q.house == null) return reply.code(400).send({ error: 'graha and house (1-12) required; optional exaltedOrOwn, day' });
+    if (!GRAHAS[q.graha]) return reply.code(404).send({ error: 'unknown graha' });
+    return { graha: q.graha, units: harshaBala(q.graha as Graha, Number(q.house), q.exaltedOrOwn === 'true', q.day === 'true') };
+  });
+  app.get('/tajaka/aspects', async () => ({ aspects: TAJAKA_ASPECTS, deeptamsa: DEEPTAMSA }));
 
   // Transit taras & special nakshatras (Ch 26) — all counted from the janma nakshatra.
   app.get('/transit/tara', async (req, reply) => {

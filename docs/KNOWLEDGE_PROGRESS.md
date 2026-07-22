@@ -113,8 +113,12 @@ resuming session can pick up exactly where it left off.
       latta, body-part tables, sarvatobhadra chakra
 
 ## Part 4 — Tajaka Analysis
-- [ ] Ch 27 Tajaka Chart Basics (16295–16620)
-- [ ] Ch 28 Techniques of Tajaka (16621–17264): muntha, harsha/panchavargeeya bala, sahams
+- [~] Ch 27 Tajaka Chart Basics (16295–16620): annual-chart concept (solar return). Muntha
+      computation lives in Ch 28 module. TODO: exact solar-return time (engine territory)
+- [~] Ch 28 Techniques of Tajaka (16621–17264): muntha (progressed lagna 1 rasi/yr), the six
+      Tajaka aspects (trine/sextile/square/conjunction/opposition/semi-sextile) + deeptamsa
+      orbs, and Harsha Bala (4×5-unit sources) → `data/tajaka.ts`, verified vs Example 119.
+      API: /tajaka/{muntha,harsha,aspects}. TODO: panchavargeeya bala, sahams (28.8)
 - [ ] Ch 29 Tajaka Yogas (17265–17434)
 - [ ] Ch 30 Annual Dasas (17435–18098)
 - [ ] Ch 31 Sudarsana Chakra Dasa (18099–18366)
