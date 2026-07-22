@@ -18,6 +18,7 @@ import {
   dashaBalanceAtBirth, dashaSequence, antardashas, nakshatraLord, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
   marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality,
+  baladiAvastha, jagradiAvastha, deeptadiAvastha,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -187,6 +188,27 @@ describe('divisional charts (Ch 6) — verified against the book’s worked exam
   });
   it('D-60 Shashtyamsa', () => {
     expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
+  });
+});
+
+describe('avasthas (Ch 15) — planetary states, verified against the book’s examples', () => {
+  const at = (sign: number, deg: number) => sign * 30 + deg;
+  it('Baladi (age) from the degree, odd forward / even reversed (Table 35)', () => {
+    expect(baladiAvastha(at(3, 23)).name).toBe('Kumaara'); // 23° Cancer (even)
+    expect(baladiAvastha(at(6, 19)).name).toBe('Vriddha'); // 19° Libra (odd)
+    expect(baladiAvastha(at(8, 14)).name).toBe('Yuva');    // 14° Sagittarius (odd)
+    expect(baladiAvastha(at(11, 27)).name).toBe('Saisava'); // 27° Pisces (even)
+    expect(baladiAvastha(at(8, 14)).weight).toBe(1);        // Yuva → full
+  });
+  it('Jagradi (alertness) from dignity', () => {
+    expect(jagradiAvastha('exalted').name).toBe('Jaagrita');
+    expect(jagradiAvastha('friend').name).toBe('Swapna');
+    expect(jagradiAvastha('debilitated').name).toBe('Sushupta');
+  });
+  it('Deeptadi (mood) dignity part', () => {
+    expect(deeptadiAvastha('exalted').name).toBe('Deepta');
+    expect(deeptadiAvastha('own').name).toBe('Swastha');
+    expect(deeptadiAvastha('enemy').name).toBe('Dukhita');
   });
 });
 

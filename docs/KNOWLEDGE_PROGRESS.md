@@ -65,7 +65,10 @@ resuming session can pick up exactly where it left off.
       8th house (Table 32), three-pairs longevity range (Table 33/34: short/middle/long)
       → `data/longevity.ts`. API: /longevity/marakas, /longevity/estimate. TODO: full
       strength-based Rudra/Maheswara selection (needs chart strengths + chara karakas)
-- [ ] Ch 15 Strength of Planets/Rasis (8657–9318): avasthas, shadbala, co-lord/rasi strength
+- [~] Ch 15 Strength of Planets/Rasis (8657–9318): avasthas — Baladi (age, Table 35,
+      verified), Jagradi (alertness) + Deeptadi (mood, dignity part) → `data/avasthas.ts`.
+      API: /avastha. TODO: shadbala detail (engine has composite), Vimsopaka, co-lord/rasi
+      strength, conjunction-based mood states (Vikala/Khala/Kopita/Lajjita)
 
 ## Part 2 — Dasa Analysis
 - [x] Ch 16 Vimsottari Dasa (9345–9925): 120y, order+years (Table 38), nakshatra lords,

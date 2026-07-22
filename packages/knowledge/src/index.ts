@@ -66,6 +66,10 @@ export {
   pairLongevity, LONGEVITY_RANGES, combineThreePairs, LONGEVITY_NOTES,
   type LifeSpan, type Modality,
 } from './data/longevity.js';
+export {
+  baladiAvastha, jagradiAvastha, deeptadiAvastha, AVASTHA_NOTES,
+  type Baladi, type Jagradi, type Deeptadi,
+} from './data/avasthas.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

@@ -23,8 +23,11 @@ import {
   ashtottariBalanceAtBirth, ashtottariAntardashas,
   marakaLords, MARAKA_HOUSES, signModality, pairLongevity, combineThreePairs, LONGEVITY_RANGES,
   type LifeSpan,
+  baladiAvastha, jagradiAvastha, deeptadiAvastha,
   type Graha, type Placement,
 } from '@aura/knowledge';
+
+type Dignity = Parameters<typeof jagradiAvastha>[0];
 
 export function buildServer() {
   const app = Fastify({ logger: false });
@@ -98,6 +101,18 @@ export function buildServer() {
     const q = req.query as { longitude?: string };
     if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
     return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+
+  // Avasthas (Ch 15). Baladi (age) from longitude; Jagradi/Deeptadi from dignity.
+  app.get('/avastha', async (req, reply) => {
+    const q = req.query as { longitude?: string; dignity?: string };
+    if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required; optional dignity=exalted|own|moolatrikona|friend|neutral|enemy|debilitated' });
+    const out: Record<string, unknown> = { baladi: baladiAvastha(Number(q.longitude)) };
+    if (q.dignity) {
+      out.jagradi = jagradiAvastha(q.dignity as Dignity);
+      out.deeptadi = deeptadiAvastha(q.dignity as Dignity);
+    }
+    return out;
   });
 
   // Longevity (Ch 14). Marakas (killer planets/houses) + the three-pairs range estimate.
