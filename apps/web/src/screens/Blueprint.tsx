@@ -3,6 +3,7 @@ import type { Aura, Chart } from '@aura/engine';
 import { energyColor, grahaColor, grahaLabel } from '../ui';
 import { buildHouses, dignityChip, type HouseCard as HouseCardData } from '../kundali';
 import { loadChartDashas, type DashaSnapshot } from '../services/liveData';
+import { computeYearAhead, type YearAhead } from '../services/yearAhead';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
@@ -68,6 +69,37 @@ export function Blueprint({ aura, chart }: { aura: Aura; chart: Chart; goalName:
         ) : null}
 
         <TimingSystems chart={chart} />
+        <YearAhead aura={aura} chart={chart} />
+      </div>
+    </div>
+  );
+}
+
+// Tajaka "year ahead" — the solar-return chart's muntha + the year's strongest planet + fortune point.
+function YearAhead({ aura, chart }: { aura: Aura; chart: Chart }) {
+  const y = useMemo<YearAhead | null>(() => {
+    try { return computeYearAhead(aura, chart, new Date()); } catch { return null; }
+  }, [aura, chart]);
+  if (!y) return null;
+  return (
+    <div style={{ marginTop: 24 }}>
+      <div className="label" style={{ marginBottom: 6 }}>Your year ahead · {y.year}</div>
+      <div className="bp-meta" style={{ marginBottom: 12 }}>the Tajaka annual chart — cast for the Sun’s return to its birth spot</div>
+      <div className="clock-row">
+        <span className="clock-dot" style={{ background: 'var(--smoke)' }} />
+        <div className="clock-txt">
+          <b>Muntha</b> sits in your {y.munthaHouse}th house ({y.munthaSignName}) — the year leans toward {y.munthaMeaning}.
+        </div>
+      </div>
+      <div className="clock-row">
+        <span className="clock-dot" style={{ background: grahaColor(y.strongestPlanet) }} />
+        <div className="clock-txt">
+          <b>Strongest this year</b> — <span style={{ color: grahaColor(y.strongestPlanet) }}>{grahaLabel(y.strongestPlanet)}</span> (Harsha bala {y.strongestUnits}/20). Lean on it.
+        </div>
+      </div>
+      <div className="clock-row">
+        <span className="clock-dot" style={{ background: 'var(--bloom)' }} />
+        <div className="clock-txt"><b>Fortune point</b> (Punya saham) falls in {y.punyaSahamSign} this year.</div>
       </div>
     </div>
   );
