@@ -20,6 +20,7 @@ import {
   marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
   narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
+  lagnaKendradiDasa, sudasa, drigdasa,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -215,6 +216,21 @@ describe('Narayana dasa (Ch 18) — verified against the book’s Examples 63–
     const a = narayanaAntardashas(1, 5); // start Ta (even sign) → backward, 5 months each
     expect(a.map((x) => x.rasi)).toEqual([1, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
     expect(a[0]!.months).toBe(5);
+  });
+});
+
+describe('rasi dasas Ch 19/20/21 — verified against Examples 76/77/80', () => {
+  it('Lagna Kendradi (Ch 19): quadrant-based, direction by lagna sign parity', () => {
+    expect(lagnaKendradiDasa(2, 2)).toEqual([2, 5, 8, 11, 3, 6, 9, 0, 4, 7, 10, 1]); // Ge seed, Ge lagna (odd → fwd)
+    expect(lagnaKendradiDasa(1, 1)).toEqual([1, 10, 7, 4, 0, 9, 6, 3, 11, 8, 5, 2]); // Ta seed, Ta lagna (even → bwd)
+  });
+  it('Sudasa (Ch 20): Kendradi from Sree Lagna + first-dasa balance', () => {
+    const s = sudasa(9, 12 + 21 / 60); // SL 12°21' Capricorn (Example 77)
+    expect(s.progression).toEqual([9, 6, 3, 0, 8, 5, 2, 11, 7, 4, 1, 10]);
+    expect(s.firstDasaFraction).toBeCloseTo(0.5883, 4);
+  });
+  it('Drigdasa (Ch 21): aspect-based, from the 9th house (Example 80, Libra lagna)', () => {
+    expect(drigdasa(6)).toEqual([2, 5, 8, 11, 3, 1, 10, 7, 4, 0, 9, 6]);
   });
 });
 

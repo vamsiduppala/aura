@@ -74,6 +74,9 @@ export {
   narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
   type RasiMotion, type DasaLengthOpts, type Antardasa,
 } from './data/narayana.js';
+export {
+  kendradiProgression, lagnaKendradiDasa, sudasa, drigdasa, type Sudasa,
+} from './data/rasidasha.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

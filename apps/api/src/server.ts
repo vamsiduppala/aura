@@ -25,6 +25,7 @@ import {
   type LifeSpan,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
   narayanaProgression, narayanaDasaLength, narayanaAntardashas,
+  lagnaKendradiDasa, sudasa, drigdasa,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -119,6 +120,23 @@ export function buildServer() {
     const q = req.query as { start?: string; years?: string };
     if (q.start == null || q.years == null) return reply.code(400).send({ error: 'start (0-11) and years required' });
     return { start: Number(q.start), antardashas: narayanaAntardashas(Number(q.start), Number(q.years)) };
+  });
+
+  // Rasi dasas (Ch 19 Kendradi, Ch 20 Sudasa, Ch 21 Drigdasa) — share Narayana lengths.
+  app.get('/dasha/kendradi', async (req, reply) => {
+    const q = req.query as { seed?: string; lagnaSign?: string; saturn?: string; ketu?: string };
+    if (q.seed == null || q.lagnaSign == null) return reply.code(400).send({ error: 'seed and lagnaSign (0-11) required' });
+    return { progression: lagnaKendradiDasa(Number(q.seed), Number(q.lagnaSign), q.saturn === 'true', q.ketu === 'true') };
+  });
+  app.get('/dasha/sudasa', async (req, reply) => {
+    const q = req.query as { slSign?: string; slDegree?: string };
+    if (q.slSign == null || q.slDegree == null) return reply.code(400).send({ error: 'slSign (0-11) and slDegree (0-30) required' });
+    return sudasa(Number(q.slSign), Number(q.slDegree));
+  });
+  app.get('/dasha/drigdasa', async (req, reply) => {
+    const q = req.query as { lagnaSign?: string };
+    if (q.lagnaSign == null) return reply.code(400).send({ error: 'lagnaSign (0-11) required' });
+    return { progression: drigdasa(Number(q.lagnaSign)) };
   });
 
   // Avasthas (Ch 15). Baladi (age) from longitude; Jagradi/Deeptadi from dignity.
