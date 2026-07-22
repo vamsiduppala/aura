@@ -91,17 +91,19 @@ function TimingSystems({ chart }: { chart: Chart }) {
       </div>
 
       <div className="clock-row">
-        <span className="clock-dot" style={{ background: grahaColor(d.vimshottari.lord) }} />
+        <span className="clock-dot" style={{ background: grahaColor(d.vimshottariNow.lord) }} />
         <div className="clock-txt">
-          <b>Vimshottari</b> — born in <span style={{ color: grahaColor(d.vimshottari.lord) }}>{grahaLabel(d.vimshottari.lord)}</span>’s
-          great period, with {d.vimshottari.yearsLeft.toFixed(1)} years of it left at birth.
+          <b>Vimshottari</b> — right now you’re in <span style={{ color: grahaColor(d.vimshottariNow.lord) }}>{grahaLabel(d.vimshottariNow.lord)}</span>’s
+          great period ({Math.round(d.vimshottariNow.pct)}% through).
+          <span className="clock-birth"> Born in {grahaLabel(d.vimshottari.lord)}’s, with {d.vimshottari.yearsLeft.toFixed(1)} yrs left.</span>
         </div>
       </div>
       <div className="clock-row">
-        <span className="clock-dot" style={{ background: grahaColor(d.ashtottari.lord) }} />
+        <span className="clock-dot" style={{ background: grahaColor(d.ashtottariNow.lord) }} />
         <div className="clock-txt">
-          <b>Ashtottari</b> — the 108-year clock opened in <span style={{ color: grahaColor(d.ashtottari.lord) }}>{grahaLabel(d.ashtottari.lord)}</span>’s
-          period ({d.ashtottari.yearsLeft.toFixed(1)} yrs remaining at birth).
+          <b>Ashtottari</b> (108-yr clock) — currently <span style={{ color: grahaColor(d.ashtottariNow.lord) }}>{grahaLabel(d.ashtottariNow.lord)}</span>’s
+          period ({Math.round(d.ashtottariNow.pct)}% through).
+          <span className="clock-birth"> Opened in {grahaLabel(d.ashtottari.lord)}’s.</span>
         </div>
       </div>
       <div className="clock-row">

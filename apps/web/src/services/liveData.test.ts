@@ -20,4 +20,14 @@ describe('loadChartDashas — falls back to on-device dasha computation', () => 
     expect(snap.narayana).toHaveLength(12);
     expect(snap.narayanaNames).toHaveLength(12);
   });
+
+  it('computes a current dasha period (lord + % through) for each system', async () => {
+    const snap = await loadChartDashas(chart);
+    const grahas = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu', 'ketu'];
+    for (const now of [snap.vimshottariNow, snap.ashtottariNow]) {
+      expect(grahas).toContain(now.lord);
+      expect(now.pct).toBeGreaterThanOrEqual(0);
+      expect(now.pct).toBeLessThanOrEqual(100);
+    }
+  });
 });
