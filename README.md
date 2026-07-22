@@ -5,25 +5,38 @@ shows the user a single planet name, chart, or piece of jargon. The surface is d
 a handful of screens, one honest reading a day, one thing to actually do. The engine underneath
 is deep, deterministic, and tested.
 
-> **Status (2026-07-21):** Engine fully built + tested (**75 unit tests**, typecheck clean).
-> Responsive web app (`apps/web`, no phone frame) with **9 screens** incl. a "Prove It"
-> retrospective onboarding and a **Cosmic Mentor chat**. Native iOS/Android skeletons +
-> a shared design system in `docs/`. Built autonomously across sessions — see `DECISIONS.md`
-> for every choice and `QUESTIONS.md` (all resolved by the owner).
+> **Status:** A real login-gated **local full-stack app**, built autonomously across many
+> sessions. Four parts, all tested + typecheck-clean (**~200 tests**):
+> - **`packages/engine`** — the deterministic Jyotish engine (chart, Vimshottari, 108-lattice,
+>   Navamsa, Shadbala-style strength, Ashtakavarga 337-invariant, yogas, transits, and the
+>   Tajaka **solar-return** chart). *93 tests.*
+> - **`packages/knowledge`** — the **entire book** *Vedic Astrology: An Integrated Approach*
+>   encoded as **34 data + calculation modules** (all 20 vargas, 9 dasha systems, arudhas,
+>   aspects/argalas, ashtakavarga, upagrahas, special lagnas, panchanga, longevity, avasthas,
+>   taras, the full Tajaka suite, muhurta, …) — every computation verified against the book's
+>   worked examples. *89 tests.*
+> - **`apps/api`** — a local Fastify server exposing **~74 routes**: the whole knowledge base
+>   **plus** accounts (register/login, scrypt + tokens) and birth-profile persistence in a
+>   local **SQLite** DB (`node:sqlite`, no native build). *6 tests.*
+> - **`apps/web`** — the responsive web app (`no phone frame`): login/register + guest mode,
+>   9 screens incl. a "Prove It" retrospective onboarding, a **Cosmic Mentor** chat (grounded
+>   via the API), and a **deep chart** (house-by-house kundali, current dasha across systems,
+>   a Tajaka "year ahead"). *10 tests.*
 >
-> **Accuracy:** beyond dashas/108-lattice, the engine computes Navamsa (D9), a Shadbala-style
-> strength, Ashtakavarga (BAV/SAV, 337-invariant verified), and classical Yogas.
-> **Retention pivot:** the retrospective proves the engine on your *past* before predicting;
-> the Trap beat names your specific unconscious loop + the strength to break it; the Mentor
-> chat is an LLM narration layer forced (via function-calling) to read the real engine first.
+> See `docs/PHASE2.md` (login/DB/wiring), `docs/KNOWLEDGE_PROGRESS.md` (the book→backend map),
+> and `DECISIONS.md` / `QUESTIONS.md` for the autonomous build history.
 
-## See it
+## Run it locally
 
 ```bash
-npm install                    # from the repo root (installs all workspaces)
-npm --workspace @aura/web run dev
-# open http://localhost:5173 — enter a birth date/time/place, tap "Read my energy"
+npm install          # from the repo root (installs all workspaces)
+npm run dev          # runs the API (:8787) + the web app (:5173) together
+# open http://localhost:5173 — create an account (or "continue on this device"),
+# enter a birth date/time/place, and get one honest reading a day.
 ```
+
+`npm run dev` starts both processes via `concurrently`. To run them separately use
+`npm run dev:api` and `npm run dev:web`. See `docs/PHASE2.md` for details.
 
 Or just look at `docs/screens/` — every screen, rendered with real engine data:
 onboarding → today (the signature aura orb) → reading → check-in → forecast → expanded → blueprint,

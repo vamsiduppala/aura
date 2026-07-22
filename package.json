@@ -8,14 +8,21 @@
     "apps/*"
   ],
   "scripts": {
-    "test": "npm run test --workspace packages/engine && npm run test --workspace packages/knowledge && npm run test --workspace apps/web",
+    "dev": "concurrently -n api,web -c blue,magenta \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev --workspace apps/api",
+    "dev:web": "npm run dev --workspace apps/web",
+    "test": "npm run test --workspace packages/engine && npm run test --workspace packages/knowledge && npm run test --workspace apps/web && npm run test --workspace apps/api",
     "test:engine": "npm run test --workspace packages/engine",
     "test:knowledge": "npm run test --workspace packages/knowledge",
     "test:web": "npm run test --workspace apps/web",
+    "test:api": "npm run test --workspace apps/api",
     "typecheck": "npm run typecheck --workspace packages/engine && npm run typecheck --workspace packages/knowledge && npm run typecheck --workspace apps/web && npm run typecheck --workspace apps/api",
     "api": "npm run start --workspace apps/api",
     "engine:test": "npm run test --workspace packages/engine",
     "engine:build": "npm run build --workspace packages/engine"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   },
   "license": "UNLICENSED"
 }
