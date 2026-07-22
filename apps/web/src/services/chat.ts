@@ -8,7 +8,7 @@ import {
   MENTOR_SYSTEM_PROMPT, MENTOR_TOOL_SCHEMA, detectCrisis, checkNoDoom,
   SUPPORT_MESSAGE, ENERGY_META,
 } from '@aura/engine';
-import { lookupAstrology, type AstroLookup } from './knowledge';
+import { lookupAstrologyLive, type AstroLookup } from './knowledge';
 
 const AREA_ENUM: LifeArea[] = ['self', 'money', 'communication', 'home', 'creativity', 'health',
   'partnership', 'transformation', 'luck', 'career', 'gains', 'release'];
@@ -183,7 +183,7 @@ export async function askMentor(
     if (call.name === 'lookup_astrology') {
       const area = AREA_ENUM.includes(call.args?.area) ? (call.args.area as LifeArea) : undefined;
       const topic = (call.args?.topic as string) || message;
-      result = lookupAstrology(topic, chart, area);
+      result = await lookupAstrologyLive(topic, chart, area);
     } else {
       const focus = (call.args?.focus ?? extractIntent(message).focus) as LifeArea;
       const timeframe = (call.args?.timeframe ?? 'now') as Timeframe;

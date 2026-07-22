@@ -51,5 +51,9 @@ available on the same server for the Cosmic Mentor and future live-data wiring.
 - [x] Settings shows account + sign-out; App gates on auth state
 - [x] Blueprint "Your timing clocks" — Vimshottari/Ashtottari/Narayana pulled from the API
       (`/dasha/*`) when the server is up, computed on-device otherwise (`services/liveData.ts`,
-      shows a live/on-device badge). The mentor already consumes `@aura/knowledge` for grounded lookups.
-- [ ] Wire further surfaces to live API data (full dasha timelines, tajaka annual view)
+      shows a live/on-device badge).
+- [x] Cosmic Mentor concept lookups grounded via the live API (`/search`) with an on-device
+      fallback (`lookupAstrologyLive`); real-chart placements stay client-side.
+- [x] Settings shows the local-server connection status; full auth→profile→dasha flow
+      verified end-to-end over HTTP.
+- [ ] Optional polish: time-progressed "current period" per dasha system, a Tajaka annual view.

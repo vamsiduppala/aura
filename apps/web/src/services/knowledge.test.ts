@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Aura, AstronomiaEphemeris, type BirthData } from '@aura/engine';
-import { lookupAstrology } from './knowledge';
+import { lookupAstrology, lookupAstrologyLive } from './knowledge';
 
 // The knowledge backend the Cosmic Mentor's second tool (lookup_astrology) calls. Pure +
 // deterministic, so we test it directly without the LLM.
@@ -34,5 +34,12 @@ describe('lookupAstrology — mentor knowledge backend', () => {
       expect(p.house).toBeLessThanOrEqual(12);
       expect(p.meaning.length).toBeGreaterThan(40);
     }
+  });
+
+  it('lookupAstrologyLive falls back to the bundled result when the API is unreachable', async () => {
+    const live = await lookupAstrologyLive('courage', chart);
+    const local = lookupAstrology('courage', chart);
+    expect(live.concepts.length).toBe(local.concepts.length);
+    expect(live.concepts[0]?.label).toBe(local.concepts[0]?.label);
   });
 });

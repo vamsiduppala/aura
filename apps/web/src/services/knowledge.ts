@@ -7,6 +7,7 @@ import { AREA_TO_HOUSE, AREA_META, SIGN_LORD } from '@aura/engine';
 import { search, getRasi } from '@aura/knowledge';
 import { buildKundali, dignityChip } from '../kundali';
 import { grahaLabel } from '../ui';
+import { API_BASE } from './api';
 
 export interface AstroPlacement {
   planet: string;
@@ -67,4 +68,23 @@ export function lookupAstrology(query: string, chart: Chart, area?: LifeArea): A
       placements,
     },
   };
+}
+
+/**
+ * Same as lookupAstrology, but grounds the concept facts from the live aura API
+ * (`/search`) when the local server is running — so the Mentor's book lookups come
+ * straight off the backend. The real-chart placements stay client-side. Falls back to the
+ * bundled knowledge when the API is unreachable (identical data either way).
+ */
+export async function lookupAstrologyLive(query: string, chart: Chart, area?: LifeArea): Promise<AstroLookup> {
+  const base = lookupAstrology(query, chart, area);
+  try {
+    const res = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}`, { signal: AbortSignal.timeout(1500) });
+    if (res.ok) {
+      const data = await res.json() as { hits?: { label: string; summary: string }[] };
+      const concepts = (data.hits ?? []).slice(0, 5).map((h) => ({ label: h.label, summary: h.summary }));
+      if (concepts.length) return { ...base, concepts };
+    }
+  } catch { /* API down → keep the bundled concepts */ }
+  return base;
 }
