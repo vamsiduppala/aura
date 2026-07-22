@@ -29,6 +29,7 @@ export function Today({ input, phases, todayLine, remedyShort, onOpenReading, on
         Hey, <span style={{ color: grahaColor(antarGraha) }}>{nickname}</span>
       </div>
 
+      <div className="today-stage">
       <div className="today-orb">
         <AuraOrb e1={energyColor(major)} e2={energyColor(passing)} size={210} />
         <div className="blend">
@@ -66,6 +67,7 @@ export function Today({ input, phases, todayLine, remedyShort, onOpenReading, on
           <Button onClick={onOpenReading}>Open today’s reading <span>→</span></Button>
           <Button variant="ghost" onClick={onCheckin} style={{ marginTop: 6 }}>New Challenge Again? I Can Explain!</Button>
         </div>
+      </div>
       </div>
     </div>
   );
