@@ -25,6 +25,7 @@ import {
   taraOf, specialNakshatra, nakshatraAspectsFrom,
   muntha, harshaBala, saham, computeSahams,
   ithasala, ishkavala, induvara, fasterPlanet,
+  muddaDasa, muddaDays,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -220,6 +221,21 @@ describe('Narayana dasa (Ch 18) — verified against the book’s Examples 63–
     const a = narayanaAntardashas(1, 5); // start Ta (even sign) → backward, 5 months each
     expect(a.map((x) => x.rasi)).toEqual([1, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
     expect(a[0]!.months).toBe(5);
+  });
+});
+
+describe('Mudda dasa (Ch 30) — verified against the book’s Example 122', () => {
+  it('dasa days = Vimsottari years × 3', () => {
+    expect(muddaDays('sun')).toBe(18);
+    expect(muddaDays('rahu')).toBe(54);
+    expect(muddaDays('venus')).toBe(60);
+  });
+  it('first dasa Rahu, balance ~42.66 days, next Jupiter 48 days (Moon 29°28′ Sg, 21 yrs)', () => {
+    const m = muddaDasa(240 + 29 + 28 / 60, 21);
+    expect(m.firstDasa).toBe('rahu');
+    expect(m.balanceDays).toBeCloseTo(42.66, 1);
+    expect(m.sequence[0]).toEqual({ lord: 'rahu', days: 54 });
+    expect(m.sequence[1]).toEqual({ lord: 'jupiter', days: 48 });
   });
 });
 

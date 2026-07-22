@@ -99,6 +99,9 @@ export {
   TAJAKA_SPEED_ORDER, tajakaSpeedRank, fasterPlanet, ithasala, ishkavala, induvara,
   TAJAKA_YOGAS, type IthasalaKind, type IthasalaResult,
 } from './data/tajakayoga.js';
+export {
+  MUDDA_ORDER, muddaDays, muddaDasa, type MuddaSpan, type MuddaResult,
+} from './data/annualdasha.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

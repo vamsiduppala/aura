@@ -125,7 +125,11 @@ resuming session can pick up exactly where it left off.
       Eesarpha (separating), poorna check, Nakta; Ishkavala/Induvara (house distribution);
       planet speed order → `data/tajakayoga.ts`, verified vs the Moon/Venus examples.
       API: /tajaka/{ithasala,distribution-yoga,yogas}
-- [ ] Ch 30 Annual Dasas (17435–18098)
+- [~] Ch 30 Annual Dasas (17435–18098): Mudda / Varsha Vimsottari dasa (Vimsottari
+      compressed to 360 solar days — days = years × 3; first dasa from the Mudda number of
+      the Moon-nakshatra lord + completed years) → `data/annualdasha.ts` `muddaDasa`,
+      verified vs Example 122 (Rahu first, 42.66-day balance). API: /dasha/mudda.
+      TODO: Patyayini dasa (patyamsa-based), Varsha Narayana
 - [ ] Ch 31 Sudarsana Chakra Dasa (18099–18366)
 
 ## Part 5 — Special Topics

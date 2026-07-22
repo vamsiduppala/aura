@@ -31,6 +31,7 @@ import {
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
   ithasala, ishkavala, induvara, TAJAKA_YOGAS,
+  muddaDasa,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -215,6 +216,13 @@ export function buildServer() {
       return reply.code(400).send({ error: `ctx must include longitudes for: ${need.join(', ')}`, formulas: SAHAM_FORMULAS });
     }
     return computeSahams(b.ctx, b.day !== false);
+  });
+
+  // Mudda / Varsha Vimsottari dasa (Ch 30) — Vimsottari compressed to the solar-return year.
+  app.get('/dasha/mudda', async (req, reply) => {
+    const q = req.query as { moonLong?: string; completedYears?: string };
+    if (q.moonLong == null || q.completedYears == null) return reply.code(400).send({ error: 'moonLong (0-360) and completedYears required' });
+    return muddaDasa(Number(q.moonLong), Number(q.completedYears));
   });
 
   // Tajaka yogas (Ch 29) — ithasala/eesarpha + house-distribution yogas.
