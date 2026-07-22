@@ -61,7 +61,7 @@ export function App() {
       {inApp ? <Sidebar screen={screen} go={s.go} totalReads={reads.count} onSettings={() => s.go('settings')} /> : null}
       <main className="main">
         {inApp ? <TopBar totalReads={reads.count} onSettings={() => s.go('settings')} /> : null}
-        <div className={`content${narrow ? ' narrow' : ''}`}>{body}</div>
+        <div className={`content${narrow ? ' narrow' : ''}${screen === 'blueprint' ? ' bp-content' : ''}`}>{body}</div>
         {showBottomNav ? <BottomNav screen={screen} go={s.go} /> : null}
       </main>
     </div>
