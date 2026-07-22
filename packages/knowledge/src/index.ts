@@ -76,7 +76,8 @@ export {
 } from './data/narayana.js';
 export {
   kendradiProgression, lagnaKendradiDasa, sudasa, drigdasa,
-  shoolaDasa, shoolaAntardashas, type Sudasa, type RasiSpan,
+  shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa, MODALITY_YEARS,
+  type Sudasa, type RasiSpan,
 } from './data/rasidasha.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {

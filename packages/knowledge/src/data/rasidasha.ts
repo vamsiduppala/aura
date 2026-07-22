@@ -43,6 +43,23 @@ export function sudasa(slSign: number, slDegree: number): Sudasa {
 // ── Ch 21: Drigdasa (aspect-based) progression ────────────────────────────────
 export interface RasiSpan { rasi: number; years: number }
 
+/** Dasa years by modality for Niryaana Shoola / Sthira etc: movable 7, fixed 8, dual 9. */
+export const MODALITY_YEARS = [7, 8, 9];
+
+/**
+ * Niryaana Shoola dasa (Ch 22): from the stronger of the 2nd/8th house (seed), forward if
+ * the seed is an odd SIGN else backward; each rasi's dasa is 7/8/9 years by its modality.
+ * Antardasas follow the Narayana rule (use `narayanaAntardashas(start, years)`).
+ */
+export function niryaanaShoolaDasa(seed: number): RasiSpan[] {
+  const s = mod12(seed);
+  const dir = s % 2 === 0 ? 1 : -1; // odd sign (0-indexed even) → forward
+  return Array.from({ length: 12 }, (_, k) => {
+    const rasi = mod12(s + dir * k);
+    return { rasi, years: MODALITY_YEARS[rasi % 3]! };
+  });
+}
+
 /**
  * Shoola dasa (Ch 23): from the dasa seed (stronger of lagna/7th), ALWAYS zodiacal; each
  * dasa is `yearsPerDasa` (default 9 = the human gestation in months). Used to time death /

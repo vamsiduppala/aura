@@ -25,7 +25,7 @@ import {
   type LifeSpan,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
   narayanaProgression, narayanaDasaLength, narayanaAntardashas,
-  lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas,
+  lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -137,6 +137,11 @@ export function buildServer() {
     const q = req.query as { lagnaSign?: string };
     if (q.lagnaSign == null) return reply.code(400).send({ error: 'lagnaSign (0-11) required' });
     return { progression: drigdasa(Number(q.lagnaSign)) };
+  });
+  app.get('/dasha/niryaana-shoola', async (req, reply) => {
+    const q = req.query as { seed?: string };
+    if (q.seed == null) return reply.code(400).send({ error: 'seed (0-11, stronger of 2nd/8th) required' });
+    return { dasas: niryaanaShoolaDasa(Number(q.seed)) };
   });
   app.get('/dasha/shoola', async (req, reply) => {
     const q = req.query as { seed?: string; years?: string; antarSeed?: string };

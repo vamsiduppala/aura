@@ -89,7 +89,10 @@ resuming session can pick up exactly where it left off.
       (30−SLdeg)/30 → `sudasa`, verified vs Example 77. API: /dasha/sudasa
 - [x] Ch 21 Drigdasa (11565–11727): aspect-based from the 9th house (rasi drishti walk,
       foot-direction per house) → `drigdasa`, verified vs Example 80. API: /dasha/drigdasa
-- [ ] Ch 22 Niryaana Shoola Dasa (11728–11993)
+- [x] Ch 22 Niryaana Shoola Dasa (11728–11993): from the stronger 2nd/8th house (seed),
+      forward/backward by seed sign parity, dasa years by modality (movable 7, fixed 8,
+      dual 9); antardasas via Narayana rule → `data/rasidasha.ts` `niryaanaShoolaDasa`,
+      verified vs Examples 84/85. API: /dasha/niryaana-shoola
 - [x] Ch 23 Shoola Dasa (11994–12195): from the seed (stronger of lagna/7th), always
       zodiacal, 9 years each (gestation-based); 12 equal antardasas of 9 months →
       `data/rasidasha.ts` `shoolaDasa`/`shoolaAntardashas`, verified vs Examples 89/91.
