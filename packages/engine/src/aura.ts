@@ -22,6 +22,7 @@ import { buildForecast, buildCustomForecast, type ForecastResult } from './synth
 import { buildBlueprint, standingStrength, type BlueprintRow } from './synthesis/blueprint.js';
 import { detectYogas, type YogaResult } from './chart/yogas.js';
 import { buildRetrospective, type RetroItem, type RetrospectiveOptions } from './synthesis/retrospective.js';
+import { computeAnnualChart, currentVarshaYear, type AnnualChart } from './synthesis/varshaphal.js';
 import { answerMentorQuery, type MentorQuery, type MentorAnswer } from './mentor/query.js';
 
 const isoDay = (d: Date): string => d.toISOString().slice(0, 10);
@@ -107,6 +108,16 @@ export class Aura {
   /** Tabbed forecast (daily/weekly/monthly) + pinned major-season change. */
   forecast(chart: Chart, now: Date): ForecastResult {
     return buildForecast(chart, now, this.config);
+  }
+
+  /** The Tajaka annual (varshaphal) chart for a given solar-return year. */
+  annualChart(chart: Chart, year: number): AnnualChart {
+    return computeAnnualChart(chart, year, this.ephem);
+  }
+
+  /** The annual chart currently in effect for `now` (this year's solar return). */
+  currentAnnualChart(chart: Chart, now: Date): AnnualChart {
+    return computeAnnualChart(chart, currentVarshaYear(chart, now), this.ephem);
   }
 
   /** Custom-range forecast (every shift in [from,to] + count). */

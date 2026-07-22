@@ -5,6 +5,7 @@ export {
   Aura, type DailyBundle, type AuraOptions,
   type PhaseWindow, type PhaseWindows,
 } from './aura.js';
+export { type AnnualChart } from './synthesis/varshaphal.js';
 
 export * from './types.js';
 export * from './constants.js';
