@@ -3,6 +3,7 @@ export type Screen = 'onboarding' | 'audit' | 'today' | 'reading' | 'checkin' | 
 const TABS: { key: Screen; label: string }[] = [
   { key: 'today', label: 'Today' },
   { key: 'forecast', label: 'Forecast' },
+  { key: 'chat', label: 'Mentor' },
   { key: 'blueprint', label: 'Blueprint' },
 ];
 

@@ -18,6 +18,7 @@ import {
 import { buildForecast, buildCustomForecast, type ForecastResult } from './synthesis/forecast.js';
 import { buildBlueprint, type BlueprintRow } from './synthesis/blueprint.js';
 import { buildRetrospective, type RetroItem, type RetrospectiveOptions } from './synthesis/retrospective.js';
+import { answerMentorQuery, type MentorQuery, type MentorAnswer } from './mentor/query.js';
 
 const isoDay = (d: Date): string => d.toISOString().slice(0, 10);
 
@@ -101,5 +102,11 @@ export class Aura {
   /** Ashtakavarga (favourable-sign map) for the chart. */
   ashtakavarga(chart: Chart): Ashtakavarga {
     return computeAshtakavarga(chart);
+  }
+
+  /** Cosmic Mentor: the real engine data for a {focus, timeframe} query. The chat LLM
+   *  is forced to call this and may only narrate the result — never invent astrology. */
+  mentorAnswer(chart: Chart, query: MentorQuery, now: Date): MentorAnswer {
+    return answerMentorQuery(chart, query, now, this.ephem, this.config);
   }
 }

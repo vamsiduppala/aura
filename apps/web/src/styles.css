@@ -271,4 +271,21 @@ body::after{
 .nav .ndot{width:7px;height:7px;border-radius:50%;background:currentColor;}
 .disclaimer{font-size:10px;color:var(--mist-3);text-align:center;padding:10px 24px 0;line-height:1.5;}
 
+/* Cosmic Mentor chat */
+.chat{display:flex;flex-direction:column;min-height:0;max-width:720px;width:100%;margin:0 auto;height:calc(100dvh - 168px);}
+@media (min-width:900px){ .chat{height:calc(100dvh - 116px);} }
+.chat-head{display:flex;align-items:center;gap:12px;padding:2px 0 14px;flex:none;}
+.chat-sub{font-size:12px;color:var(--mist-3);margin-top:2px;}
+.chat-log{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:6px 0 14px;min-height:0;}
+.chat-starters{display:flex;flex-direction:column;gap:10px;align-items:flex-start;margin-top:8px;}
+.starter{font-family:var(--sans);font-size:14px;text-align:left;color:var(--mist);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px;cursor:pointer;width:100%;max-width:480px;}
+.starter:hover{background:var(--card-2);border-color:var(--line-2);}
+.bubble{max-width:84%;padding:13px 16px;border-radius:18px;font-size:14px;line-height:1.55;}
+.bubble.user{align-self:flex-end;background:linear-gradient(180deg,rgba(174,143,230,.22),rgba(142,147,200,.14));border:1px solid rgba(174,143,230,.3);color:var(--mist);border-bottom-right-radius:6px;}
+.bubble.mentor{align-self:flex-start;background:var(--card);border:1px solid var(--line);color:var(--mist);border-bottom-left-radius:6px;}
+.bubble.typing{color:var(--mist-3);font-style:italic;}
+.chat-input{display:flex;gap:10px;align-items:center;padding:12px 0 4px;flex:none;border-top:1px solid var(--line);}
+.chat-input input{flex:1;min-width:0;background:var(--card);border:1px solid var(--line-2);border-radius:14px;padding:13px 15px;color:var(--mist);font-family:var(--sans);font-size:14px;outline:none;}
+.chat-input input:focus{border-color:rgba(174,143,230,.5);}
+
 @media (prefers-reduced-motion: reduce){ .orb,.orb::before,.orb::after{animation:none;} }

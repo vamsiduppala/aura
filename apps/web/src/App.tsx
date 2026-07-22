@@ -9,6 +9,7 @@ import { Today } from './screens/Today';
 import { Reading } from './screens/Reading';
 import { Checkin as CheckinScreen } from './screens/Checkin';
 import { Forecast } from './screens/Forecast';
+import { Chat } from './screens/Chat';
 import { Blueprint } from './screens/Blueprint';
 import { Settings } from './screens/Settings';
 import { Support } from './screens/Support';
@@ -18,7 +19,7 @@ import { loadProfile, saveProfile, loadReads, bumpReads, clearAll, type ReadsSta
 // The engine facade — one dependency-injected service the UI talks to (offline ephemeris).
 const aura = new Aura(new AstronomiaEphemeris());
 
-const WIDE: Screen[] = ['today', 'forecast', 'blueprint'];
+const WIDE: Screen[] = ['today', 'forecast', 'chat', 'blueprint'];
 
 export function App() {
   const saved = useMemo(loadProfile, []);
@@ -84,6 +85,8 @@ export function App() {
       onSkip={() => { setCheckin(undefined); setScreen('reading'); }} />;
   } else if (screen === 'forecast') {
     body = <Forecast aura={aura} chart={chart} now={now} goalArea={goalArea} major={daily.input.majorEnergy} />;
+  } else if (screen === 'chat') {
+    body = <Chat aura={aura} chart={chart} now={now} />;
   } else {
     body = <Blueprint aura={aura} chart={chart} goalName={goalName} />;
   }

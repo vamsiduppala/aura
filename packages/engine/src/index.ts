@@ -56,6 +56,12 @@ export {
   buildRetrospective, type RetroItem, type RetrospectiveOptions,
 } from './synthesis/retrospective.js';
 
+// Cosmic Mentor (Tier 7/8) — engine query + LLM guardrail prompt/tool schema
+export {
+  answerMentorQuery, type MentorQuery, type MentorAnswer, type Timeframe,
+} from './mentor/query.js';
+export { MENTOR_SYSTEM_PROMPT, MENTOR_TOOL_SCHEMA } from './mentor/prompt.js';
+
 // Content (Tier 6)
 export { CONTENT, type EnergyContent } from './content/templates.js';
 
