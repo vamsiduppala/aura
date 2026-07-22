@@ -1,0 +1,23 @@
+{
+  "name": "@aura/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local Vedic-astrology knowledge API — serves @aura/knowledge over HTTP for the Cosmic Mentor",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aura/knowledge": "*",
+    "fastify": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

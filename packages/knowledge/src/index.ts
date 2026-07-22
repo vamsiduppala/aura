@@ -1,0 +1,11 @@
+// @aura/knowledge — public API. Structured Vedic-astrology rule data + interpretation.
+
+export * from './types.js';
+export { GRAHAS, GRAHA_KEYS } from './data/grahas.js';
+export { RASIS, RASI_BY_INDEX } from './data/rasis.js';
+export { BHAVAS, BHAVA } from './data/bhavas.js';
+export { NAKSHATRAS, NAKSHATRA_BY_INDEX } from './data/nakshatras.js';
+export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
+export {
+  interpretPlacement, interpretLagnaLord, type Placement, type Interpretation, type Dignity,
+} from './interpret.js';
