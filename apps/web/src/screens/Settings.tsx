@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DISCLAIMER } from '@aura/engine';
 import { hasUserKey, setGeminiKey, clearGeminiKey } from '../services/chat';
+import { apiReachable, API_BASE } from '../services/api';
 import { Button } from '@/components/ui/button';
 
 /** About / privacy / delete + Cosmic Mentor key (SPEC §11.1, §11.6). */
@@ -11,6 +12,8 @@ export function Settings({ place, account, onDelete, onBack, onLogout, onSignIn 
 }) {
   const [keyInput, setKeyInput] = useState('');
   const [saved, setSaved] = useState(hasUserKey());
+  const [backend, setBackend] = useState<'checking' | 'up' | 'down'>('checking');
+  useEffect(() => { let a = true; apiReachable().then((ok) => { if (a) setBackend(ok ? 'up' : 'down'); }); return () => { a = false; }; }, []);
 
   const save = () => {
     if (!keyInput.trim()) return;
@@ -40,6 +43,15 @@ export function Settings({ place, account, onDelete, onBack, onLogout, onSignIn 
             <button className="btn ghost" onClick={onLogout} style={{ textAlign: 'left', padding: '2px 0', marginBottom: 26 }}>Sign out</button>
           </>
         )}
+
+        <div className="qh" style={{ marginBottom: 10 }}>Local aura server</div>
+        <p className="body" style={{ marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', flex: 'none', background: backend === 'up' ? 'var(--bloom)' : backend === 'down' ? 'var(--forge)' : 'var(--mist-3)' }} />
+          {backend === 'checking' ? 'Checking…' : backend === 'up'
+            ? 'Connected — your chart, timing systems and mentor run against the local backend.'
+            : 'Not running — aura works on-device. Start it with: npm --workspace @aura/api run start'}
+        </p>
+        <p className="disclaimer" style={{ textAlign: 'left', padding: 0, marginBottom: 26 }}>{API_BASE}</p>
 
         <div className="qh" style={{ marginBottom: 10 }}>What aura is</div>
         <p className="body" style={{ marginBottom: 26 }}>{DISCLAIMER}</p>
