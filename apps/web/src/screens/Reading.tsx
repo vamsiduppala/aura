@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Reading } from '@aura/engine';
+import { PlanetTag } from '../components/PlanetTag';
 import { energyColor, energyLabel, fmtDow } from '../ui';
 
 // Fixed beat-marker colors (mockup visual language, independent of the energy).
@@ -34,8 +35,8 @@ export function Reading({ reading, edge, now, onBack }: {
       <div className="roll">
         <h2>{reading.headline}</h2>
         <div className="tags">
-          <span className="tag"><span className="d" style={{ background: energyColor(major) }} />{energyLabel(major).toUpperCase()}</span>
-          <span className="tag"><span className="d" style={{ background: energyColor(passing) }} />{energyLabel(passing).toUpperCase()}</span>
+          <span className="tag"><span className="d" style={{ background: energyColor(major) }} />{energyLabel(major).toUpperCase()}<PlanetTag energy={major} /></span>
+          <span className="tag"><span className="d" style={{ background: energyColor(passing) }} />{energyLabel(passing).toUpperCase()}<PlanetTag energy={passing} /></span>
         </div>
 
         <Sect color={BEAT.gift} title="The gift" text={reading.gift} />

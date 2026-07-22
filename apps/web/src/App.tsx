@@ -39,7 +39,8 @@ export function App() {
   } else if (screen === 'audit') {
     body = <Audit aura={aura} chart={chart} now={now} goalArea={goalArea} onContinue={() => s.go('today')} />;
   } else if (screen === 'today') {
-    body = <Today input={daily.input} now={now} todayLine={daily.todayLine} remedyShort={daily.remedyShort}
+    body = <Today input={daily.input} now={now} phases={aura.phaseWindows(daily.input, chart, now)}
+      todayLine={daily.todayLine} remedyShort={daily.remedyShort}
       onOpenReading={s.openReading} onCheckin={() => s.go('checkin')} />;
   } else if (screen === 'reading') {
     body = <Reading reading={daily.reading} edge={daily.edge} now={now} onBack={() => s.go('today')} />;

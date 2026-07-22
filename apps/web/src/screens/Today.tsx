@@ -1,11 +1,13 @@
-import type { ReadingInput } from '@aura/engine';
+import type { PhaseWindows, ReadingInput } from '@aura/engine';
 import { AuraOrb } from '../components/AuraOrb';
+import { PlanetTag } from '../components/PlanetTag';
 import { Button } from '@/components/ui/button';
-import { energyColor, energyLabel, energyGloss } from '../ui';
+import { energyColor, energyLabel, energyGloss, fmtShort } from '../ui';
 
-export function Today({ input, todayLine, remedyShort, onOpenReading, onCheckin }: {
+export function Today({ input, phases, todayLine, remedyShort, onOpenReading, onCheckin }: {
   input: ReadingInput;
   now: Date;
+  phases: PhaseWindows | null;
   todayLine: string;
   remedyShort: string;
   onOpenReading: () => void;
@@ -22,12 +24,20 @@ export function Today({ input, todayLine, remedyShort, onOpenReading, onCheckin 
           <div className="en">
             <div className="label">Major energy</div>
             <div className="name" style={{ color: energyColor(major) }}>{energyLabel(major).toUpperCase()}</div>
+            <PlanetTag energy={major} />
             <div className="gloss">{energyGloss(major).split('·')[0]!.trim()}</div>
+            {phases ? (
+              <div className="phase-dates">{fmtShort(phases.major.start)} → {fmtShort(phases.major.end)}</div>
+            ) : null}
           </div>
           <div className="en">
             <div className="label">Passing through</div>
             <div className="name" style={{ color: energyColor(passing) }}>{energyLabel(passing).toUpperCase()}</div>
+            <PlanetTag energy={passing} />
             <div className="gloss">{energyGloss(passing).split('·')[0]!.trim()}</div>
+            {phases ? (
+              <div className="phase-dates">{fmtShort(phases.passing.start)} → {fmtShort(phases.passing.end)}</div>
+            ) : null}
           </div>
         </div>
       </div>

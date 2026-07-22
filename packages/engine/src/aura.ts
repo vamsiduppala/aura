@@ -5,12 +5,15 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type {
-  BirthData, Chart, Checkin, Energy, LifeArea, Reading, ReadingInput,
+  BirthData, Chart, Checkin, DashaLevel, Energy, Graha, LifeArea, Reading, ReadingInput,
 } from './types.js';
 import { DEFAULT_CONFIG, type EngineConfig } from './types.js';
 import type { Ephemeris } from './astro/ephemeris.js';
 import { computeChart } from './chart/chart.js';
 import { computeReadingInput } from './engine.js';
+import { getPeriodsAt } from './dasha/vimshottari.js';
+import { dateFromJd } from './astro/julian.js';
+import { GRAHA_TO_ENERGY } from './constants.js';
 import { computeAshtakavarga, type Ashtakavarga } from './chart/ashtakavarga.js';
 import {
   generateReading, generateExpandedReading, generateTodayLine, generateRemedyShort,
@@ -36,6 +39,9 @@ export interface AuraOptions {
   goalArea?: LifeArea;
   checkin?: Checkin;
 }
+
+export interface PhaseWindow { energy: Energy; start: Date; end: Date }
+export interface PhaseWindows { major: PhaseWindow; passing: PhaseWindow }
 
 /** Facade over the whole engine. Inject an Ephemeris (offline astronomia by default). */
 export class Aura {
@@ -69,6 +75,34 @@ export class Aura {
       todayLine: generateTodayLine(input, iso, seed),
       remedyShort: generateRemedyShort(input, iso, seed),
       edge: standingStrength(chart),
+    };
+  }
+
+  /** The from/to windows of the two energies the Today screen shows (major = maha,
+   *  passing = the antar or pratyantar the reading actually chose). Dates are guaranteed
+   *  consistent with `input.majorEnergy`/`input.passingEnergy` because they resolve the
+   *  same stack. Returns null if `now` is outside the computed cycle. */
+  phaseWindows(input: ReadingInput, chart: Chart, now: Date): PhaseWindows | null {
+    const moonLong = chart.planets.moon.siderealLong;
+    const birth = dateFromJd(chart.julianDayUT);
+    const opts = { yearLengthDays: this.config.yearLengthDays };
+
+    const windowFor = (level: DashaLevel): { start: Date; end: Date; lord: Graha } | null => {
+      const ps = getPeriodsAt(moonLong, birth, level, now, now, opts);
+      const hit = ps.find((p) => p.start.getTime() <= now.getTime() && now.getTime() < p.end.getTime()) ?? ps[0];
+      return hit ? { start: hit.start, end: hit.end, lord: hit.lord } : null;
+    };
+
+    const major = windowFor('maha');
+    if (!major) return null;
+    // The passing energy came from antar or pratyantar — pick whichever lord's energy matches.
+    const passingLevel: DashaLevel =
+      GRAHA_TO_ENERGY[input.stack.antar] === input.passingEnergy ? 'antar' : 'pratyantar';
+    const passing = windowFor(passingLevel) ?? major;
+
+    return {
+      major: { energy: input.majorEnergy, start: major.start, end: major.end },
+      passing: { energy: input.passingEnergy, start: passing.start, end: passing.end },
     };
   }
 

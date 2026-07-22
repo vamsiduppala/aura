@@ -1,9 +1,33 @@
-import { ENERGY_META, type Energy } from '@aura/engine';
+import { ENERGY_META, ENERGY_TO_GRAHA, type Energy, type Graha } from '@aura/engine';
 import type { CSSProperties } from 'react';
 
 export const energyColor = (e: Energy): string => ENERGY_META[e].color;
 export const energyLabel = (e: Energy): string => ENERGY_META[e].label;
 export const energyGloss = (e: Energy): string => ENERGY_META[e].gloss;
+
+// ── Planet (graha) name + colour layer ───────────────────────────────────────
+// The surface stays in the 9 energies, but the user asked to show the classical
+// planet name + its own colour alongside each energy (Saturn navy, Ketu sky-blue,
+// Mars red, Sun orange, Jupiter yellow, Mercury green, Moon white, Venus pink,
+// Rahu grey). Colours are tuned to stay legible on the dark UI.
+export const GRAHA_LABEL: Record<Graha, string> = {
+  sun: 'Sun', moon: 'Moon', mars: 'Mars', mercury: 'Mercury', jupiter: 'Jupiter',
+  venus: 'Venus', saturn: 'Saturn', rahu: 'Rahu', ketu: 'Ketu',
+};
+export const GRAHA_COLOR: Record<Graha, string> = {
+  sun: '#FF9A3D',     // orange
+  moon: '#EAF0FA',    // white
+  mars: '#F2544B',    // red
+  mercury: '#3ECF8E', // green
+  jupiter: '#F2C94C', // yellow
+  venus: '#F7A8C4',   // baby pink
+  saturn: '#5A6AD8',  // navy blue (lightened so it reads on dark)
+  rahu: '#A0A6B4',    // grey
+  ketu: '#6FC9F2',    // sky blue
+};
+export const grahaOfEnergy = (e: Energy): Graha => ENERGY_TO_GRAHA[e];
+export const grahaLabel = (g: Graha): string => GRAHA_LABEL[g];
+export const grahaColor = (g: Graha): string => GRAHA_COLOR[g];
 
 /** CSS custom properties for the aura orb (typed escape hatch). */
 export function orbVars(e1: string, e2: string, size?: number): CSSProperties {
