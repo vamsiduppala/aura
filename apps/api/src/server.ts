@@ -11,7 +11,7 @@ import {
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
   FUNCTIONAL_NATURE, functionalNatureFor, TRANSIT_FROM_MOON, NATURAL_RELATIONS, REMEDIES,
   getGraha, getRasi, getBhava, getNakshatra, search,
-  interpretPlacement, interpretLagnaLord,
+  interpretPlacement, interpretLagnaLord, classifyDignity, DIGNITIES,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -56,6 +56,15 @@ export function buildServer() {
   app.get('/functional-nature/:lagna', async (req) => functionalNatureFor(Number((req.params as { lagna: string }).lagna)));
   app.get('/transits', async () => TRANSIT_FROM_MOON);
   app.get('/relationships', async () => NATURAL_RELATIONS);
+  app.get('/dignities', async () => DIGNITIES);
+  // Classify a planet's dignity in a sign (0=Aries): exalted/debilitated/moolatrikona/own/friend/neutral/enemy.
+  app.get('/classify', async (req, reply) => {
+    const q = req.query as { graha?: string; sign?: string };
+    if (!q.graha || q.sign == null) return reply.code(400).send({ error: 'graha and sign (0-11) are required' });
+    if (!GRAHAS[q.graha]) return reply.code(404).send({ error: 'unknown graha' });
+    const sign = Number(q.sign);
+    return { graha: q.graha, sign, dignity: classifyDignity(q.graha as Graha, sign) };
+  });
   // Only behavioural remedies are surfaced for recommendation (SPEC §11.4);
   // gemstone/deity fields are reference-only and the mentor must never recommend them.
   app.get('/remedies', async () => REMEDIES);
@@ -72,7 +81,9 @@ export function buildServer() {
     if (!body?.graha || body.house == null || body.sign == null) {
       return reply.code(400).send({ error: 'graha, house (1-12) and sign (0-11) are required' });
     }
-    return interpretPlacement(body as Placement);
+    // If the client didn't supply dignity, derive it from graha+sign so the tone is accurate.
+    const dignity = body.dignity ?? classifyDignity(body.graha, body.sign);
+    return interpretPlacement({ ...(body as Placement), dignity });
   });
   app.post('/interpret/lagna-lord', async (req, reply) => {
     const b = req.body as { lord?: Graha; house?: number; sign?: number };

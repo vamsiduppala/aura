@@ -17,10 +17,12 @@ resuming session can pick up exactly where it left off.
       chakras, vargas overview, solar/lunar calendar, nitya-yogas, karanas, hora, panchanga, ayanamsa
 - [x] Ch 2 Rasis (1315–1484): all 12 signs (lord, element, modality, gender, guna, dosha, direction,
       varna, body-part, indications) → `data/rasis.ts`
-- [~] Ch 3 Planets (1485–1919): characteristics 3.2 (nature, governance, cabinet, deity, gender,
+- [x] Ch 3 Planets (1485–1919): characteristics 3.2 (nature, governance, cabinet, deity, gender,
       element, varna, guna, dhatu, taste, season, digbala, colour) → `data/grahas.ts`;
-      relationships 3.4 (natural Table 7 + temporary + compound) → `data/relationships.ts` DONE.
-      TODO: dignities detail 3.3 (engine has core)
+      dignities 3.3 (exalt/debil/own/moolatrikona Table 6) → `data/dignities.ts` + `classifyDignity()`
+      in `interpret.ts` (resolves any placement to exalted/debil/MT/own/friend/neutral/enemy);
+      relationships 3.4 (natural Table 7 + temporary + compound) → `data/relationships.ts`.
+      API: `/dignities`, `/classify?graha=&sign=`, and `/interpret` now auto-derives dignity.
 - [ ] Ch 4 Upagrahas (1920–2223): Sun-based + other upagrahas
 - [ ] Ch 5 Special Lagnas (2224–2397): Bhava/Hora/Ghati/Sree lagna
 - [~] Ch 6 Divisional Charts (2398–2848): significations (Table 11, D-1..D-60 → which life area)

@@ -61,11 +61,12 @@ describe('interpretation engine', () => {
   });
 
   it('classifies dignity from the standard rules', () => {
-    expect(classifyDignity('sun', 0)).toBe('exalted');       // Sun in Aries
-    expect(classifyDignity('saturn', 0)).toBe('debilitated');// Saturn in Aries
-    expect(classifyDignity('mars', 0)).toBe('own');          // Mars in Aries (moolatrikona)
-    expect(classifyDignity('jupiter', 3)).toBe('exalted');   // Jupiter in Cancer
-    expect(classifyDignity('sun', 4)).toBe('own');           // Sun in Leo
+    expect(classifyDignity('sun', 0)).toBe('exalted');           // Sun in Aries
+    expect(classifyDignity('saturn', 0)).toBe('debilitated');    // Saturn in Aries
+    expect(classifyDignity('mars', 0)).toBe('moolatrikona');     // Mars in Aries (its moolatrikona)
+    expect(classifyDignity('jupiter', 3)).toBe('exalted');       // Jupiter in Cancer
+    expect(classifyDignity('sun', 4)).toBe('moolatrikona');      // Sun in Leo (its moolatrikona)
+    expect(classifyDignity('mars', 7)).toBe('own');              // Mars in Scorpio (own, not MT)
   });
 });
 
