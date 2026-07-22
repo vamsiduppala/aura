@@ -31,6 +31,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     gift: [
       'Confidence and presence are with you. This is the time to lead, pitch, post, and be seen — people follow your energy right now.',
       'You carry natural authority today. Take the visible role; your clarity gives other people something to line up behind.',
+      'The room turns toward you today. Whatever you put out — an idea, a stance, a piece of work — carries further than usual. Use the reach.',
     ],
     trap: [
       'Right now you’re performing for a reaction instead of doing the work — clocking who noticed, letting one person’s silence weigh more than it should. It’s the loop this energy makes; your worth isn’t on loan from the room.',
@@ -65,6 +66,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     gift: [
       'Deep intuition and empathy are online. Great for creating, healing, and getting close to the people who matter.',
       'You feel the room before you read it. Trust that radar today — it’s picking up something real.',
+      'Your radar is wide open — you’ll sense what people aren’t saying. That empathy is the gift today: for making things, for mending things, for being the one who gets it.',
     ],
     trap: [
       'Right now you’re reading a neutral message as a rejection and building a whole story on it — then reacting to the story, not the fact. The feeling is real; the conclusion is the trap this tide makes.',
@@ -100,6 +102,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     gift: [
       'Drive, courage and initiative are high. This is the day to start the hard thing and push through resistance.',
       'You’ve got the energy to break a stalemate. One decisive action clears what a week of thinking couldn’t.',
+      'There’s clean power behind you. The thing you’ve been circling — you can break it open today with one committed push.',
     ],
     trap: [
       'Right now you’re rehearsing the sharp reply in your head instead of stating the boundary once, plainly. The heat wants a fight; the situation just needs a sentence. That’s the loop — spend the fire on the task, not the person.',
@@ -132,6 +135,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     gift: [
       'Fast, clever thinking is with you — good for writing, talking, negotiating, and solving the knot that’s been stuck.',
       'You can find the words today. Say the thing, write the message, make the case — it lands.',
+      'Ideas come fast and connect well. Today the mind is a scalpel, not a hammer — a day to solve, pitch, and negotiate.',
     ],
     trap: [
       'Right now you’re overthinking the message instead of just sending the honest version — twenty drafts, no send. The clever objection keeps beating the plain right answer. It’s a loop this energy makes, not the truth.',
@@ -164,6 +168,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     gift: [
       'Opportunity comes looking for you — a person, an offer, an opening. Your optimism is realistic for once; say yes to the big thing.',
       'The pressure eases and momentum returns. This is the payoff stretch — don’t sleep on it.',
+      'The wind’s at your back. Say yes to the thing that scares you a little in the good way — the timing is genuinely on your side.',
     ],
     trap: [
       'Right now you’re saying yes to everything because it all looks good — and finishing none of it. Optimism is quietly turning into over-commitment; that’s the loop this energy makes, not the opportunity itself.',
@@ -196,6 +201,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     gift: [
       'Charm and warmth are magnetic today — good for love, art, and repairing the thing that went a little cold.',
       'You draw people in without trying. Use it to connect, create, and make something feel good on purpose.',
+      'You’re easy to be around today, and that opens doors force never could. Lead with warmth and watch what softens.',
     ],
     trap: [
       'Right now you’re smoothing it over instead of saying the true thing — keeping the peace by quietly abandoning your own position, and you’ll resent it later. That’s the loop this energy makes; the way out is one honest sentence.',
@@ -228,6 +234,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     gift: [
       'Your patience is turning into a weapon. What you lay down in this heaviness will outlast what the fast people are chasing — you’re not slow, you’re structural.',
       'This is the season that builds something real. Discipline now becomes the foundation everything later stands on.',
+      'Every unglamorous thing you do today is a brick that stays. You’re not behind — you’re laying a foundation the fast people skip.',
     ],
     trap: [
       'Right now you’re isolating because you’ve decided no one gets the pressure you’re under — carrying it all alone as if that’s strength. It isn’t; it’s the trap this heaviness sets. The load is real; the solitude is optional.',
@@ -260,6 +267,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     gift: [
       'This drive is rocket fuel if you point it. Big ambition, unconventional wins and real hustle all live here.',
       'The restlessness can move mountains aimed at one target. Pointed, it’s the most powerful energy you’ve got.',
+      'That hunger is horsepower. Aimed at one real target today, it’ll take you somewhere the comfortable never reach.',
     ],
     trap: [
       'Right now you’re measuring yourself against someone’s highlight reel and calling the panic “ambition.” You’re not behind — you’re running their race in your head. That’s the loop this hunger makes; pick your own one thing.',
@@ -292,6 +300,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     gift: [
       'Clarity comes from detachment now. You can see what actually matters because you’ve stopped clutching what doesn’t.',
       'This is a rare stretch for insight and letting go — endings that make room, and a quiet that’s actually peace.',
+      'There’s clarity in the loosening. What you’re ready to set down was never the point — and putting it down frees both hands.',
     ],
     trap: [
       'Right now you’re calling avoidance “detachment” — quietly checking out of something that still matters and telling yourself you’re above it. Releasing is healthy; disappearing is the trap this energy sets.',
