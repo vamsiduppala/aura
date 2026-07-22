@@ -12,6 +12,8 @@ import { CONTENT } from '../content/templates.js';
 import { computeReadingInput } from '../engine.js';
 import { buildRetrospective } from '../synthesis/retrospective.js';
 import { buildForecast } from '../synthesis/forecast.js';
+import { detectYogas } from '../chart/yogas.js';
+import { buildBlueprint } from '../synthesis/blueprint.js';
 import type { Ephemeris } from '../astro/ephemeris.js';
 
 export type Timeframe = 'past' | 'now' | 'future';
@@ -48,6 +50,16 @@ export interface MentorAnswer {
   period?: { startISO: string; endISO: string };
   /** Notable transit context, if any. */
   transitNote?: string;
+  /** The user's real standing strength to lean on — a born gift or driving energy. */
+  strength: { name: string; note: string };
+}
+
+/** The user's best strength to offer as the way out (a born gift, else their driver). */
+function standingStrength(chart: Chart): { name: string; note: string } {
+  const yogas = detectYogas(chart);
+  if (yogas.length > 0) return { name: yogas[0]!.name, note: yogas[0]!.blurb };
+  const driver = buildBlueprint(chart).find((r) => r.role === 'Driven by') ?? buildBlueprint(chart)[0]!;
+  return { name: ENERGY_META[driver.energy].label, note: driver.desc };
 }
 
 function heatBand(value: number, all: number[]): 'high' | 'medium' | 'low' {
@@ -66,6 +78,7 @@ export function answerMentorQuery(
   config: EngineConfig = DEFAULT_CONFIG,
 ): MentorAnswer {
   const focusLabel = AREA_META[q.focus].label;
+  const strength = standingStrength(chart);
 
   if (q.timeframe === 'past') {
     const retro = buildRetrospective(chart, now, ephem, { focusArea: q.focus });
@@ -75,6 +88,7 @@ export function answerMentorQuery(
     return {
       focus: focusLabel,
       focusPhrase: FOCUS_PHRASE[q.focus],
+      strength,
       timeframe: 'past',
       majorEnergy: label(now_ri.majorEnergy),
       passingEnergy: label(now_ri.passingEnergy),
@@ -96,6 +110,7 @@ export function answerMentorQuery(
     return {
       focus: focusLabel,
       focusPhrase: FOCUS_PHRASE[q.focus],
+      strength,
       timeframe: 'future',
       majorEnergy: label(now_ri.majorEnergy),
       passingEnergy: label(now_ri.passingEnergy),
@@ -115,6 +130,7 @@ export function answerMentorQuery(
   return {
     focus: focusLabel,
     focusPhrase: FOCUS_PHRASE[q.focus],
+    strength,
     timeframe: 'now',
     majorEnergy: label(ri.majorEnergy),
     passingEnergy: label(ri.passingEnergy),

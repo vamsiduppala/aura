@@ -63,7 +63,7 @@ function localReply(a: MentorAnswer): string {
   const heat = a.focusAreaHeat === 'high' ? `there’s real heat in ${a.focusPhrase}`
     : a.focusAreaHeat === 'medium' ? `there’s some real movement in ${a.focusPhrase}`
       : `${a.focusPhrase} is running quieter than the rest of you`;
-  return `${opener}, ${heat}, and ${a.keyEnergy} is the energy moving through it. ${a.trap} The way through isn’t to push harder — it’s smaller and kinder: ${a.remedy}`;
+  return `${opener}, ${heat}, and ${a.keyEnergy} is the energy moving through it. ${a.trap} The way through isn’t to push harder — it’s smaller and kinder: ${a.remedy} And lean on what you’re actually built with — ${a.strength.name.toLowerCase()}: ${a.strength.note}`;
 }
 
 function softenDoom(text: string): string {

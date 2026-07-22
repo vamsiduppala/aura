@@ -105,6 +105,8 @@ describe('no-jargon lint (SPEC §12)', () => {
         const a = answerMentorQuery(chart, { focus: focusArea, timeframe: tf }, nowD, ephem);
         scan('mentor.focusPhrase', a.focusPhrase, offenders);
         scan('mentor.keyEnergyMeaning', a.keyEnergyMeaning, offenders);
+        scan('mentor.strength.name', a.strength.name, offenders);
+        scan('mentor.strength.note', a.strength.note, offenders);
         if (a.transitNote) scan('mentor.transitNote', a.transitNote, offenders);
       }
     }
