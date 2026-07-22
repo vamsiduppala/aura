@@ -17,11 +17,13 @@ export function Sidebar({ screen, go, totalReads, onSettings }: {
     <aside className="sidebar">
       <div className="brand"><span className="glyph" /> aura</div>
       {TABS.map((t) => (
-        <button key={t.key} className={`navlink${screen === t.key ? ' on' : ''}`} onClick={() => go(t.key)}>
+        <button key={t.key} className={`navlink${screen === t.key ? ' on' : ''}`} onClick={() => go(t.key)}
+          aria-current={screen === t.key ? 'page' : undefined}>
           <span className="dot" />{t.label}
         </button>
       ))}
-      <button className={`navlink${screen === 'settings' ? ' on' : ''}`} onClick={onSettings}>
+      <button className={`navlink${screen === 'settings' ? ' on' : ''}`} onClick={onSettings}
+        aria-current={screen === 'settings' ? 'page' : undefined}>
         <span className="dot" />Settings
       </button>
       <div className="side-foot">
@@ -49,12 +51,13 @@ export function TopBar({ totalReads, onSettings }: { totalReads: number; onSetti
 /** Mobile bottom tab bar. */
 export function BottomNav({ screen, go }: { screen: Screen; go: (s: Screen) => void }) {
   return (
-    <div className="bottomnav">
+    <nav className="bottomnav" aria-label="Primary">
       {TABS.map((t) => (
-        <button key={t.key} className={screen === t.key ? 'on' : ''} onClick={() => go(t.key)}>
+        <button key={t.key} className={screen === t.key ? 'on' : ''} onClick={() => go(t.key)}
+          aria-current={screen === t.key ? 'page' : undefined}>
           <span className="ndot" />{t.label}
         </button>
       ))}
-    </div>
+    </nav>
   );
 }

@@ -53,11 +53,11 @@ export function Onboarding({ onComplete }: {
 
         <div className="field">
           <span className="k">Born on</span>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} aria-label="Birth date" />
         </div>
         <div className="field">
           <span className="k">Born at</span>
-          <input type="time" value={time} disabled={unknownTime} onChange={(e) => setTime(e.target.value)} />
+          <input type="time" value={time} disabled={unknownTime} onChange={(e) => setTime(e.target.value)} aria-label="Birth time" />
         </div>
         <div className="unknown" onClick={() => setUnknownTime((v) => !v)}>
           <span className={`box${unknownTime ? ' on' : ''}`} /> I don’t know my time — read me by day
@@ -66,6 +66,7 @@ export function Onboarding({ onComplete }: {
           <span className="k">Born in</span>
           <select
             value={cityIdx}
+            aria-label="Birthplace"
             onChange={(e) => setCityIdx(Number(e.target.value))}
             style={{ background: 'none', border: 'none', color: 'var(--mist)', textAlign: 'right', fontFamily: 'var(--sans)', fontSize: 15, outline: 'none' }}
           >
@@ -81,7 +82,7 @@ export function Onboarding({ onComplete }: {
         </div>
         <div className="empire">
           <span className="k">Name your empire</span>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="my goal" />
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="my goal" aria-label="Name your goal" />
         </div>
 
         <div className="cta-zone">

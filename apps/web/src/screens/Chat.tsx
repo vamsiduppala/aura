@@ -44,7 +44,7 @@ export function Chat({ aura, chart, now }: { aura: Aura; chart: Chart; now: Date
         </div>
       </div>
 
-      <div className="chat-log">
+      <div className="chat-log" role="log" aria-live="polite" aria-atomic="false">
         {messages.length === 0 ? (
           <div className="chat-starters">
             <div className="label" style={{ marginBottom: 4 }}>Try asking</div>
