@@ -65,8 +65,12 @@ resuming session can pick up exactly where it left off.
 - [ ] Ch 15 Strength of Planets/Rasis (8657–9318): avasthas, shadbala, co-lord/rasi strength
 
 ## Part 2 — Dasa Analysis
-- [ ] Ch 16 Vimsottari Dasa (9345–9925)
-- [ ] Ch 17 Ashtottari Dasa (9926–10082)
+- [x] Ch 16 Vimsottari Dasa (9345–9925): 120y, order+years (Table 38), nakshatra lords,
+      birth-balance from Moon, dasa sequence, proportional antardasas (any depth) →
+      `data/vimshottari.ts`, verified vs Example 50. API: /dasha/vimshottari
+- [x] Ch 17 Ashtottari Dasa (9926–10082): 108y over 8 lords (no Ketu), unequal arcs
+      (Table 39, Rahu wrap), birth balance, antardasas start AFTER the maha lord →
+      `data/ashtottari.ts`, verified vs Example 59. API: /dasha/ashtottari
 - [ ] Ch 18 Narayana Dasa (10083–11339)
 - [ ] Ch 19 Lagna Kendradi Rasi Dasa (11340–11462)
 - [ ] Ch 20 Sudasa (11463–11564)

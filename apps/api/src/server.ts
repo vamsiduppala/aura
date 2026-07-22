@@ -19,6 +19,8 @@ import {
   sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART,
   ashtakavarga, type RefSigns,
   panchanga, horaLord,
+  dashaBalanceAtBirth, antardashas, VIMSHOTTARI_YEARS,
+  ashtottariBalanceAtBirth, ashtottariAntardashas,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -94,6 +96,20 @@ export function buildServer() {
     const q = req.query as { longitude?: string };
     if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
     return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+
+  // Dasa systems (Ch 16 Vimsottari, Ch 17 Ashtottari) — birth balance + antardasas.
+  app.get('/dasha/vimshottari', async (req, reply) => {
+    const q = req.query as { moonLong?: string };
+    if (q.moonLong == null) return reply.code(400).send({ error: 'moonLong (0-360) is required' });
+    const balance = dashaBalanceAtBirth(Number(q.moonLong));
+    return { system: 'vimshottari', totalYears: 120, balance, mahaYears: VIMSHOTTARI_YEARS, antardashas: antardashas(balance.lord) };
+  });
+  app.get('/dasha/ashtottari', async (req, reply) => {
+    const q = req.query as { moonLong?: string };
+    if (q.moonLong == null) return reply.code(400).send({ error: 'moonLong (0-360) is required' });
+    const balance = ashtottariBalanceAtBirth(Number(q.moonLong));
+    return { system: 'ashtottari', totalYears: 108, balance, antardashas: ashtottariAntardashas(balance.lord) };
   });
 
   // Panchanga (Ch 1). Tithi + nitya-yoga + karana from Sun/Moon longitudes; hora lord.

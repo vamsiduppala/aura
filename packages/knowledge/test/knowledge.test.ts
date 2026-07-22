@@ -15,6 +15,8 @@ import {
   sunUpagrahas, partLords, upagrahaFraction,
   ashtakavarga, bhinnashtakavarga, AV_PLANETS,
   tithiOf, nityaYoga, karanaOf, horaLord,
+  dashaBalanceAtBirth, dashaSequence, antardashas, nakshatraLord, VIMSHOTTARI_YEARS,
+  ashtottariBalanceAtBirth, ashtottariAntardashas, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -184,6 +186,50 @@ describe('divisional charts (Ch 6) — verified against the book’s worked exam
   });
   it('D-60 Shashtyamsa', () => {
     expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
+  });
+});
+
+describe('Vimsottari dasa (Ch 16) — verified against the book’s Example 50', () => {
+  it('nakshatra lords cycle Ketu…Mercury every 9', () => {
+    expect(nakshatraLord(0)).toBe('ketu');   // Ashwini
+    expect(nakshatraLord(22)).toBe('mars');  // Dhanishtha
+    expect(nakshatraLord(26)).toBe('mercury'); // Revati
+  });
+  it('birth-dasa balance from the Moon (Moon 2°23′ Aq → Mars, 0.32125 left)', () => {
+    const b = dashaBalanceAtBirth(300 + 2 + 23 / 60);
+    expect(b.nakshatra).toBe(22);         // Dhanishtha
+    expect(b.lord).toBe('mars');
+    expect(b.fractionLeft).toBeCloseTo(0.32125, 4);
+    expect(b.yearsLeft).toBeCloseTo(2.24875, 4);
+  });
+  it('dasa sequence + antardasa proportions', () => {
+    expect(dashaSequence('mars').slice(0, 4)).toEqual(['mars', 'rahu', 'jupiter', 'saturn']);
+    const venusAntars = antardashas('venus');
+    expect(venusAntars[0]).toEqual({ lord: 'venus', years: 20 * 20 / 120 }); // 3y4m
+    expect(venusAntars.find((a) => a.lord === 'sun')!.years).toBeCloseTo(1, 6); // 20*6/120 = 1y
+    expect(venusAntars.reduce((s, a) => s + a.years, 0)).toBeCloseTo(VIMSHOTTARI_YEARS.venus, 6);
+  });
+});
+
+describe('Ashtottari dasa (Ch 17) — verified against the book’s Example 59', () => {
+  it('totals 108 years over 8 lords (no Ketu)', () => {
+    expect(Object.values(ASHTOTTARI_YEARS).reduce((a, b) => a + b, 0)).toBe(ASHTOTTARI_TOTAL);
+  });
+  it('birth balance: Moon 24° Leo (144°) → Moon dasa, 0.4 of the arc left', () => {
+    const b = ashtottariBalanceAtBirth(144);
+    expect(b.lord).toBe('moon');
+    expect(b.fractionLeft).toBeCloseTo(0.4, 6);
+    expect(b.yearsLeft).toBeCloseTo(6, 6);
+  });
+  it('handles the Rahu arc wrap past 360° (Moon 10° Aries)', () => {
+    const b = ashtottariBalanceAtBirth(10);
+    expect(b.lord).toBe('rahu');
+    expect(b.fractionLeft).toBeCloseTo((26 + 40 / 60 - 10) / (53 + 20 / 60), 5);
+  });
+  it('antardasas start AFTER the maha lord (Jupiter → Rahu first)', () => {
+    const a = ashtottariAntardashas('jupiter');
+    expect(a.map((x) => x.lord)).toEqual(['rahu', 'venus', 'sun', 'moon', 'mars', 'mercury', 'saturn', 'jupiter']);
+    expect(a[a.length - 1]!.lord).toBe('jupiter'); // last antar = maha lord
   });
 });
 

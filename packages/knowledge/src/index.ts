@@ -51,6 +51,16 @@ export {
   tithiOf, nityaYoga, karanaOf, horaLord, panchanga,
   NITYA_YOGAS, WEEKDAY_LORD, type Tithi, type Panchanga,
 } from './data/panchanga.js';
+export {
+  VIMSHOTTARI_ORDER, VIMSHOTTARI_YEARS, VIMSHOTTARI_TOTAL, nakshatraLord,
+  dashaBalanceAtBirth, dashaSequence, subPeriodYears, antardashas, DASHA_VARIATION_OFFSET,
+  type DashaBalance, type DashaSpan,
+} from './data/vimshottari.js';
+export {
+  ASHTOTTARI_ORDER, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
+  ashtottariBalanceAtBirth, ashtottariAntardashas,
+  type AshtottariBalance,
+} from './data/ashtottari.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,
