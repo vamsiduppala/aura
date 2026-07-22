@@ -9,14 +9,22 @@ import {
   SUPPORT_MESSAGE, ENERGY_META,
 } from '@aura/engine';
 
-const KEY = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+const LS_KEY = 'aura.geminiKey';
 const MODEL = (import.meta.env.VITE_GEMINI_MODEL as string | undefined) ?? 'gemini-2.0-flash';
-const ENDPOINT = (m: string) => `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${KEY}`;
+const ENDPOINT = (m: string, key: string) => `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${key}`;
+
+/** Prefer a user-set key (Settings → localStorage) over the bundled dev key. */
+function getKey(): string | undefined {
+  try { const k = localStorage.getItem(LS_KEY); if (k) return k; } catch { /* ignore */ }
+  return (import.meta.env.VITE_GEMINI_API_KEY as string | undefined) || undefined;
+}
+export function isChatLive(): boolean { return !!getKey(); }
+export function setGeminiKey(key: string): void { try { localStorage.setItem(LS_KEY, key.trim()); } catch { /* ignore */ } }
+export function clearGeminiKey(): void { try { localStorage.removeItem(LS_KEY); } catch { /* ignore */ } }
+export function hasUserKey(): boolean { try { return !!localStorage.getItem(LS_KEY); } catch { return false; } }
 
 export interface ChatTurn { role: 'user' | 'mentor'; text: string }
 export interface ChatResult { text: string; usedEngine: boolean; source: 'gemini' | 'local' | 'support' }
-
-export const chatEnabled = !!KEY;
 
 // ── Gemini tool (adapts the engine's neutral schema to Gemini's function format) ──
 const geminiTool = {
@@ -73,8 +81,8 @@ function localReplyFromText(_t: string): string {
   return 'Let’s keep this grounded and kind. Tell me the area that’s heaviest right now — your relationships, work, money, health, or just you — and I’ll read what’s moving through it.';
 }
 
-async function callGemini(body: unknown): Promise<any> {
-  const res = await fetch(ENDPOINT(MODEL), {
+async function callGemini(body: unknown, key: string): Promise<any> {
+  const res = await fetch(ENDPOINT(MODEL, key), {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Gemini ${res.status}`);
@@ -91,7 +99,8 @@ export async function askMentor(
   }
 
   // 2) No key → deterministic engine-only reply.
-  if (!KEY) {
+  const key = getKey();
+  if (!key) {
     const intent = extractIntent(message);
     return { text: localReply(aura.mentorAnswer(chart, intent, now)), usedEngine: true, source: 'local' };
   }
@@ -107,7 +116,7 @@ export async function askMentor(
       tools: [geminiTool],
       toolConfig: { functionCallingConfig: { mode: 'ANY', allowedFunctionNames: ['query_energy'] } },
       contents,
-    });
+    }, key);
     const call = first?.candidates?.[0]?.content?.parts?.find((p: any) => p.functionCall)?.functionCall;
     if (!call) {
       // Model answered directly — guard + return, or fall back to engine.
@@ -130,7 +139,7 @@ export async function askMentor(
         { role: 'model', parts: [{ functionCall: call }] },
         { role: 'user', parts: [{ functionResponse: { name: 'query_energy', response: { result: answer } } }] },
       ],
-    });
+    }, key);
     const text = second?.candidates?.[0]?.content?.parts?.map((p: any) => p.text).filter(Boolean).join(' ')?.trim();
     if (text) return { text: softenDoom(text), usedEngine: true, source: 'gemini' };
     return { text: localReply(answer), usedEngine: true, source: 'local' };

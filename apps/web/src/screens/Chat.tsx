@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Aura, Chart } from '@aura/engine';
-import { askMentor, chatEnabled, type ChatTurn } from '../services/chat';
+import { askMentor, isChatLive, type ChatTurn } from '../services/chat';
 import { OrbChip } from '../components/AuraOrb';
 import { Button } from '@/components/ui/button';
 
@@ -39,7 +39,7 @@ export function Chat({ aura, chart, now }: { aura: Aura; chart: Chart; now: Date
         <div>
           <h2 className="serif-h" style={{ fontSize: 24 }}>Cosmic Mentor</h2>
           <div className="chat-sub">
-            Ask anything. I read your real timing before I answer{chatEnabled ? '' : ' (offline mode)'}.
+            Ask anything. I read your real timing before I answer{isChatLive() ? '' : ' (offline mode — add a key in Settings for richer replies)'}.
           </div>
         </div>
       </div>
