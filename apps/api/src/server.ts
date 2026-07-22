@@ -9,6 +9,7 @@ import Fastify from 'fastify';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
+  FUNCTIONAL_NATURE, functionalNatureFor,
   getGraha, getRasi, getBhava, getNakshatra, search,
   interpretPlacement, interpretLagnaLord,
   type Graha, type Placement,
@@ -51,6 +52,8 @@ export function buildServer() {
     return d ?? reply.code(404).send({ error: 'unknown divisional' });
   });
   app.get('/karakas', async () => ({ chara: CHARA_KARAKAS, sthira: STHIRA_KARAKAS }));
+  app.get('/functional-nature', async () => FUNCTIONAL_NATURE);
+  app.get('/functional-nature/:lagna', async (req) => functionalNatureFor(Number((req.params as { lagna: string }).lagna)));
 
   // search
   app.get('/search', async (req) => {

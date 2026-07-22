@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
+  FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
   getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord,
 } from '../src/index.js';
@@ -83,6 +84,28 @@ describe('divisionals + karakas', () => {
     expect(CHARA_KARAKAS[0]!.code).toBe('AK');
     expect(CHARA_KARAKAS[7]!.code).toBe('DK');
     expect(STHIRA_KARAKAS.some((k) => k.relative === 'mother')).toBe(true);
+  });
+});
+
+describe('functional nature (per lagna)', () => {
+  it('covers all 12 lagnas with the classical yogakarakas', () => {
+    expect(FUNCTIONAL_NATURE).toHaveLength(12);
+    expect(functionalNatureFor(3).yogakaraka).toBe('mars');   // Cancer → Mars
+    expect(functionalNatureFor(4).yogakaraka).toBe('mars');   // Leo → Mars
+    expect(functionalNatureFor(9).yogakaraka).toBe('venus');  // Capricorn → Venus
+    expect(functionalNatureFor(6).yogakaraka).toBe('saturn'); // Libra → Saturn
+  });
+  it('each planet is classified exactly once per lagna', () => {
+    for (const f of FUNCTIONAL_NATURE) {
+      const all = [...f.benefics, ...f.neutrals, ...f.malefics];
+      expect(new Set(all).size).toBe(all.length);
+      expect(all.length).toBeGreaterThanOrEqual(6); // the 7 classical planets (Moon may be omitted)
+    }
+  });
+  it('baadhaka house follows modality (movable→11, fixed→9, dual→7)', () => {
+    expect(baadhakaHouse('movable')).toBe(11);
+    expect(baadhakaHouse('fixed')).toBe(9);
+    expect(baadhakaHouse('dual')).toBe(7);
   });
 });
 

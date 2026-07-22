@@ -35,7 +35,8 @@ resuming session can pick up exactly where it left off.
       Duradhara/Kemadruma/Chandra-Mangala/Adhi/Gajakesari), 5 Mahapurusha, Raja/Dhana/Vipareeta/
       Neechabhanga → `data/yogas.ts` (20 yogas, rule+effect). TODO: full Naabhasa (32) + more Raja variants
 - [ ] Ch 12 Ashtakavarga (5364–7833): BAV/SAV/prastaara/sodhya pindas
-- [ ] Ch 13 Interpreting Charts (7834–8433): functional nature, baadhakas, method
+- [~] Ch 13 Interpreting Charts (7834–8433): functional nature per lagna (Table 30) + yogakaraka
+      + baadhaka rule → `data/functional.ts` DONE. TODO: analysis method (13.4) + examples
 - [ ] Ch 14 Longevity (8434–8656): marakas, rudra/trishoola, three pairs, 8th-lord
 - [ ] Ch 15 Strength of Planets/Rasis (8657–9318): avasthas, shadbala, co-lord/rasi strength
 

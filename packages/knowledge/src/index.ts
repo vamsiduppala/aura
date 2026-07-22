@@ -11,6 +11,9 @@ export {
   CHARA_KARAKAS, STHIRA_KARAKAS, NAISARGIKA_HOUSE_KARAKA,
   type CharaKaraka, type SthiraKaraka,
 } from './data/karakas.js';
+export {
+  FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse, type FunctionalNature,
+} from './data/functional.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, type Placement, type Interpretation, type Dignity,
