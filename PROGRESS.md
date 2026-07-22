@@ -119,6 +119,17 @@ Last updated: 2026-07-21 ~11:20 CDT (session 1). Phases 1–5 complete; 52 engin
 - NOTE: chat renders the deterministic fallback (Gemini free-tier quota exhausted); LLM narration
   turns on automatically when quota resets or a fresh key is set in Settings.
 
+## Deferred (documented, not shipped unverified)
+- **Lazy-load the astronomy bundle** — the web bundle is ~1.4MB (astronomia VSOP87). Dynamic-
+  importing the ephemeris/Aura after first paint would speed initial load. Deferred: it makes the
+  store async (loading states + test changes) and the loading UX isn't verifiable here. Low risk to
+  add later behind the facade.
+- **Full native engine port** (Kotlin/Swift) — the SwiftUI/Compose skeletons compile against a
+  ported pure-math core (docs/PLATFORMS.md). Deferred: no way to compile/verify Swift/Kotlin here,
+  so shipping it would be unverified. The pure-math port is mechanical + reuses the golden tests.
+- **Real geocoder + historical-DST tz** in onboarding (currently a preset offline city list, Q-04).
+- **Server proxy for the LLM key** for production (client key is exposed; fine for the dev key).
+
 ## Session log
 - **S1 2026-07-21 04:01 CDT:** Env check, scaffolding, handoff docs, decisions/questions.
   Building engine core next. Token budget: working until exhaustion; cloud resume scheduled.

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Aura, Chart } from '@aura/engine';
 import { energyColor, energyLabel } from '../ui';
 
@@ -5,6 +6,22 @@ export function Blueprint({ aura, chart, goalName }: { aura: Aura; chart: Chart;
   const rows = aura.blueprint(chart);
   const yogas = aura.yogas(chart);
   const who = goalName.split('’')[0]!.split("'")[0]!.trim() || 'you';
+  const [shared, setShared] = useState<'idle' | 'copied'>('idle');
+
+  const shareText = [
+    '✦ My aura blueprint',
+    rows.map((r) => `${r.role} ${energyLabel(r.energy)}`).join(' · '),
+    yogas.length ? `Born gifts: ${yogas.map((y) => y.name).join(', ')}` : '',
+    '— one honest reading a day, no charts to learn.',
+  ].filter(Boolean).join('\n');
+
+  const share = async () => {
+    try {
+      if (navigator.share) { await navigator.share({ title: 'My aura blueprint', text: shareText }); return; }
+      await navigator.clipboard.writeText(shareText);
+      setShared('copied'); setTimeout(() => setShared('idle'), 2000);
+    } catch { /* user cancelled or blocked — no-op */ }
+  };
 
   return (
     <>
@@ -29,7 +46,9 @@ export function Blueprint({ aura, chart, goalName }: { aura: Aura; chart: Chart;
             );
           })}
           <div className="share">
-            <div className="share-btn">Share your blueprint ↗</div>
+            <button className="share-btn" onClick={share} style={{ width: '100%', cursor: 'pointer' }}>
+              {shared === 'copied' ? 'Copied to clipboard ✓' : 'Share your blueprint ↗'}
+            </button>
           </div>
         </div>
 
