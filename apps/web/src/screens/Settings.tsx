@@ -4,8 +4,10 @@ import { hasUserKey, setGeminiKey, clearGeminiKey } from '../services/chat';
 import { Button } from '@/components/ui/button';
 
 /** About / privacy / delete + Cosmic Mentor key (SPEC §11.1, §11.6). */
-export function Settings({ place, onDelete, onBack }: {
-  place: string; onDelete: () => void; onBack: () => void;
+export function Settings({ place, account, onDelete, onBack, onLogout, onSignIn }: {
+  place: string;
+  account: { email: string } | 'guest';
+  onDelete: () => void; onBack: () => void; onLogout: () => void; onSignIn: () => void;
 }) {
   const [keyInput, setKeyInput] = useState('');
   const [saved, setSaved] = useState(hasUserKey());
@@ -25,6 +27,19 @@ export function Settings({ place, onDelete, onBack }: {
           <span className="ttl">Settings</span>
           <span style={{ width: 22 }} />
         </div>
+
+        <div className="qh" style={{ marginBottom: 10 }}>Account</div>
+        {account === 'guest' ? (
+          <>
+            <p className="body" style={{ marginBottom: 8 }}>You’re using aura on this device only. Sign in to keep your chart safe and sync it.</p>
+            <Button size="sm" onClick={onSignIn} className="!w-auto px-5" style={{ marginBottom: 26 }}>Sign in or create an account</Button>
+          </>
+        ) : (
+          <>
+            <p className="body" style={{ marginBottom: 8 }}>Signed in as <b style={{ color: 'var(--mist)' }}>{account.email}</b>. Your profile is saved to your local aura server.</p>
+            <button className="btn ghost" onClick={onLogout} style={{ textAlign: 'left', padding: '2px 0', marginBottom: 26 }}>Sign out</button>
+          </>
+        )}
 
         <div className="qh" style={{ marginBottom: 10 }}>What aura is</div>
         <p className="body" style={{ marginBottom: 26 }}>{DISCLAIMER}</p>

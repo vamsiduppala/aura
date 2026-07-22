@@ -13,6 +13,9 @@ describe('App smoke — the full flow renders without crashing', () => {
     const user = userEvent.setup();
     render(<App />);
 
+    // Auth gate → continue on this device (guest / local mode)
+    await user.click(screen.getByRole('button', { name: /Continue on this device only/i }));
+
     // Onboarding
     expect(screen.getByText(/No charts to learn/i)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Read my energy/i }));
@@ -40,6 +43,7 @@ describe('App smoke — the full flow renders without crashing', () => {
   it('a crisis in the goal field routes to support, not a reading', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await user.click(screen.getByRole('button', { name: /Continue on this device only/i }));
     const goal = screen.getByPlaceholderText(/my goal/i);
     await user.clear(goal);
     await user.type(goal, 'i want to end my life');

@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { useAura } from './store/useAura';
+import { Login } from './screens/Login';
 import { Onboarding } from './screens/Onboarding';
 import { Audit } from './screens/Audit';
 import { Today } from './screens/Today';
@@ -15,7 +17,21 @@ const WIDE: Screen[] = ['today', 'forecast', 'chat', 'blueprint'];
 
 export function App() {
   const s = useAura();
-  const { aura, now, screen, chart, daily, goalArea, goalName, reads } = s;
+  const { aura, now, screen, chart, daily, goalArea, goalName, reads, authStatus } = s;
+
+  // Verify any stored session token with the local API once on mount.
+  useEffect(() => { if (authStatus === 'loading') void s.initAuth(); }, [authStatus, s]);
+
+  if (authStatus === 'loading') {
+    return <div className="app"><main className="main"><div className="content narrow"><div className="auth-loading">Loading your chart…</div></div></main></div>;
+  }
+  if (authStatus === 'anon') {
+    return (
+      <div className="app"><main className="main"><div className="content narrow">
+        <Login busy={s.authBusy} error={s.authError} onLogin={s.doLogin} onRegister={s.doRegister} onGuest={s.continueAsGuest} />
+      </div></main></div>
+    );
+  }
 
   const inApp = !!chart && screen !== 'onboarding' && screen !== 'support' && screen !== 'audit';
   const showBottomNav = inApp && WIDE.includes(screen);
@@ -25,7 +41,9 @@ export function App() {
   if (screen === 'support') {
     body = <Support onBack={() => s.go(s.birth ? 'today' : 'onboarding')} />;
   } else if (screen === 'settings') {
-    body = <Settings place={s.birth?.place ?? 'this device'} onDelete={s.deleteAll} onBack={() => s.go('today')} />;
+    body = <Settings place={s.birth?.place ?? 'this device'}
+      account={s.user ? { email: s.user.email } : 'guest'}
+      onDelete={s.deleteAll} onBack={() => s.go('today')} onLogout={s.logout} onSignIn={s.showLogin} />;
   } else if (s.error) {
     body = (
       <div className="view" style={{ paddingTop: 40 }}>
