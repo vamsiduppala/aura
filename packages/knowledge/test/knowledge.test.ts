@@ -9,7 +9,7 @@ import {
   getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord, classifyDignity,
   grahaAspectsFrom, rasiDrishti, argalaOn,
-  arudhaOf, allArudhas,
+  arudhaOf, allArudhas, grahaArudhas,
   vargaSign,
   bhavaLagna, horaLagna, ghatiLagna, sreeLagna,
   sunUpagrahas, partLords, upagrahaFraction,
@@ -130,6 +130,23 @@ describe('arudha padas (Ch 9) — verified against the book’s Chart 1', () => 
   it('single arudha matches a hand-worked case (AL exception → 10th)', () => {
     // House 1 in Virgo(5), lord Mercury in Pisces(11) → AL in Gemini(2).
     expect(arudhaOf(5, 11)).toBe(2);
+  });
+
+  it('computes all 9 graha arudhas as the book does (Ch 9.5, Example 30)', () => {
+    // Chart 1 planet signs; dual-lord stronger owned signs picked per the book.
+    const strongerOwned: Record<Graha, number> = {
+      sun: 4, moon: 3, mars: 0, mercury: 2, jupiter: 11, venus: 6, saturn: 9, rahu: 10, ketu: 7,
+    };
+    const ga = grahaArudhas((g) => SIGN[g], (g) => strongerOwned[g]);
+    expect(ga.sun).toBe(9);      // Capricorn
+    expect(ga.moon).toBe(4);     // Leo
+    expect(ga.mars).toBe(9);     // Capricorn (1st exception)
+    expect(ga.mercury).toBe(2);  // Gemini (7th exception)
+    expect(ga.jupiter).toBe(10); // Aquarius
+    expect(ga.venus).toBe(1);    // Taurus
+    expect(ga.saturn).toBe(3);   // Cancer (7th exception)
+    expect(ga.rahu).toBe(5);     // Virgo
+    expect(ga.ketu).toBe(5);     // Virgo
   });
 
   it('computes all 12 arudhas exactly as the book does', () => {

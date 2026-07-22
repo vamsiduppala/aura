@@ -30,6 +30,7 @@ export {
 } from './data/aspects.js';
 export {
   arudhaOf, allArudhas, arudhaTable, ARUDHA_NAMES, ARUDHA_USE, CO_LORD,
+  grahaArudha, grahaArudhas, OWN_SIGNS,
   type ArudhaResult,
 } from './data/arudhas.js';
 export {

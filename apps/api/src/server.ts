@@ -15,7 +15,7 @@ import {
   getGraha, getRasi, getBhava, getNakshatra, search,
   interpretPlacement, interpretLagnaLord, classifyDignity, DIGNITIES,
   grahaAspectsFrom, rasiDrishti, argalaOn, ASPECT_NOTES,
-  arudhaTable, ARUDHA_NAMES,
+  arudhaTable, ARUDHA_NAMES, grahaArudhas, OWN_SIGNS,
   vargaSign, allVargas, VARGA_DIVISORS,
   specialLagnas, SPECIAL_LAGNA_USE,
   sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART,
@@ -416,6 +416,15 @@ export function buildServer() {
 
   // Arudha padas (Ch 9). POST the lagna sign + each planet's sign; get all 12 arudhas.
   app.get('/arudhas/names', async () => ARUDHA_NAMES);
+  // Graha arudhas (Ch 9.5): POST each planet's sign (+ optional stronger owned sign for duals).
+  app.post('/arudhas/graha', async (req, reply) => {
+    const b = req.body as { signs?: Record<string, number>; strongerOwned?: Record<string, number> };
+    if (!b?.signs) return reply.code(400).send({ error: 'signs { graha: signIndex } required; optional strongerOwned { graha: signIndex } for dual-lords', ownSigns: OWN_SIGNS });
+    return grahaArudhas(
+      (g) => b.signs![g] ?? 0,
+      (g, owned) => b.strongerOwned?.[g] ?? owned[0]!,
+    );
+  });
   app.post('/arudhas', async (req, reply) => {
     const b = req.body as { lagnaSign?: number; signs?: Record<string, number> };
     if (b?.lagnaSign == null || !b.signs) {

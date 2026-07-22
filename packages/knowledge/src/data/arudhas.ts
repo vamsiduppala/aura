@@ -30,6 +30,35 @@ export function arudhaOf(houseSign: number, lordSign: number): number {
   return a;
 }
 
+/** The sign(s) each graha owns (0=Aries). Dual-lords list both; the stronger is used. */
+export const OWN_SIGNS: Record<Graha, number[]> = {
+  sun: [4], moon: [3], mars: [0, 7], mercury: [2, 5], jupiter: [8, 11],
+  venus: [1, 6], saturn: [9, 10], rahu: [10], ketu: [7],
+};
+
+/**
+ * Graha arudha pada (Ch 9.5): the "image" of a planet. Same rule as the bhava arudha but
+ * counted from the sign the planet occupies to its (stronger) owned sign.
+ */
+export const grahaArudha = (planetSign: number, ownedSign: number): number => arudhaOf(planetSign, ownedSign);
+
+/**
+ * All nine graha arudhas keyed by graha. `signOf` gives each planet's sign; `pickOwned`
+ * (optional) chooses the stronger of a dual-lord's two signs (defaults to the first/primary).
+ */
+export function grahaArudhas(
+  signOf: (g: Graha) => number,
+  pickOwned?: (g: Graha, owned: number[]) => number,
+): Record<Graha, number> {
+  const out = {} as Record<Graha, number>;
+  for (const g of Object.keys(OWN_SIGNS) as Graha[]) {
+    const owned = OWN_SIGNS[g];
+    const ownedSign = owned.length === 1 ? owned[0]! : (pickOwned ? pickOwned(g, owned) : owned[0]!);
+    out[g] = grahaArudha(signOf(g), ownedSign);
+  }
+  return out;
+}
+
 /**
  * All twelve arudha padas keyed by house number (1..12). `signOf` returns the sign a
  * planet occupies; `stronger` (optional) picks the stronger of two co-lords for the

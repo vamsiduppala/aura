@@ -48,7 +48,8 @@ resuming session can pick up exactly where it left off.
 - [x] Ch 9 Arudha Padas (3552–4042): bhava arudha computation (verified against the book's
       Chart 1 — all 12 padas incl. 1st/7th→10th exception + dual-lord Aq/Sc handling),
       Table 18 names, AL/UL use → `data/arudhas.ts` (arudhaOf/allArudhas/arudhaTable).
-      API: /arudhas (POST lagna+signs), /arudhas/names. TODO: graha arudhas (9.5)
+      API: /arudhas (POST lagna+signs), /arudhas/names, /arudhas/graha. Graha arudhas (9.5,
+      Example 30) → grahaArudhas() also done.
 - [x] Ch 10 Aspects & Argalas (4043–4620): graha drishti (7th + Mars/Jup/Sat specials),
       rasi drishti (modality rules), argala (2/4/11 primary + 5 secondary) & virodhargala
       (12/10/3/9) with meanings + Ketu/3rd-malefic notes → `data/aspects.ts` + compute
