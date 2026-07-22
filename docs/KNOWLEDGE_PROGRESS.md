@@ -77,7 +77,11 @@ resuming session can pick up exactly where it left off.
 - [x] Ch 17 Ashtottari Dasa (9926–10082): 108y over 8 lords (no Ketu), unequal arcs
       (Table 39, Rahu wrap), birth balance, antardasas start AFTER the maha lord →
       `data/ashtottari.ts`, verified vs Example 59. API: /dasha/ashtottari
-- [ ] Ch 18 Narayana Dasa (10083–11339)
+- [~] Ch 18 Narayana Dasa (10083–11339): full rasi-dasa progression (Brahma/Shiva/Vishnu
+      motion, 9th-foot direction, Saturn/Ketu exceptions), dasa length (lord distance −1,
+      count-1→12, exalt+1/debil−1), 2nd-cycle (12−len), equal antardasas → `data/narayana.ts`,
+      verified vs Examples 63–67. API: /dasha/narayana/{progression,length,antardashas}.
+      Caller supplies strength-based seed + dual-lord picks. TODO: varga Narayana (18.5)
 - [ ] Ch 19 Lagna Kendradi Rasi Dasa (11340–11462)
 - [ ] Ch 20 Sudasa (11463–11564)
 - [ ] Ch 21 Drigdasa (11565–11727)

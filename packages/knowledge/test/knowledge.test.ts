@@ -19,6 +19,7 @@ import {
   ashtottariBalanceAtBirth, ashtottariAntardashas, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
   marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
+  narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
   type Graha, type RefSigns,
 } from '../src/index.js';
 
@@ -188,6 +189,32 @@ describe('divisional charts (Ch 6) — verified against the book’s worked exam
   });
   it('D-60 Shashtyamsa', () => {
     expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
+  });
+});
+
+describe('Narayana dasa (Ch 18) — verified against the book’s Examples 63–67', () => {
+  it('dasa progression: Brahma / Shiva / Vishnu motion + direction', () => {
+    expect(narayanaProgression(7)).toEqual([7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5, 0]);   // Ex63 Sc (Shiva, backward)
+    expect(narayanaProgression(11)).toEqual([11, 3, 7, 8, 0, 4, 5, 9, 1, 2, 6, 10]);  // Ex64 Pi (Vishnu, forward)
+    expect(narayanaProgression(9)).toEqual([9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 11, 10]);    // Ex65 Cp (Brahma, backward)
+    expect(narayanaProgression(4)).toEqual([4, 9, 2, 7, 0, 5, 10, 3, 8, 1, 6, 11]);    // Ex66 Le (Shiva, forward)
+  });
+  it('Saturn & Ketu exceptions on the seed', () => {
+    expect(narayanaProgression(7, true).slice(0, 6)).toEqual([7, 8, 9, 10, 11, 0]);    // Sc+Saturn → regular fwd
+    expect(narayanaProgression(7, false, true).slice(0, 6)).toEqual([7, 0, 5, 10, 3, 8]); // Sc+Ketu → Shiva reversed
+  });
+  it('dasa lengths (Example 66) incl. the exalted-lord +1', () => {
+    expect(narayanaDasaLength(4, 3)).toBe(1);                 // Le, Sun in Cn
+    expect(narayanaDasaLength(9, 1)).toBe(8);                 // Cp, Saturn in Ta
+    expect(narayanaDasaLength(2, 4)).toBe(2);                 // Ge, Mercury in Le
+    expect(narayanaDasaLength(8, 7)).toBe(11);               // Sg, Jupiter in Sc (count 12 → 11)
+    expect(narayanaDasaLength(3, 1, { exalted: true })).toBe(3); // Cn, Moon in Ta exalted
+    expect(narayanaSecondCycle(1)).toBe(11);                  // 2nd cycle = 12 − 1
+  });
+  it('antardasas: 12 equal, direction by the start rasi’s sign parity (Example 67)', () => {
+    const a = narayanaAntardashas(1, 5); // start Ta (even sign) → backward, 5 months each
+    expect(a.map((x) => x.rasi)).toEqual([1, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
+    expect(a[0]!.months).toBe(5);
   });
 });
 

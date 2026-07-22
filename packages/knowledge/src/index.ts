@@ -70,6 +70,10 @@ export {
   baladiAvastha, jagradiAvastha, deeptadiAvastha, AVASTHA_NOTES,
   type Baladi, type Jagradi, type Deeptadi,
 } from './data/avasthas.js';
+export {
+  narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
+  type RasiMotion, type DasaLengthOpts, type Antardasa,
+} from './data/narayana.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

@@ -24,6 +24,7 @@ import {
   marakaLords, MARAKA_HOUSES, signModality, pairLongevity, combineThreePairs, LONGEVITY_RANGES,
   type LifeSpan,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
+  narayanaProgression, narayanaDasaLength, narayanaAntardashas,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -101,6 +102,23 @@ export function buildServer() {
     const q = req.query as { longitude?: string };
     if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
     return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+
+  // Narayana dasa (Ch 18) — rasi dasa progression, lengths, antardasas.
+  app.get('/dasha/narayana/progression', async (req, reply) => {
+    const q = req.query as { seed?: string; saturn?: string; ketu?: string };
+    if (q.seed == null) return reply.code(400).send({ error: 'seed (0-11) required; optional saturn=true, ketu=true' });
+    return { seed: Number(q.seed), progression: narayanaProgression(Number(q.seed), q.saturn === 'true', q.ketu === 'true') };
+  });
+  app.get('/dasha/narayana/length', async (req, reply) => {
+    const q = req.query as { rasi?: string; lordSign?: string; exalted?: string; debilitated?: string };
+    if (q.rasi == null || q.lordSign == null) return reply.code(400).send({ error: 'rasi and lordSign (0-11) required' });
+    return { rasi: Number(q.rasi), years: narayanaDasaLength(Number(q.rasi), Number(q.lordSign), { exalted: q.exalted === 'true', debilitated: q.debilitated === 'true' }) };
+  });
+  app.get('/dasha/narayana/antardashas', async (req, reply) => {
+    const q = req.query as { start?: string; years?: string };
+    if (q.start == null || q.years == null) return reply.code(400).send({ error: 'start (0-11) and years required' });
+    return { start: Number(q.start), antardashas: narayanaAntardashas(Number(q.start), Number(q.years)) };
   });
 
   // Avasthas (Ch 15). Baladi (age) from longitude; Jagradi/Deeptadi from dignity.
