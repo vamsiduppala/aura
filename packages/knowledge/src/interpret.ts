@@ -8,6 +8,8 @@ import type { Graha } from './types.js';
 import { GRAHAS } from './data/grahas.js';
 import { RASI_BY_INDEX } from './data/rasis.js';
 import { BHAVA } from './data/bhavas.js';
+import { dignityOf } from './data/dignities.js';
+import { naturalRelation } from './data/relationships.js';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
@@ -18,6 +20,20 @@ function list(arr: string[]): string {
 }
 
 export type Dignity = 'exalted' | 'own' | 'moolatrikona' | 'friend' | 'neutral' | 'enemy' | 'debilitated';
+
+/** Classify a planet's dignity in a sign (0..11) from the standard rules + relationships. */
+export function classifyDignity(graha: Graha, sign: number): Dignity {
+  const d = dignityOf(graha);
+  const s = ((sign % 12) + 12) % 12;
+  if (d.exalt === s) return 'exalted';
+  if (d.debil === s) return 'debilitated';
+  if (d.moolatrikona === s) return 'moolatrikona';
+  if (d.own.includes(s)) return 'own';
+  const lord = RASI_BY_INDEX(s).lord;
+  if (lord === graha) return 'own';
+  const rel = naturalRelation(graha, lord);
+  return rel === 'friend' ? 'friend' : rel === 'enemy' ? 'enemy' : 'neutral';
+}
 
 export interface Placement {
   graha: Graha;

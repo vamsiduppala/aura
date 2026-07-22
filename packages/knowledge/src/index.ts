@@ -22,7 +22,9 @@ export {
   type Relation, type CompoundRelation,
 } from './data/relationships.js';
 export { REMEDIES, behaviouralRemedy, type Remedy } from './data/remedies.js';
+export { DIGNITIES, dignityOf, type DignityDef } from './data/dignities.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
-  interpretPlacement, interpretLagnaLord, type Placement, type Interpretation, type Dignity,
+  interpretPlacement, interpretLagnaLord, classifyDignity,
+  type Placement, type Interpretation, type Dignity,
 } from './interpret.js';

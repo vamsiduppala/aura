@@ -7,7 +7,7 @@ import {
   naturalRelation, temporaryRelation, compoundRelation,
   REMEDIES, behaviouralRemedy,
   getGraha, getRasi, getBhava, search,
-  interpretPlacement, interpretLagnaLord,
+  interpretPlacement, interpretLagnaLord, classifyDignity,
 } from '../src/index.js';
 
 describe('reference data completeness', () => {
@@ -58,6 +58,14 @@ describe('interpretation engine', () => {
   it('interprets the lagna lord', () => {
     const r = interpretLagnaLord('mars', 10, 9);
     expect(r.text).toMatch(/rules your rising sign|chart ruler|captain/i);
+  });
+
+  it('classifies dignity from the standard rules', () => {
+    expect(classifyDignity('sun', 0)).toBe('exalted');       // Sun in Aries
+    expect(classifyDignity('saturn', 0)).toBe('debilitated');// Saturn in Aries
+    expect(classifyDignity('mars', 0)).toBe('own');          // Mars in Aries (moolatrikona)
+    expect(classifyDignity('jupiter', 3)).toBe('exalted');   // Jupiter in Cancer
+    expect(classifyDignity('sun', 4)).toBe('own');           // Sun in Leo
   });
 });
 
