@@ -13,6 +13,7 @@ import {
   getGraha, getRasi, getBhava, getNakshatra, search,
   interpretPlacement, interpretLagnaLord, classifyDignity, DIGNITIES,
   grahaAspectsFrom, rasiDrishti, argalaOn, ASPECT_NOTES,
+  arudhaTable, ARUDHA_NAMES,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -75,6 +76,16 @@ export function buildServer() {
     const q = req.query as { house?: string };
     if (q.house == null) return reply.code(400).send({ error: 'house (1-12) is required' });
     return { house: Number(q.house), argalas: argalaOn(Number(q.house)) };
+  });
+  // Arudha padas (Ch 9). POST the lagna sign + each planet's sign; get all 12 arudhas.
+  app.get('/arudhas/names', async () => ARUDHA_NAMES);
+  app.post('/arudhas', async (req, reply) => {
+    const b = req.body as { lagnaSign?: number; signs?: Record<string, number> };
+    if (b?.lagnaSign == null || !b.signs) {
+      return reply.code(400).send({ error: 'lagnaSign (0-11) and signs { graha: signIndex } are required' });
+    }
+    const signOf = (g: Graha) => b.signs![g] ?? 0;
+    return arudhaTable(b.lagnaSign, signOf);
   });
   // Classify a planet's dignity in a sign (0=Aries): exalted/debilitated/moolatrikona/own/friend/neutral/enemy.
   app.get('/classify', async (req, reply) => {

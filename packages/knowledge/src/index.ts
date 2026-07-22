@@ -28,6 +28,10 @@ export {
   ARGALA_PRIMARY, ARGALA_SECONDARY, VIRODHARGALA, ARGALA_MEANING, argalaOn,
   ASPECT_NOTES, type ArgalaSource,
 } from './data/aspects.js';
+export {
+  arudhaOf, allArudhas, arudhaTable, ARUDHA_NAMES, ARUDHA_USE, CO_LORD,
+  type ArudhaResult,
+} from './data/arudhas.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, classifyDignity,

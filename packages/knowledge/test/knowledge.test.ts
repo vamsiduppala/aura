@@ -9,6 +9,8 @@ import {
   getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord, classifyDignity,
   grahaAspectsFrom, rasiDrishti, argalaOn,
+  arudhaOf, allArudhas,
+  type Graha,
 } from '../src/index.js';
 
 describe('reference data completeness', () => {
@@ -96,6 +98,35 @@ describe('aspects & argalas (Ch 10)', () => {
     expect(houses).toEqual([2, 4, 5, 11]);
     const twelfthObstructs = a.find((x) => x.house === 2)!;
     expect(twelfthObstructs.obstructedBy).toBe(12); // argala from 2nd obstructed by 12th
+  });
+});
+
+describe('arudha padas (Ch 9) — verified against the book’s Chart 1', () => {
+  // Chart 1: Asc Virgo (lagna sign 5). Planet signs (0=Aries):
+  const SIGN: Record<Graha, number> = {
+    sun: 11, moon: 2, mars: 0, mercury: 11, jupiter: 0, venus: 11, saturn: 0, rahu: 3, ketu: 9,
+  };
+  const signOf = (g: Graha) => SIGN[g];
+
+  it('single arudha matches a hand-worked case (AL exception → 10th)', () => {
+    // House 1 in Virgo(5), lord Mercury in Pisces(11) → AL in Gemini(2).
+    expect(arudhaOf(5, 11)).toBe(2);
+  });
+
+  it('computes all 12 arudhas exactly as the book does', () => {
+    const a = allArudhas(5, signOf);
+    expect(a[1]).toBe(2);   // AL  → Gemini
+    expect(a[2]).toBe(4);   // A2  → Leo
+    expect(a[3]).toBe(5);   // A3  → Virgo
+    expect(a[4]).toBe(4);   // A4  → Leo
+    expect(a[5]).toBe(0);   // A5  → Aries (7th exception)
+    expect(a[6]).toBe(2);   // A6  → Gemini
+    expect(a[7]).toBe(1);   // A7  → Taurus
+    expect(a[8]).toBe(9);   // A8  → Capricorn (1st exception)
+    expect(a[9]).toBe(9);   // A9  → Capricorn
+    expect(a[10]).toBe(5);  // A10 → Virgo (7th exception)
+    expect(a[11]).toBe(1);  // A11 → Taurus
+    expect(a[12]).toBe(6);  // UL  → Libra
   });
 });
 
