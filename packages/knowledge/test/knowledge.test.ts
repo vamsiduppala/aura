@@ -3,6 +3,7 @@ import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
+  TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
   getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord,
 } from '../src/index.js';
@@ -106,6 +107,21 @@ describe('functional nature (per lagna)', () => {
     expect(baadhakaHouse('movable')).toBe(11);
     expect(baadhakaHouse('fixed')).toBe(9);
     expect(baadhakaHouse('dual')).toBe(7);
+  });
+});
+
+describe('transits (gochara from Moon)', () => {
+  it('encodes favourable transit houses for all 9 grahas', () => {
+    expect(Object.keys(TRANSIT_FROM_MOON)).toHaveLength(9);
+    expect(isFavourableTransit('jupiter', 11)).toBe(true);  // Jupiter in 11th from Moon
+    expect(isFavourableTransit('saturn', 1)).toBe(false);   // Saturn over Moon (peak Sade Sati)
+    expect(isFavourableTransit('mars', 6)).toBe(true);
+  });
+  it('maps Sade Sati phases from Saturn’s house relative to the Moon', () => {
+    expect(sadeSatiPhase(12)).toBe('rising');
+    expect(sadeSatiPhase(1)).toBe('peak');
+    expect(sadeSatiPhase(2)).toBe('setting');
+    expect(sadeSatiPhase(6)).toBeNull();
   });
 });
 

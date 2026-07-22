@@ -52,7 +52,8 @@ resuming session can pick up exactly where it left off.
 - [ ] Ch 24 Kalachakra Dasa (12196–13163)
 
 ## Part 3 — Transit Analysis
-- [ ] Ch 25 Transits & Natal References (13172–15364)
+- [~] Ch 25 Transits & Natal References (13172–15364): gochara favourable houses per planet from
+      Moon + Sade Sati phase → `data/transits.ts` DONE. TODO: full result tables, vedha, ashtakavarga transit
 - [ ] Ch 26 Transits: Miscellaneous (15365–16282): murthis, vedha, taras, latta, sarvatobhadra
 
 ## Part 4 — Tajaka Analysis

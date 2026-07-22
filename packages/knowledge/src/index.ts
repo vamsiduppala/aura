@@ -14,6 +14,9 @@ export {
 export {
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse, type FunctionalNature,
 } from './data/functional.js';
+export {
+  TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase, type TransitRule,
+} from './data/transits.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {
   interpretPlacement, interpretLagnaLord, type Placement, type Interpretation, type Dignity,
