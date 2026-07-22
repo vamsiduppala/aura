@@ -22,11 +22,13 @@ resuming session can pick up exactly where it left off.
       TODO: dignities detail 3.3 (engine has core) + relationships 3.4 (natural/temporary/compound)
 - [ ] Ch 4 Upagrahas (1920–2223): Sun-based + other upagrahas
 - [ ] Ch 5 Special Lagnas (2224–2397): Bhava/Hora/Ghati/Sree lagna
-- [ ] Ch 6 Divisional Charts (2398–2848): D-1..D-60 computation + significations + varga groups
+- [~] Ch 6 Divisional Charts (2398–2848): significations (Table 11, D-1..D-60 → which life area)
+      → `data/divisionals.ts` DONE. TODO: per-varga computation rules (engine has D9/D10) + varga groups
 - [~] Ch 7 Houses (2849–3113): significations 7.2 + categories (kendra/trikona/dusthana/upachaya/
       maraka) + natural karakas + body-parts → `data/bhavas.ts` DONE. TODO: reference lagnas 7.3
       + interpretation engine (`interpret.ts`: interpretPlacement/interpretLagnaLord) DONE + API service
-- [ ] Ch 8 Karakas (3114–3551): chara/sthira/naisargika karakas
+- [x] Ch 8 Karakas (3114–3551): chara (8, AK..DK by longitude), sthira (relatives), naisargika
+      (per-house significators) → `data/karakas.ts`
 - [ ] Ch 9 Arudha Padas (3552–4042): bhava/graha arudhas + use
 - [ ] Ch 10 Aspects & Argalas (4043–4620): graha/rasi drishti, argala, virodhargala
 - [~] Ch 11 Yogas (4621–5363): Ravi (Vesi/Vosi/Ubhayachara/Budha-Aditya), Chandra (Sunapha/Anapha/

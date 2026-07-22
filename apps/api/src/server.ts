@@ -8,6 +8,7 @@
 import Fastify from 'fastify';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
+  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
   getGraha, getRasi, getBhava, getNakshatra, search,
   interpretPlacement, interpretLagnaLord,
   type Graha, type Placement,
@@ -44,6 +45,12 @@ export function buildServer() {
     const y = YOGA_BY_KEY((req.params as { key: string }).key);
     return y ?? reply.code(404).send({ error: 'unknown yoga' });
   });
+  app.get('/divisionals', async () => DIVISIONALS);
+  app.get('/divisionals/:n', async (req, reply) => {
+    const d = DIVISIONAL_BY_N(Number((req.params as { n: string }).n));
+    return d ?? reply.code(404).send({ error: 'unknown divisional' });
+  });
+  app.get('/karakas', async () => ({ chara: CHARA_KARAKAS, sthira: STHIRA_KARAKAS }));
 
   // search
   app.get('/search', async (req) => {

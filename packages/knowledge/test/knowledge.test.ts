@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
-  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY, getGraha, getRasi, getBhava, search,
+  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
+  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
+  getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord,
 } from '../src/index.js';
 
@@ -67,6 +69,20 @@ describe('yogas', () => {
   });
   it('yogas are searchable', () => {
     expect(search('raja').some((h) => h.kind === 'yoga')).toBe(true);
+  });
+});
+
+describe('divisionals + karakas', () => {
+  it('has the standard divisional significations', () => {
+    expect(DIVISIONALS.length).toBeGreaterThanOrEqual(16);
+    expect(DIVISIONAL_BY_N(9)?.area).toMatch(/marriage|spouse/i);
+    expect(DIVISIONAL_BY_N(10)?.area).toMatch(/career/i);
+  });
+  it('has 8 chara karakas (AK..DK) and sthira karakas', () => {
+    expect(CHARA_KARAKAS).toHaveLength(8);
+    expect(CHARA_KARAKAS[0]!.code).toBe('AK');
+    expect(CHARA_KARAKAS[7]!.code).toBe('DK');
+    expect(STHIRA_KARAKAS.some((k) => k.relative === 'mother')).toBe(true);
   });
 });
 
