@@ -29,7 +29,9 @@ resuming session can pick up exactly where it left off.
 - [ ] Ch 8 Karakas (3114–3551): chara/sthira/naisargika karakas
 - [ ] Ch 9 Arudha Padas (3552–4042): bhava/graha arudhas + use
 - [ ] Ch 10 Aspects & Argalas (4043–4620): graha/rasi drishti, argala, virodhargala
-- [ ] Ch 11 Yogas (4621–5363): Ravi/Chandra/Mahapurusha/Naabhasa/Raaja/Dhana/Daridra yogas
+- [~] Ch 11 Yogas (4621–5363): Ravi (Vesi/Vosi/Ubhayachara/Budha-Aditya), Chandra (Sunapha/Anapha/
+      Duradhara/Kemadruma/Chandra-Mangala/Adhi/Gajakesari), 5 Mahapurusha, Raja/Dhana/Vipareeta/
+      Neechabhanga → `data/yogas.ts` (20 yogas, rule+effect). TODO: full Naabhasa (32) + more Raja variants
 - [ ] Ch 12 Ashtakavarga (5364–7833): BAV/SAV/prastaara/sodhya pindas
 - [ ] Ch 13 Interpreting Charts (7834–8433): functional nature, baadhakas, method
 - [ ] Ch 14 Longevity (8434–8656): marakas, rudra/trishoola, three pairs, 8th-lord

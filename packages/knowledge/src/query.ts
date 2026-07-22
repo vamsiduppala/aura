@@ -5,6 +5,7 @@ import { GRAHAS } from './data/grahas.js';
 import { RASIS, RASI_BY_INDEX } from './data/rasis.js';
 import { BHAVAS, BHAVA } from './data/bhavas.js';
 import { NAKSHATRAS, NAKSHATRA_BY_INDEX } from './data/nakshatras.js';
+import { YOGAS } from './data/yogas.js';
 
 export const getGraha = (g: Graha) => GRAHAS[g]!;
 export const getRasi = (i: number) => RASI_BY_INDEX(i);
@@ -38,6 +39,11 @@ export function search(term: string): SearchHit[] {
   for (const n of NAKSHATRAS) {
     if (match(n.name) || match(n.deity) || match(n.theme)) {
       hits.push({ kind: 'nakshatra', id: String(n.index), label: n.name, summary: `${n.theme} (deity: ${n.deity})` });
+    }
+  }
+  for (const y of YOGAS) {
+    if (match(y.name) || match(y.rule) || match(y.effect) || match(y.category)) {
+      hits.push({ kind: 'yoga', id: y.key, label: y.name, summary: y.effect });
     }
   }
   return hits;

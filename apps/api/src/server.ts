@@ -7,7 +7,7 @@
 
 import Fastify from 'fastify';
 import {
-  GRAHAS, RASIS, BHAVAS, NAKSHATRAS,
+  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
   getGraha, getRasi, getBhava, getNakshatra, search,
   interpretPlacement, interpretLagnaLord,
   type Graha, type Placement,
@@ -39,6 +39,11 @@ export function buildServer() {
   app.get('/bhavas/:n', async (req) => getBhava(Number((req.params as { n: string }).n)));
   app.get('/nakshatras', async () => NAKSHATRAS);
   app.get('/nakshatras/:i', async (req) => getNakshatra(Number((req.params as { i: string }).i)));
+  app.get('/yogas', async () => YOGAS);
+  app.get('/yogas/:key', async (req, reply) => {
+    const y = YOGA_BY_KEY((req.params as { key: string }).key);
+    return y ?? reply.code(404).send({ error: 'unknown yoga' });
+  });
 
   // search
   app.get('/search', async (req) => {

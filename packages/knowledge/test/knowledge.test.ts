@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, getGraha, getRasi, getBhava, search,
+  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY, getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord,
 } from '../src/index.js';
 
@@ -52,6 +52,21 @@ describe('interpretation engine', () => {
   it('interprets the lagna lord', () => {
     const r = interpretLagnaLord('mars', 10, 9);
     expect(r.text).toMatch(/rules your rising sign|chart ruler|captain/i);
+  });
+});
+
+describe('yogas', () => {
+  it('encodes the key yogas with rule + effect', () => {
+    expect(YOGAS.length).toBeGreaterThanOrEqual(18);
+    for (const y of YOGAS) {
+      expect(y.rule.length).toBeGreaterThan(10);
+      expect(y.effect.length).toBeGreaterThan(10);
+    }
+    expect(YOGA_BY_KEY('gajakesari')?.category).toBe('Chandra');
+    expect(YOGA_BY_KEY('hamsa')?.rule).toMatch(/Jupiter/);
+  });
+  it('yogas are searchable', () => {
+    expect(search('raja').some((h) => h.kind === 'yoga')).toBe(true);
   });
 });
 
