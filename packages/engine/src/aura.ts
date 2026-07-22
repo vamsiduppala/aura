@@ -17,6 +17,7 @@ import {
 } from './synthesis/reading.js';
 import { buildForecast, buildCustomForecast, type ForecastResult } from './synthesis/forecast.js';
 import { buildBlueprint, type BlueprintRow } from './synthesis/blueprint.js';
+import { detectYogas, type YogaResult } from './chart/yogas.js';
 import { buildRetrospective, type RetroItem, type RetrospectiveOptions } from './synthesis/retrospective.js';
 import { answerMentorQuery, type MentorQuery, type MentorAnswer } from './mentor/query.js';
 
@@ -92,6 +93,11 @@ export class Aura {
   /** The user's standing "blueprint" energies. */
   blueprint(chart: Chart): BlueprintRow[] {
     return buildBlueprint(chart);
+  }
+
+  /** Notable natal yogas as plain "born gifts" (may be empty). */
+  yogas(chart: Chart): YogaResult[] {
+    return detectYogas(chart);
   }
 
   /** The "Prove It" retrospective — recent past shifts, stated in past tense. */
