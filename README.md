@@ -39,6 +39,12 @@ npm run dev          # runs the API (:8787) + the web app (:5173) together
 `npm run dev` starts both processes via `concurrently`. To run them separately use
 `npm run dev:api` and `npm run dev:web`. See `docs/PHASE2.md` for details.
 
+**Config is optional.** It runs out of the box on defaults. To customise, copy the example
+env files and edit them — `cp apps/web/.env.example apps/web/.env.local` (API URL, and a Gemini
+key to switch the mentor from its deterministic fallback to the live LLM) and, if you want a
+non-default port or DB path, `cp apps/api/.env.example apps/api/.env.local`. Both `.env.example`
+files list every supported variable with its default.
+
 Or just look at `docs/screens/` — every screen, rendered with real engine data:
 onboarding → today (the signature aura orb) → reading → check-in → forecast → expanded → blueprint,
 plus settings and the crisis-support screen.
