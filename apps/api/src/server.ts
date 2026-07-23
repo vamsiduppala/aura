@@ -24,7 +24,7 @@ import {
   ashtakavarga, bhinnashtakavarga, sodhitaAshtakavarga, sodhyaPinda, AV_PLANETS,
   type RefSigns, type AVPlanet,
   panchanga, horaLord, matterTithi, tithiPanchaka,
-  dashaBalanceAtBirth, antardashas, VIMSHOTTARI_YEARS,
+  dashaBalanceAtBirth, antardashas, VIMSHOTTARI_YEARS, subdivideDasha, DASHA_LEVELS,
   ashtottariBalanceAtBirth, ashtottariAntardashas,
   marakaLords, MARAKA_HOUSES, signModality, pairLongevity, combineThreePairs, LONGEVITY_RANGES,
   maheswara, rudra8thSign,
@@ -480,6 +480,14 @@ export function buildServer() {
     if (q.moonLong == null) return reply.code(400).send({ error: 'moonLong (0-360) is required' });
     const balance = dashaBalanceAtBirth(Number(q.moonLong));
     return { system: 'vimshottari', totalYears: 120, balance, mahaYears: VIMSHOTTARI_YEARS, antardashas: antardashas(balance.lord) };
+  });
+  // Recursive Vimsottari subdivision to any depth (antardasa=1 … pratyantardasa=2 … deha=5).
+  app.get('/dasha/vimshottari/subdivide', async (req, reply) => {
+    const q = req.query as { lord?: string; years?: string; depth?: string };
+    if (!q.lord || q.years == null) return reply.code(400).send({ error: 'lord and years required; optional depth (1=antardasa..5=deha, default 2)' });
+    if (!GRAHAS[q.lord]) return reply.code(404).send({ error: 'unknown graha' });
+    const depth = Math.max(0, Math.min(5, q.depth == null ? 2 : Number(q.depth)));
+    return { levels: DASHA_LEVELS, tree: subdivideDasha(q.lord as Graha, Number(q.years), depth) };
   });
   app.get('/dasha/ashtottari', async (req, reply) => {
     const q = req.query as { moonLong?: string };

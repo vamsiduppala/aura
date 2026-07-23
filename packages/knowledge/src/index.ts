@@ -70,7 +70,8 @@ export {
 export {
   VIMSHOTTARI_ORDER, VIMSHOTTARI_YEARS, VIMSHOTTARI_TOTAL, nakshatraLord,
   dashaBalanceAtBirth, dashaSequence, subPeriodYears, antardashas, DASHA_VARIATION_OFFSET,
-  type DashaBalance, type DashaSpan,
+  subdivideDasha, DASHA_LEVELS,
+  type DashaBalance, type DashaSpan, type DashaNode,
 } from './data/vimshottari.js';
 export {
   ASHTOTTARI_ORDER, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,

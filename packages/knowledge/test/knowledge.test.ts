@@ -18,7 +18,7 @@ import {
   ashtakavarga, bhinnashtakavarga, AV_PLANETS,
   trikonaSodhana, ekadhipatyaSodhana, sodhitaAshtakavarga, sodhyaPinda,
   tithiOf, nityaYoga, karanaOf, horaLord, matterTithi, tithiPanchaka, KARMA_TITHI_SPEED, DHANA_TITHI_SPEED,
-  dashaBalanceAtBirth, dashaSequence, antardashas, nakshatraLord, VIMSHOTTARI_YEARS,
+  dashaBalanceAtBirth, dashaSequence, antardashas, subdivideDasha, nakshatraLord, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
   marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality, maheswara,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
@@ -607,6 +607,21 @@ describe('Vimsottari dasa (Ch 16) — verified against the book’s Example 50',
     expect(venusAntars[0]).toEqual({ lord: 'venus', years: 20 * 20 / 120 }); // 3y4m
     expect(venusAntars.find((a) => a.lord === 'sun')!.years).toBeCloseTo(1, 6); // 20*6/120 = 1y
     expect(venusAntars.reduce((s, a) => s + a.years, 0)).toBeCloseTo(VIMSHOTTARI_YEARS.venus, 6);
+  });
+  it('recursive subdivision reaches pratyantardasa/sookshma (the same fractal split each level)', () => {
+    // Depth 1 == the existing antardashas.
+    const t = subdivideDasha('venus', VIMSHOTTARI_YEARS.venus, 1);
+    expect(t.children!.map((c) => ({ lord: c.lord, years: c.years }))).toEqual(antardashas('venus'));
+    // Depth 2 gives pratyantardasas; each level's children sum back to their parent's length.
+    const two = subdivideDasha('mars', VIMSHOTTARI_YEARS.mars, 2);
+    const ad0 = two.children![0]!;             // Mars→Mars antardasa
+    expect(ad0.children!.reduce((s, c) => s + c.years, 0)).toBeCloseTo(ad0.years, 9);
+    // The first pratyantardasa of the Mars/Mars antardasa is Mars again, proportionally tiny.
+    expect(ad0.children![0]!.lord).toBe('mars');
+    expect(ad0.children![0]!.years).toBeCloseTo(VIMSHOTTARI_YEARS.mars * (7 / 120) * (7 / 120), 9);
+    // Depth 3 exists (sookshma) and stays leaf-terminated.
+    const three = subdivideDasha('sun', VIMSHOTTARI_YEARS.sun, 3);
+    expect(three.children![0]!.children![0]!.children![0]!.children).toBeUndefined();
   });
 });
 

@@ -54,5 +54,22 @@ export function antardashas(mahaLord: Graha): DashaSpan[] {
   return dashaSequence(mahaLord).map((lord) => ({ lord, years: subPeriodYears(mahaYears, lord) }));
 }
 
+/** The names of the Vimsottari sub-period levels, by depth (0 = the mahadasa itself). */
+export const DASHA_LEVELS = ['mahadasa', 'antardasa', 'pratyantardasa', 'sookshma', 'prana', 'deha'] as const;
+
+export interface DashaNode { lord: Graha; years: number; children?: DashaNode[] }
+
+/**
+ * Recursively subdivide a Vimsottari period into `depth` further levels — each period splits into 9
+ * sub-periods (in dasa order from its own lord, each proportional to its share of 120). depth 0 is a
+ * leaf; 1 gives antardasas, 2 pratyantardasas, 3 sookshma, 4 prana, 5 deha. The same fractal split
+ * at every level (16.x), so it composes to any depth. `years` is the period's own length.
+ */
+export function subdivideDasha(lord: Graha, years: number, depth: number): DashaNode {
+  if (depth <= 0) return { lord, years };
+  const children = dashaSequence(lord).map((sub) => subdivideDasha(sub, subPeriodYears(years, sub), depth - 1));
+  return { lord, years, children };
+}
+
 /** kshema / utpanna / adhana variation stars — start the dasa from the 4th/5th/8th nakshatra. */
 export const DASHA_VARIATION_OFFSET = { kshema: 3, utpanna: 4, adhana: 7 } as const;

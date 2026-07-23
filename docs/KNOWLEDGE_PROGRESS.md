@@ -89,8 +89,10 @@ resuming session can pick up exactly where it left off.
 
 ## Part 2 — Dasa Analysis
 - [x] Ch 16 Vimsottari Dasa (9345–9925): 120y, order+years (Table 38), nakshatra lords,
-      birth-balance from Moon, dasa sequence, proportional antardasas (any depth) →
-      `data/vimshottari.ts`, verified vs Example 50. API: /dasha/vimshottari
+      birth-balance from Moon, dasa sequence, proportional antardasas + `subdivideDasha` for the
+      recursive sub-levels (pratyantardasa/sookshma/prana/deha — the same fractal 9-fold split,
+      used for the Part 6 fine-timing) → `data/vimshottari.ts`, verified vs Example 50.
+      API: /dasha/vimshottari, /dasha/vimshottari/subdivide
 - [x] Ch 17 Ashtottari Dasa (9926–10082): 108y over 8 lords (no Ketu), unequal arcs
       (Table 39, Rahu wrap), birth balance, antardasas start AFTER the maha lord →
       `data/ashtottari.ts`, verified vs Example 59. API: /dasha/ashtottari
