@@ -16,7 +16,8 @@ export {
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse, type FunctionalNature,
 } from './data/functional.js';
 export {
-  TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase, type TransitRule,
+  TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
+  VEDHA_STHAANA, VEDHA_EXCEPTIONS, vedhaHouse, vedhaObstructors, type TransitRule,
 } from './data/transits.js';
 export {
   NATURAL_RELATIONS, naturalRelation, temporaryRelation, compoundRelation,

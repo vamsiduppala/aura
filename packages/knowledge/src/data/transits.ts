@@ -37,3 +37,41 @@ export function sadeSatiPhase(saturnHouseFromMoon: number): 'rising' | 'peak' | 
     : saturnHouseFromMoon === 1 ? 'peak'
       : saturnHouseFromMoon === 2 ? 'setting' : null;
 }
+
+// ── Rasi Gochara Vedha (Ch 26.3, Table 63) ────────────────────────────────────
+// Even in a favourable transit house (from natal Moon), a planet is "obstructed" (vedha)
+// if another planet sits in its vedha sthaana — then it cannot give its good results.
+// Map: per planet, favourable house → its vedha (obstruction) house.
+export const VEDHA_STHAANA: Record<Graha, Record<number, number>> = {
+  sun: { 3: 9, 6: 12, 10: 4, 11: 5 },
+  moon: { 1: 5, 3: 9, 6: 12, 7: 2, 10: 4, 11: 8 },
+  mars: { 3: 12, 6: 9, 11: 5 },
+  mercury: { 2: 5, 4: 3, 6: 9, 8: 1, 10: 8, 11: 12 },
+  jupiter: { 2: 12, 5: 4, 7: 3, 9: 10, 11: 8 },
+  venus: { 1: 8, 2: 7, 3: 1, 4: 10, 5: 9, 8: 5, 9: 11, 11: 6, 12: 3 },
+  saturn: { 3: 12, 6: 9, 11: 5 },
+  rahu: {}, ketu: {},
+};
+
+/** Father–son pairs that never cause vedha on each other. */
+export const VEDHA_EXCEPTIONS: [Graha, Graha][] = [['sun', 'saturn'], ['moon', 'mercury']];
+const isExceptionPair = (a: Graha, b: Graha): boolean =>
+  VEDHA_EXCEPTIONS.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+
+/** The vedha (obstruction) house for a planet's favourable transit house, or null if that house isn't favourable. */
+export function vedhaHouse(graha: Graha, favourableHouse: number): number | null {
+  return VEDHA_STHAANA[graha]?.[favourableHouse] ?? null;
+}
+
+/**
+ * Which transiting planets obstruct `graha`'s favourable transit in `favourableHouse`.
+ * `occupantsByHouse` maps a house-from-natal-Moon (1..12) to the planets transiting there.
+ * Sun↔Saturn and Moon↔Mercury never obstruct each other.
+ */
+export function vedhaObstructors(
+  graha: Graha, favourableHouse: number, occupantsByHouse: Partial<Record<number, Graha[]>>,
+): Graha[] {
+  const vh = vedhaHouse(graha, favourableHouse);
+  if (vh == null) return [];
+  return (occupantsByHouse[vh] ?? []).filter((o) => o !== graha && !isExceptionPair(graha, o));
+}

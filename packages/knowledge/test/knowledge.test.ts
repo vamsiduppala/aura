@@ -5,6 +5,7 @@ import {
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
   TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
   naturalRelation, temporaryRelation, compoundRelation,
+  vedhaHouse, vedhaObstructors,
   REMEDIES, behaviouralRemedy,
   getGraha, getRasi, getBhava, search,
   interpretPlacement, interpretLagnaLord, classifyDignity,
@@ -700,6 +701,16 @@ describe('transits (gochara from Moon)', () => {
     expect(sadeSatiPhase(1)).toBe('peak');
     expect(sadeSatiPhase(2)).toBe('setting');
     expect(sadeSatiPhase(6)).toBeNull();
+  });
+  it('rasi gochara vedha (Ch 26.3, Table 63) + father-son exceptions', () => {
+    // Bill Gates: Mercury favourable in the 4th → vedha sthaana is the 3rd.
+    expect(vedhaHouse('mercury', 4)).toBe(3);
+    expect(vedhaHouse('sun', 10)).toBe(4);
+    expect(vedhaHouse('mercury', 5)).toBeNull(); // 5th isn't a favourable Mercury transit
+    // A malefic in the vedha house obstructs; Sun↔Saturn never obstruct each other.
+    expect(vedhaObstructors('mercury', 4, { 3: ['mars', 'saturn'] })).toEqual(['mars', 'saturn']);
+    expect(vedhaObstructors('sun', 10, { 4: ['saturn'] })).toEqual([]); // Sun/Saturn exception
+    expect(vedhaObstructors('moon', 1, { 5: ['mercury'] })).toEqual([]); // Moon/Mercury exception
   });
 });
 

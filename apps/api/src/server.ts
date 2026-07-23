@@ -30,6 +30,7 @@ import {
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa,
   kalachakraPada,
   taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS, lattaNakshatra, murthiOf,
+  vedhaHouse, VEDHA_STHAANA,
   charaKarakas,
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
@@ -351,6 +352,12 @@ export function buildServer() {
     const jn = Number(q.janmaNak);
     return Object.fromEntries(Object.keys(SPECIAL_NAKSHATRAS).map((k) =>
       [k, { nakshatra: specialNakshatra(jn, k as keyof typeof SPECIAL_NAKSHATRAS), shows: SPECIAL_NAKSHATRAS[k as keyof typeof SPECIAL_NAKSHATRAS]!.shows }]));
+  });
+  app.get('/transit/vedha', async (req, reply) => {
+    const q = req.query as { graha?: string; house?: string };
+    if (!q.graha || q.house == null) return reply.code(400).send({ error: 'graha and house (favourable transit house 1-12) required', table: VEDHA_STHAANA });
+    if (!GRAHAS[q.graha]) return reply.code(404).send({ error: 'unknown graha' });
+    return { graha: q.graha, favourableHouse: Number(q.house), vedhaHouse: vedhaHouse(q.graha as Graha, Number(q.house)) };
   });
   app.get('/transit/murthi', async (req, reply) => {
     const q = req.query as { house?: string };
