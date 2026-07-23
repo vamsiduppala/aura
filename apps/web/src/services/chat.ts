@@ -18,10 +18,13 @@ const AREA_ENUM: LifeArea[] = ['self', 'money', 'communication', 'home', 'creati
 // classical planet alongside its energy — but every safety rule still holds.
 const MENTOR_KNOWLEDGE_ADDENDUM = `
 You also have a second tool: lookup_astrology(topic, area?). Use it when the user wants to
-UNDERSTAND something — a concept ("what's a raja yoga?", "what does my rising sign mean?") or
-why they are a certain way in a life area ("why do I get so guarded in love?"). Pass a short
-topic and, if the question is about a life area, that area. It returns real facts from the
-knowledge base and the user's own real chart placements. Narrate ONLY what it returns.
+UNDERSTAND something — a concept ("what's a raja yoga?", "what does my rising sign mean?"),
+what's special/notable about their chart ("do I have any special combinations?", "what are my
+strengths?"), or why they are a certain way in a life area ("why do I get so guarded in love?").
+Pass a short topic and, if the question is about a life area, that area. It returns real facts
+from the knowledge base, the notable combinations the user ACTUALLY has (their "signatures" —
+soul/partner planet, chart shape, and any raja / vipareeta yogas), and their real chart
+placements for the area. Narrate ONLY what it returns — never invent a yoga they don't have.
 For questions about what's happening or what to do now/next, still use query_energy.
 You MAY now name the classical planet next to its energy (e.g. "your Heavy Lifting energy —
 Saturn"), because the app shows both. Keep it light and warm; never dump raw chart mechanics
@@ -122,6 +125,9 @@ function localAstroReply(l: AstroLookup): string {
     const c = l.concepts[0]!;
     return `Here’s the grounded version — ${c.label}: ${c.summary}. Want me to tie that back to your own chart?`;
   }
+  // No concept hit and no area — fall back to a real signature from their chart.
+  const sig = l.signatures.find((s) => /yoga/i.test(s.label)) ?? l.signatures[0];
+  if (sig) return `Here’s something real from your own chart — ${sig.label}: ${sig.detail}`;
   return 'Tell me a bit more about what you want to understand, and I’ll look it up properly.';
 }
 
