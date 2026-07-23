@@ -42,8 +42,8 @@ export function App() {
     body = <Support onBack={() => s.go(s.birth ? 'today' : 'onboarding')} />;
   } else if (screen === 'settings') {
     body = <Settings place={s.birth?.place ?? 'this device'}
-      account={s.user ? { email: s.user.email } : 'guest'}
-      onDelete={s.deleteAll} onBack={() => s.go('today')} onLogout={s.logout} onSignIn={s.showLogin} />;
+      account={s.user ? { email: s.user.email } : 'guest'} canEdit={!!chart}
+      onDelete={s.deleteAll} onBack={() => s.go('today')} onLogout={s.logout} onSignIn={s.showLogin} onEdit={s.startEdit} />;
   } else if (s.error) {
     body = (
       <div className="view" style={{ paddingTop: 40 }}>
@@ -52,6 +52,9 @@ export function App() {
         <button className="btn" style={{ marginTop: 20, maxWidth: 240 }} onClick={s.deleteAll}>Start over</button>
       </div>
     );
+  } else if (s.editing && chart) {
+    body = <Onboarding onComplete={s.onboard} editing
+      initial={{ birth: s.birth!, goalArea, goalName }} />;
   } else if (!chart || !daily) {
     body = <Onboarding onComplete={s.onboard} />;
   } else if (screen === 'audit') {

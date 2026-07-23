@@ -56,4 +56,6 @@ available on the same server for the Cosmic Mentor and future live-data wiring.
       fallback (`lookupAstrologyLive`); real-chart placements stay client-side.
 - [x] Settings shows the local-server connection status; full auth→profile→dasha flow
       verified end-to-end over HTTP.
-- [ ] Optional polish: time-progressed "current period" per dasha system, a Tajaka annual view.
+- [x] Editable profile: Settings → "Edit birth details" re-opens onboarding pre-filled with
+      the saved chart; saving recomputes everything and re-persists (local + API when signed in).
+- [x] Time-progressed "current period" per dasha system + a Tajaka "year ahead" view (Blueprint).

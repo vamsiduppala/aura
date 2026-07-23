@@ -39,6 +39,7 @@ export interface AuraState {
   user: AuthUser | null;
   authError: string | null;
   authBusy: boolean;
+  editing: boolean;
   screen: Screen;
   birth: BirthData | null;
   goalArea: LifeArea;
@@ -56,6 +57,8 @@ export interface AuraState {
   continueAsGuest: () => void;
   showLogin: () => void;
   logout: () => void;
+  startEdit: () => void;
+  cancelEdit: () => void;
   onboard: (birth: BirthData, goalArea: LifeArea, goalName: string) => void;
   setCheckin: (checkin: Checkin | undefined) => void;
   openReading: () => void;
@@ -82,6 +85,7 @@ export const useAura = create<AuraState>((set, get) => {
     user: null,
     authError: null,
     authBusy: false,
+    editing: false,
     screen: saved ? 'today' : 'onboarding',
     birth: saved?.birth ?? null,
     goalArea,
@@ -152,10 +156,15 @@ export const useAura = create<AuraState>((set, get) => {
       if (detectCrisis(name)) { set({ screen: 'support' }); return; }
       saveProfile({ birth, goalArea: area, goalName: name });
       const d = compute(birth, area, undefined, get().now);
-      set({ birth, goalArea: area, goalName: name, checkin: undefined, ...d, screen: 'audit' });
+      // Editing an existing profile skips the retrospective audit; a fresh chart runs it.
+      const wasEditing = get().editing;
+      set({ birth, goalArea: area, goalName: name, checkin: undefined, ...d, editing: false, screen: wasEditing ? 'today' : 'audit' });
       // Persist to the server when signed in (fire-and-forget; local copy already saved).
       if (get().authStatus === 'authed') apiSaveProfile({ birth, goalArea: area, goalName: name }).catch(() => {});
     },
+
+    startEdit: () => set({ editing: true, screen: 'onboarding' }),
+    cancelEdit: () => set({ editing: false, screen: 'today' }),
 
     setCheckin: (checkin) => {
       const { birth, goalArea: area, now: n } = get();
@@ -174,7 +183,7 @@ export const useAura = create<AuraState>((set, get) => {
       const area = p?.goalArea ?? 'career';
       set({
         authStatus: getToken() ? 'loading' : (p ? 'guest' : 'anon'),
-        user: null, authError: null, authBusy: false,
+        user: null, authError: null, authBusy: false, editing: false,
         screen: p ? 'today' : 'onboarding',
         birth: p?.birth ?? null, goalArea: area, goalName: p?.goalName ?? 'my goal',
         checkin: undefined, reads: loadReads(), ...compute(p?.birth ?? null, area, undefined, get().now),

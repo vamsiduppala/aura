@@ -26,15 +26,18 @@ const GOALS: { label: string; area: LifeArea }[] = [
   { label: 'Self', area: 'self' },
 ];
 
-export function Onboarding({ onComplete }: {
+export function Onboarding({ onComplete, initial, editing }: {
   onComplete: (birth: BirthData, goalArea: LifeArea, goalName: string) => void;
+  initial?: { birth: BirthData; goalArea: LifeArea; goalName: string };
+  editing?: boolean;
 }) {
-  const [date, setDate] = useState('2001-03-14');
-  const [time, setTime] = useState('09:42');
-  const [unknownTime, setUnknownTime] = useState(false);
-  const [cityIdx, setCityIdx] = useState(0);
-  const [goal, setGoal] = useState<LifeArea>('money');
-  const [name, setName] = useState('Kai’s studio');
+  const initCity = initial ? CITIES.findIndex((c) => c.name === initial.birth.place) : -1;
+  const [date, setDate] = useState(initial?.birth.date ?? '2001-03-14');
+  const [time, setTime] = useState(initial?.birth.time ?? '09:42');
+  const [unknownTime, setUnknownTime] = useState(initial?.birth.unknownTime ?? false);
+  const [cityIdx, setCityIdx] = useState(initCity >= 0 ? initCity : 0);
+  const [goal, setGoal] = useState<LifeArea>(initial?.goalArea ?? 'money');
+  const [name, setName] = useState(initial?.goalName ?? 'Kai’s studio');
 
   const submit = () => {
     const city = CITIES[cityIdx]!;
@@ -49,8 +52,10 @@ export function Onboarding({ onComplete }: {
     <>
       <div className="view s1">
         <div className="mark"><span className="glyph" /> aura</div>
-        <h2>Let’s read<br />your timing.</h2>
-        <div className="intro">No charts to learn. No jargon. Just your energy — translated from a system that’s been read for 5,000 years.</div>
+        <h2>{editing ? <>Update<br />your details.</> : <>Let’s read<br />your timing.</>}</h2>
+        <div className="intro">{editing
+          ? 'Fix your birth details and we’ll recompute your whole chart.'
+          : 'No charts to learn. No jargon. Just your energy — translated from a system that’s been read for 5,000 years.'}</div>
 
         <div className="field">
           <span className="k">Born on</span>
@@ -87,7 +92,7 @@ export function Onboarding({ onComplete }: {
         </div>
 
         <div className="cta-zone">
-          <Button onClick={submit}>Read my energy <span>→</span></Button>
+          <Button onClick={submit}>{editing ? 'Save changes' : <>Read my energy <span>→</span></>}</Button>
           <div className="fineprint">Private. Yours only. Delete anytime.</div>
           <div className="disclaimer" style={{ paddingTop: 12 }}>{DISCLAIMER}</div>
         </div>

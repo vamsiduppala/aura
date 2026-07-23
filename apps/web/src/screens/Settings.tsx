@@ -5,10 +5,11 @@ import { apiReachable, API_BASE } from '../services/api';
 import { Button } from '@/components/ui/button';
 
 /** About / privacy / delete + Cosmic Mentor key (SPEC §11.1, §11.6). */
-export function Settings({ place, account, onDelete, onBack, onLogout, onSignIn }: {
+export function Settings({ place, account, canEdit, onDelete, onBack, onLogout, onSignIn, onEdit }: {
   place: string;
   account: { email: string } | 'guest';
-  onDelete: () => void; onBack: () => void; onLogout: () => void; onSignIn: () => void;
+  canEdit: boolean;
+  onDelete: () => void; onBack: () => void; onLogout: () => void; onSignIn: () => void; onEdit: () => void;
 }) {
   const [keyInput, setKeyInput] = useState('');
   const [saved, setSaved] = useState(hasUserKey());
@@ -78,9 +79,10 @@ export function Settings({ place, account, onDelete, onBack, onLogout, onSignIn 
 
         <div className="qh" style={{ marginBottom: 10 }}>Your data</div>
         <p className="body" style={{ marginBottom: 8 }}>
-          Your birth details ({place}) live only on this device. We never sell or share them,
-          and nothing sensitive leaves your phone.
+          Your birth details ({place}) live only on this device{account === 'guest' ? '' : ' and your local aura server'}.
+          We never sell or share them, and nothing sensitive leaves your phone.
         </p>
+        {canEdit ? <Button size="sm" onClick={onEdit} className="!w-auto px-5" style={{ marginBottom: 8 }}>Edit birth details</Button> : null}
         <p className="disclaimer" style={{ textAlign: 'left', padding: 0, marginBottom: 26 }}>
           On this web preview they’re stored in your browser’s local storage. The mobile app uses
           the device’s encrypted secure storage.
