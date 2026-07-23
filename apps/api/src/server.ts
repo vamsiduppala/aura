@@ -6,7 +6,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Fastify from 'fastify';
-import { openDb, getProfile, upsertProfile, type ProfileRow } from './db.js';
+import { openDb, getProfile, upsertProfile, deleteUser, type ProfileRow } from './db.js';
 import { register, login, userForToken, AuthError } from './auth.js';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
@@ -165,6 +165,13 @@ export function buildServer() {
       goal_area: b.goalArea ?? 'career', goal_name: b.goalName ?? '', updated_at: '',
     });
     return { ok: true };
+  });
+  // Permanently delete the signed-in user's account and all their data (backs "Delete everything").
+  app.delete('/account', async (req, reply) => {
+    const user = userForToken(bearer(req));
+    if (!user) return reply.code(401).send({ error: 'not authenticated' });
+    deleteUser(user.id);
+    return { ok: true, deleted: true };
   });
 
   // reference data

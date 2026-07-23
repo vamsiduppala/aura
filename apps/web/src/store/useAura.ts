@@ -12,7 +12,7 @@ import type { Screen } from '../components/Chrome';
 import { loadProfile, saveProfile, loadReads, bumpReads, clearAll, type ReadsState } from '../services/storage';
 import {
   me, login as apiLogin, register as apiRegister, logout as apiLogout,
-  saveProfile as apiSaveProfile, getToken, type AuthUser,
+  saveProfile as apiSaveProfile, deleteAccount as apiDeleteAccount, getToken, type AuthUser,
 } from '../services/api';
 
 const engine = new Aura(new AstronomiaEphemeris());
@@ -174,8 +174,17 @@ export const useAura = create<AuraState>((set, get) => {
     openReading: () => set((s) => ({ reads: bumpReads(s.reads), screen: 'reading' })),
 
     deleteAll: () => {
+      // Signed in → also erase the server-side account + profile, honouring "yours only, delete
+      // anytime". Best-effort (clears the local token regardless); local data is wiped either way.
+      const wasAuthed = get().authStatus === 'authed';
+      if (wasAuthed) void apiDeleteAccount();
       clearAll();
-      set({ birth: null, chart: null, daily: null, checkin: undefined, error: null, reads: { count: 0, lastDay: '' }, screen: 'onboarding' });
+      set({
+        // A deleted account drops back to the sign-in screen ('anon'); a guest stays a guest.
+        authStatus: wasAuthed ? 'anon' : get().authStatus,
+        user: null, birth: null, chart: null, daily: null, checkin: undefined,
+        error: null, reads: { count: 0, lastDay: '' }, screen: 'onboarding',
+      });
     },
 
     reset: () => {

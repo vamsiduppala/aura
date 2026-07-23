@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { login, register, saveProfile } from '../services/api';
+import { login, register, saveProfile, deleteAccount, getToken } from '../services/api';
 
 // When the local API isn't running, fetch rejects (TypeError: Failed to fetch). The client should
 // surface a friendly, actionable message — not the raw browser error — so the Login screen can show it.
@@ -23,5 +23,21 @@ describe('api client — server-unreachable handling', () => {
       new Response(JSON.stringify({ error: 'email already registered' }), { status: 400 }),
     ));
     await expect(register('a@b.com', 'password123')).rejects.toThrow(/email already registered/i);
+  });
+
+  it('deleteAccount calls DELETE /account and always clears the local token', async () => {
+    localStorage.setItem('aura.token', 'tok123');
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+    await deleteAccount();
+    expect(fetchMock).toHaveBeenCalledWith(expect.stringMatching(/\/account$/), expect.objectContaining({ method: 'DELETE' }));
+    expect(getToken()).toBeNull();
+  });
+
+  it('deleteAccount still clears the token even if the server is unreachable', async () => {
+    localStorage.setItem('aura.token', 'tok123');
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
+    await deleteAccount(); // must not throw
+    expect(getToken()).toBeNull();
   });
 });

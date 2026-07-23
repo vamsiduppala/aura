@@ -64,6 +64,15 @@ export async function me(): Promise<{ user: AuthUser; profile: ServerProfile | n
   return res.json();
 }
 
+/** Permanently delete the signed-in user's account + all their server data. Best-effort:
+ *  clears the local token regardless, so the client always ends up signed out. */
+export async function deleteAccount(): Promise<void> {
+  try {
+    if (getToken()) await req('/account', { method: 'DELETE' });
+  } catch { /* server unreachable — best-effort; the local token is cleared regardless */ }
+  clearToken();
+}
+
 /** Persist the birth profile to the server for the logged-in user. */
 export async function saveProfile(p: ServerProfile): Promise<void> {
   let res: Response;

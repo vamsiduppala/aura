@@ -116,3 +116,15 @@ export function upsertProfile(p: ProfileRow): void {
       lat=@lat, lng=@lng, tz_offset=@tz_offset, goal_area=@goal_area, goal_name=@goal_name, updated_at=datetime('now')
   `).run(params as unknown as Record<string, string | number | null>);
 }
+
+/**
+ * Permanently delete a user and everything belonging to them (profile, all sessions, the account
+ * row). Done explicitly rather than relying on ON DELETE CASCADE, which needs PRAGMA foreign_keys=ON
+ * (off by default). Backs the app's "Delete everything / yours only" promise for signed-in users.
+ */
+export function deleteUser(userId: number): void {
+  const d = getDb();
+  d.prepare('DELETE FROM profiles WHERE user_id = ?').run(userId);
+  d.prepare('DELETE FROM sessions WHERE user_id = ?').run(userId);
+  d.prepare('DELETE FROM users WHERE id = ?').run(userId);
+}

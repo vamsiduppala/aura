@@ -64,6 +64,30 @@ describe('auth + profile (Phase 2 local accounts)', () => {
     expect(res.json().ok).toBe(true);
   });
 
+  it('DELETE /account erases the user, their profile and their sessions', async () => {
+    // A fresh account with a saved profile.
+    const reg = await app.inject({ method: 'POST', url: '/auth/register', payload: { email: 'del@example.com', password: 'deletemeplease' } });
+    const tok = reg.json().token as string;
+    await app.inject({
+      method: 'PUT', url: '/profile', headers: { authorization: `Bearer ${tok}` },
+      payload: { birth: { date: '1995-06-01', place: 'X', lat: 1, lng: 2, tzOffsetMinutes: 0 }, goalArea: 'self', goalName: 'x' },
+    });
+
+    const del = await app.inject({ method: 'DELETE', url: '/account', headers: { authorization: `Bearer ${tok}` } });
+    expect(del.statusCode).toBe(200);
+
+    // Session gone → the old token no longer authenticates.
+    expect((await app.inject({ method: 'GET', url: '/profile', headers: { authorization: `Bearer ${tok}` } })).statusCode).toBe(401);
+    // User gone → old credentials no longer log in.
+    expect((await app.inject({ method: 'POST', url: '/auth/login', payload: { email: 'del@example.com', password: 'deletemeplease' } })).statusCode).toBe(401);
+    // Email freed → the same address can register again (proves the user row was removed).
+    expect((await app.inject({ method: 'POST', url: '/auth/register', payload: { email: 'del@example.com', password: 'deletemeplease' } })).statusCode).toBe(200);
+  });
+
+  it('rejects account deletion without a token', async () => {
+    expect((await app.inject({ method: 'DELETE', url: '/account' })).statusCode).toBe(401);
+  });
+
   void json;
 });
 

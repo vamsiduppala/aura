@@ -40,6 +40,7 @@ The web app finds the API at `http://localhost:8787` by default; override with
 | GET | `/auth/me` | Bearer | current user + saved profile |
 | GET | `/profile` | Bearer | load the birth profile |
 | PUT | `/profile` | Bearer | save/update the birth profile |
+| DELETE | `/account` | Bearer | permanently erase the user + profile + sessions |
 
 All the Phase-1 knowledge routes (`/grahas`, `/dasha/*`, `/tajaka/*`, `/varga`, …) remain
 available on the same server for the Cosmic Mentor and future live-data wiring.
@@ -53,7 +54,10 @@ the web still computes the same thing on-device to stay offline-first, so the ro
 
 ## Status
 
-- [x] Local SQLite DB + auth (register/login) + profile save/load — `apps/api` (8 tests)
+- [x] Local SQLite DB + auth (register/login) + profile save/load — `apps/api` (10 tests)
+- [x] "Delete everything" now honours the promise for signed-in users: `DELETE /account` erases
+      the account + profile + sessions server-side (verified live), and the client always clears
+      its token (best-effort even if the server is down).
 - [x] `POST /kundali` — the full blueprint chart reading served from the backend (composes the
       knowledge layer into houses + occupant interpretations + karakas + shape + raaja/vipareeta)
 - [x] Web register/login screen + guest mode; profile persists to the API when signed in
