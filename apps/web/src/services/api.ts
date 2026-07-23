@@ -35,8 +35,16 @@ export async function apiReachable(): Promise<boolean> {
   } catch { return false; }
 }
 
+/** A friendly, actionable message when the local API can't be reached at all. */
+const UNREACHABLE = `Can’t reach your local aura server at ${API_BASE}. Make sure it’s running (npm run dev), or use “continue on this device only”.`;
+
 async function authCall(path: string, email: string, password: string): Promise<AuthUser> {
-  const res = await req(path, { method: 'POST', body: JSON.stringify({ email, password }) });
+  let res: Response;
+  try {
+    res = await req(path, { method: 'POST', body: JSON.stringify({ email, password }) });
+  } catch {
+    throw new Error(UNREACHABLE); // network failure → the server isn't running
+  }
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(body.error ?? 'Something went wrong.');
   setToken(body.token);
@@ -58,6 +66,11 @@ export async function me(): Promise<{ user: AuthUser; profile: ServerProfile | n
 
 /** Persist the birth profile to the server for the logged-in user. */
 export async function saveProfile(p: ServerProfile): Promise<void> {
-  const res = await req('/profile', { method: 'PUT', body: JSON.stringify(p) });
+  let res: Response;
+  try {
+    res = await req('/profile', { method: 'PUT', body: JSON.stringify(p) });
+  } catch {
+    throw new Error(UNREACHABLE);
+  }
   if (!res.ok) throw new Error('Could not save your profile.');
 }
