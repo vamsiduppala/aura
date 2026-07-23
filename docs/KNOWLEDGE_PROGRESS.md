@@ -156,8 +156,11 @@ resuming session can pick up exactly where it left off.
 - [~] Ch 30 Annual Dasas (17435–18098): Mudda / Varsha Vimsottari dasa (Vimsottari
       compressed to 360 solar days — days = years × 3; first dasa from the Mudda number of
       the Moon-nakshatra lord + completed years) → `data/annualdasha.ts` `muddaDasa`,
-      verified vs Example 122 (Rahu first, 42.66-day balance). API: /dasha/mudda.
-      TODO: Patyayini dasa (patyamsa-based), Varsha Narayana
+      verified vs Example 122 (Rahu first, 42.66-day balance). **Patyayini dasa (30.3)** —
+      lagna+7 planets sorted by degree-within-sign, the year split in patyamsa ratios, with
+      antardasas → `patyayiniDasa`/`patyayiniAntardasas`, verified vs Table 75 (Venus 24.98d …
+      Mars 103.99d). API: /dasha/mudda, POST /dasha/patyayini. TODO: Varsha Narayana (rasi-dasa
+      of the annual chart — reuses the Narayana engine on the solar-return lagna)
 - [x] Ch 31 Sudarsana Chakra Dasa (18099–18366): one house per solar year, cycling every 12,
       judged from all three references (lagna/Moon/Sun); 12 one-month antardasas from the dasa
       sign → `data/sudarsana.ts`, verified vs 45th-year (9th house) & Example 126 (18th → 6th

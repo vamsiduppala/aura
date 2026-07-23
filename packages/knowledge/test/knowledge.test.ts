@@ -28,7 +28,7 @@ import {
   taraOf, specialNakshatra, nakshatraAspectsFrom, lattaNakshatra, murthiOf,
   muntha, harshaBala, uchchaBala, haddaLord, saham, computeSahams,
   ithasala, ishkavala, induvara, fasterPlanet,
-  muddaDasa, muddaDays, sudarsanaDasa, sudarsanaAllRefs,
+  muddaDasa, muddaDays, patyayiniDasa, patyayiniAntardasas, sudarsanaDasa, sudarsanaAllRefs,
   muhurtaCheck, ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES,
   type Graha, type RefSigns,
 } from '../src/index.js';
@@ -312,6 +312,31 @@ describe('Mudda dasa (Ch 30) — verified against the book’s Example 122', () 
     expect(m.balanceDays).toBeCloseTo(42.66, 1);
     expect(m.sequence[0]).toEqual({ lord: 'rahu', days: 54 });
     expect(m.sequence[1]).toEqual({ lord: 'jupiter', days: 48 });
+  });
+
+  // Patyayini dasa (30.3) — verified against Table 75 (Example 122). Only the degree-within-sign
+  // (krisamsa) matters, so the signs are arbitrary here.
+  it('Patyayini dasa splits the year in patyamsa ratios (Table 75)', () => {
+    const deg = (d: number, m: number) => d + m / 60;
+    const spans = patyayiniDasa({
+      venus: deg(1, 38), mercury: deg(4, 47), moon: deg(4, 49), saturn: deg(6, 30),
+      lagna: deg(7, 14), jupiter: deg(10, 59), sun: deg(17, 5), mars: deg(23, 53),
+    });
+    // Ascending-krisamsa order.
+    expect(spans.map((s) => s.lord)).toEqual(['venus', 'mercury', 'moon', 'saturn', 'lagna', 'jupiter', 'sun', 'mars']);
+    // Days and fractions from the book's table.
+    expect(spans[0]!.days).toBeCloseTo(24.98, 1);   // Venus
+    expect(spans[1]!.days).toBeCloseTo(48.17, 1);   // Mercury
+    expect(spans[7]!.days).toBeCloseTo(103.99, 1);  // Mars
+    expect(spans[6]!.fraction).toBeCloseTo(0.2554, 3); // Sun
+    // The whole year is accounted for.
+    expect(spans.reduce((a, s) => a + s.days, 0)).toBeCloseTo(365.2425, 2);
+    // Antardasas in Venus's dasa begin with Venus (~1.7 days) and sum to the dasa length.
+    const antar = patyayiniAntardasas(spans, 'venus');
+    expect(antar[0]!.lord).toBe('venus');
+    expect(antar[0]!.days).toBeCloseTo(1.7, 1);
+    expect(antar[1]!.lord).toBe('mercury');
+    expect(antar.reduce((a, x) => a + x.days, 0)).toBeCloseTo(spans[0]!.days, 4);
   });
 });
 

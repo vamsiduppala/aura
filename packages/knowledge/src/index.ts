@@ -117,7 +117,9 @@ export {
   TAJAKA_YOGAS, type IthasalaKind, type IthasalaResult,
 } from './data/tajakayoga.js';
 export {
-  MUDDA_ORDER, muddaDays, muddaDasa, type MuddaSpan, type MuddaResult,
+  MUDDA_ORDER, muddaDays, muddaDasa,
+  PATYAYINI_YEAR_DAYS, patyayiniDasa, patyayiniAntardasas,
+  type MuddaSpan, type MuddaResult, type PatyayiniToken, type PatyayiniSpan, type PatyayiniAntar,
 } from './data/annualdasha.js';
 export {
   sudarsanaDasa, sudarsanaAllRefs, type SudarsanaDasa, type SudarsanaAllRefs,

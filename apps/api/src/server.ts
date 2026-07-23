@@ -40,7 +40,7 @@ import {
   DEEP_EXALTATION, uchchaBala, haddaLord, type ClassicalGraha,
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
   ithasala, ishkavala, induvara, TAJAKA_YOGAS,
-  muddaDasa, sudarsanaDasa, sudarsanaAllRefs,
+  muddaDasa, patyayiniDasa, patyayiniAntardasas, type PatyayiniToken, sudarsanaDasa, sudarsanaAllRefs,
   muhurtaCheck, MUHURTA_GUIDELINES,
   ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES, BIRTHTIME_RECTIFICATION, MUNDANE_PRINCIPLES,
   type Graha, type Placement,
@@ -388,6 +388,17 @@ export function buildServer() {
     const q = req.query as { moonLong?: string; completedYears?: string };
     if (q.moonLong == null || q.completedYears == null) return reply.code(400).send({ error: 'moonLong (0-360) and completedYears required' });
     return muddaDasa(Number(q.moonLong), Number(q.completedYears));
+  });
+  // Patyayini dasa (30.3): POST { longitudes:{ sun..saturn, lagna } } → the year split by patyamsa,
+  // plus each dasa's antardasas. Only the seven planets + lagna take part.
+  app.post('/dasha/patyayini', async (req, reply) => {
+    const b = req.body as { longitudes?: Partial<Record<PatyayiniToken, number>> };
+    const need: PatyayiniToken[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'lagna'];
+    if (!b?.longitudes || need.some((k) => b.longitudes![k] == null)) {
+      return reply.code(400).send({ error: `longitudes must include all of: ${need.join(', ')} (each 0-360)` });
+    }
+    const spans = patyayiniDasa(b.longitudes as Record<PatyayiniToken, number>);
+    return { dasas: spans.map((s) => ({ ...s, antardasas: patyayiniAntardasas(spans, s.lord) })) };
   });
 
   // Tajaka yogas (Ch 29) — ithasala/eesarpha + house-distribution yogas.
