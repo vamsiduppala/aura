@@ -41,7 +41,7 @@ import {
   saham, computeSahams, SAHAM_FORMULAS, computeBhavaSahams, BHAVA_SAHAM_FORMULAS,
   type SahamContext, type BhavaSahamContext,
   ithasala, ishkavala, induvara, TAJAKA_YOGAS,
-  muddaDasa, patyayiniDasa, patyayiniAntardasas, type PatyayiniToken, sudarsanaDasa, sudarsanaAllRefs,
+  muddaDasa, patyayiniDasa, patyayiniAntardasas, varshaNarayanaDasa, type PatyayiniToken, sudarsanaDasa, sudarsanaAllRefs,
   muhurtaCheck, MUHURTA_GUIDELINES,
   ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES, BIRTHTIME_RECTIFICATION, MUNDANE_PRINCIPLES,
   type Graha, type Placement,
@@ -409,6 +409,17 @@ export function buildServer() {
     }
     const spans = patyayiniDasa(b.longitudes as Record<PatyayiniToken, number>);
     return { dasas: spans.map((s) => ({ ...s, antardasas: patyayiniAntardasas(spans, s.lord) })) };
+  });
+  // Varsha Narayana dasa (30.5): the annual chart's Narayana dasa — muntha as lagna, then Narayana
+  // from the strength-based seed. GET ?natalLagnaSign=&yearNumber=&seedSign=&hasSaturn=&hasKetu=
+  app.get('/dasha/varsha-narayana', async (req, reply) => {
+    const q = req.query as { natalLagnaSign?: string; yearNumber?: string; seedSign?: string; hasSaturn?: string; hasKetu?: string };
+    if (q.natalLagnaSign == null || q.yearNumber == null || q.seedSign == null) {
+      return reply.code(400).send({ error: 'natalLagnaSign (0-11), yearNumber (year of life), seedSign (0-11) required; optional hasSaturn, hasKetu' });
+    }
+    return varshaNarayanaDasa(Number(q.natalLagnaSign), Number(q.yearNumber), Number(q.seedSign), {
+      hasSaturn: q.hasSaturn === 'true', hasKetu: q.hasKetu === 'true',
+    });
   });
 
   // Tajaka yogas (Ch 29) — ithasala/eesarpha + house-distribution yogas.

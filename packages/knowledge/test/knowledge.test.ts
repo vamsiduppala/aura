@@ -28,7 +28,7 @@ import {
   taraOf, specialNakshatra, nakshatraAspectsFrom, lattaNakshatra, murthiOf,
   muntha, harshaBala, uchchaBala, haddaLord, saham, computeSahams, computeBhavaSahams,
   ithasala, ishkavala, induvara, fasterPlanet,
-  muddaDasa, muddaDays, patyayiniDasa, patyayiniAntardasas, sudarsanaDasa, sudarsanaAllRefs,
+  muddaDasa, muddaDays, patyayiniDasa, patyayiniAntardasas, varshaNarayanaDasa, sudarsanaDasa, sudarsanaAllRefs,
   muhurtaCheck, ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES,
   type Graha, type RefSigns,
 } from '../src/index.js';
@@ -337,6 +337,15 @@ describe('Mudda dasa (Ch 30) — verified against the book’s Example 122', () 
     expect(antar[0]!.days).toBeCloseTo(1.7, 1);
     expect(antar[1]!.lord).toBe('mercury');
     expect(antar.reduce((a, x) => a + x.days, 0)).toBeCloseTo(spans[0]!.days, 4);
+  });
+
+  // Varsha Narayana dasa (30.5) — verified against Example 122's D-9 walk-through.
+  it('Varsha Narayana takes muntha as the lagna, then runs Narayana from the seed', () => {
+    // Natal lagna Aries (0), 22nd year → muntha in Capricorn (9).
+    const v = varshaNarayanaDasa(0, 22, 7, { hasSaturn: true }); // seed Sc(7), Saturn in it
+    expect(v.munthaLagna).toBe(9);
+    // Saturn exception → regular forward from Sc: Sc, Sg, Cp, Aq, Pi, Ar, … (the book's order).
+    expect(v.progression.slice(0, 6)).toEqual([7, 8, 9, 10, 11, 0]);
   });
 });
 

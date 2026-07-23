@@ -8,6 +8,8 @@
 
 import type { Graha } from '../types.js';
 import { nakshatraLord, dashaSequence, VIMSHOTTARI_YEARS } from './vimshottari.js';
+import { muntha } from './tajaka.js';
+import { narayanaProgression } from './narayana.js';
 
 /** Mudda numbering order (1=Sun … 9=Venus) used to pick the first Varsha Vimsottari dasa. */
 export const MUDDA_ORDER: Graha[] = ['sun', 'moon', 'mars', 'rahu', 'jupiter', 'saturn', 'mercury', 'ketu', 'venus'];
@@ -90,4 +92,28 @@ export function patyayiniAntardasas(spans: PatyayiniSpan[], dasaLord: PatyayiniT
     const sub = spans[(idx + k) % spans.length]!;
     return { lord: sub.lord, days: dasaDays * sub.fraction };
   });
+}
+
+// ── Varsha Narayana Dasa (30.5) ───────────────────────────────────────────────
+
+export interface VarshaNarayanaResult {
+  munthaLagna: number;   // the annual progressed ascendant (muntha), used as the chart's lagna
+  progression: number[]; // the 12-rasi Varsha Narayana dasa order from the seed
+}
+
+/**
+ * Varsha Narayana dasa (30.5) — the Narayana rasi-dasa of a Tajaka annual chart, "the best dasa
+ * for annual charts". Its link to the natal chart is that the muntha (the natal lagna progressed
+ * one rasi per year of life) is taken as the lagna; from there it runs as an ordinary Narayana
+ * dasa from the strength-based `seedSign` the caller determines (the stronger of the relevant
+ * lord's signs), with the same Saturn/Ketu seed exceptions. `yearNumber` = the year of life lived.
+ */
+export function varshaNarayanaDasa(
+  natalLagnaSign: number, yearNumber: number, seedSign: number,
+  opts: { hasSaturn?: boolean; hasKetu?: boolean } = {},
+): VarshaNarayanaResult {
+  return {
+    munthaLagna: muntha(natalLagnaSign, yearNumber),
+    progression: narayanaProgression(seedSign, opts.hasSaturn, opts.hasKetu),
+  };
 }
