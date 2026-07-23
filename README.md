@@ -11,11 +11,12 @@ is deep, deterministic, and tested.
 >   Navamsa, Shadbala-style strength, Ashtakavarga 337-invariant, yogas, transits, and the
 >   Tajaka **solar-return** chart). *93 tests.*
 > - **`packages/knowledge`** — the **entire book** *Vedic Astrology: An Integrated Approach*
->   encoded as **34 data + calculation modules** (all 20 vargas, 9 dasha systems, arudhas,
->   aspects/argalas, ashtakavarga, upagrahas, special lagnas, panchanga, longevity, avasthas,
->   taras, the full Tajaka suite, muhurta, …) — every computation verified against the book's
->   worked examples. *89 tests.*
-> - **`apps/api`** — a local Fastify server exposing **~74 routes**: the whole knowledge base
+>   encoded as **36 data + calculation modules** (all 20 vargas, 9 dasha systems + the Tajaka
+>   annual dasas, arudhas, aspects/argalas, ashtakavarga incl. sodhana + sodhya pindas, raaja/
+>   vipareeta yogas, upagrahas, special lagnas, panchanga, longevity, avasthas, taras, the full
+>   Tajaka suite, 28 sahams, muhurta, …) — every computation verified against the book's worked
+>   examples. *112 tests.*
+> - **`apps/api`** — a local Fastify server exposing **91 routes**: the whole knowledge base
 >   **plus** accounts (register/login, scrypt + tokens) and birth-profile persistence in a
 >   local **SQLite** DB (`node:sqlite`, no native build). *6 tests.*
 > - **`apps/web`** — the responsive web app (`no phone frame`): login/register + guest mode,
