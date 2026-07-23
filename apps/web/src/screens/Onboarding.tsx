@@ -30,6 +30,7 @@ const GOALS: { label: string; area: LifeArea }[] = [
 // (we never guess coordinates; the user supplies their own accurate lat/lon/UTC-offset).
 const CUSTOM = CITIES.length;
 const numOrNaN = (s: string) => (s.trim() === '' ? NaN : Number(s));
+const TODAY = new Date().toISOString().slice(0, 10); // no one is born in the future
 
 export function Onboarding({ onComplete, initial, editing }: {
   onComplete: (birth: BirthData, goalArea: LifeArea, goalName: string) => void;
@@ -56,9 +57,11 @@ export function Onboarding({ onComplete, initial, editing }: {
     Number.isFinite(lng) && Math.abs(lng) <= 180 &&
     Number.isFinite(tzH) && Math.abs(tzH) <= 14
   );
+  const dateValid = date >= '1900-01-01' && date <= TODAY;
+  const canSubmit = customValid && dateValid;
 
   const submit = () => {
-    if (!customValid) return;
+    if (!canSubmit) return;
     const birth: BirthData = isCustom
       ? {
         date, time: unknownTime ? undefined : time, unknownTime,
@@ -82,7 +85,7 @@ export function Onboarding({ onComplete, initial, editing }: {
 
         <div className="field">
           <span className="k">Born on</span>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} aria-label="Birth date" />
+          <input type="date" value={date} min="1900-01-01" max={TODAY} onChange={(e) => setDate(e.target.value)} aria-label="Birth date" />
         </div>
         <div className="field">
           <span className="k">Born at</span>
@@ -142,7 +145,7 @@ export function Onboarding({ onComplete, initial, editing }: {
         </div>
 
         <div className="cta-zone">
-          <Button onClick={submit} disabled={!customValid}>{editing ? 'Save changes' : <>Read my energy <span>→</span></>}</Button>
+          <Button onClick={submit} disabled={!canSubmit}>{editing ? 'Save changes' : <>Read my energy <span>→</span></>}</Button>
           <div className="fineprint">Private. Yours only. Delete anytime.</div>
           <div className="disclaimer" style={{ paddingTop: 12 }}>{DISCLAIMER}</div>
         </div>

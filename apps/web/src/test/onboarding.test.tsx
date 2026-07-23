@@ -37,4 +37,16 @@ describe('Onboarding — custom birthplace', () => {
     await user.type(screen.getByLabelText('UTC offset in hours'), '5.5');
     expect(screen.getByRole('button', { name: /Read my energy/i })).toBeEnabled();
   });
+
+  it('rejects a future birth date', async () => {
+    const onComplete = vi.fn();
+    render(<Onboarding onComplete={onComplete} />);
+    const user = userEvent.setup();
+    const future = new Date(Date.now() + 366 * 86_400_000).toISOString().slice(0, 10);
+    await user.clear(screen.getByLabelText('Birth date'));
+    await user.type(screen.getByLabelText('Birth date'), future);
+    expect(screen.getByRole('button', { name: /Read my energy/i })).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: /Read my energy/i }));
+    expect(onComplete).not.toHaveBeenCalled();
+  });
 });

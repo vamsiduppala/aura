@@ -63,6 +63,12 @@ the web still computes the same thing on-device to stay offline-first, so the ro
       shows a live/on-device badge).
 - [x] Cosmic Mentor concept lookups grounded via the live API (`/search`) with an on-device
       fallback (`lookupAstrologyLive`); real-chart placements stay client-side.
+- [x] Mentor also grounds "what's special about my chart?" in the user's real **signatures** —
+      Jaimini soul/partner planets, the Naabhasa shape, and any Dharma-Karmadhipati / raja /
+      vipareeta yoga actually present (never a fabricated one).
+- [x] Robustness: a network failure on sign-in/register shows an actionable "server unreachable"
+      message (not raw "Failed to fetch"); the onboarding rejects future / pre-1900 birth dates;
+      the API guards its Node version with a clear error (`node:sqlite` needs Node 22.5+).
 - [x] Settings shows the local-server connection status; full auth→profile→dasha flow
       verified end-to-end over HTTP.
 - [x] Editable profile: Settings → "Edit birth details" re-opens onboarding pre-filled with
