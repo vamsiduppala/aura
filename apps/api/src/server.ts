@@ -56,6 +56,13 @@ type Dignity = Parameters<typeof jagradiAvastha>[0];
 interface KundaliPlanetInput { sign: number; house: number; longitude: number; retrograde?: boolean; combust?: boolean }
 interface KundaliInput { lagnaSign: number; planets: Record<Graha, KundaliPlanetInput> }
 
+/** A finite number from a query-string param, or null if absent/blank/non-numeric (caller 400s). */
+function qNum(v: string | undefined): number | null {
+  if (v == null || v.trim() === '') return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
 const KUNDALI_SEVEN: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn'];
 const KUNDALI_NINE: Graha[] = [...KUNDALI_SEVEN, 'rahu', 'ketu'];
 
@@ -268,10 +275,10 @@ export function buildServer() {
   // Divisional charts (Ch 6). Map a sidereal longitude to its sign in a varga.
   app.get('/varga', async (req, reply) => {
     const q = req.query as { longitude?: string; divisor?: string };
-    if (q.longitude == null || q.divisor == null) return reply.code(400).send({ error: 'longitude (0-360) and divisor are required' });
-    const d = Number(q.divisor);
+    const lon = qNum(q.longitude), d = qNum(q.divisor);
+    if (lon == null || d == null) return reply.code(400).send({ error: 'longitude (0-360) and divisor are required (numeric)' });
     if (!(VARGA_DIVISORS as readonly number[]).includes(d)) return reply.code(400).send({ error: `divisor must be one of ${VARGA_DIVISORS.join(',')}` });
-    return { longitude: Number(q.longitude), divisor: d, sign: vargaSign(Number(q.longitude), d) };
+    return { longitude: lon, divisor: d, sign: vargaSign(lon, d) };
   });
   app.get('/vargas', async (req, reply) => {
     const q = req.query as { longitude?: string };
@@ -568,9 +575,11 @@ export function buildServer() {
   // Matter tithi (26.8) — a tithi advancing `speed`× as fast (karma=10, dhana=2), for Sarvatobhadra.
   app.get('/matter-tithi', async (req, reply) => {
     const q = req.query as { sunLong?: string; moonLong?: string; speed?: string };
-    if (q.sunLong == null || q.moonLong == null) return reply.code(400).send({ error: 'sunLong and moonLong (0-360) required; optional speed (default 1; karma 10, dhana 2)' });
-    const speed = q.speed == null ? 1 : Number(q.speed);
-    const index = matterTithi(Number(q.sunLong), Number(q.moonLong), speed);
+    const sunLong = qNum(q.sunLong), moonLong = qNum(q.moonLong);
+    if (sunLong == null || moonLong == null) return reply.code(400).send({ error: 'sunLong and moonLong (0-360) required (numeric); optional speed (default 1; karma 10, dhana 2)' });
+    const speed = q.speed == null ? 1 : (qNum(q.speed) ?? NaN);
+    if (!Number.isFinite(speed)) return reply.code(400).send({ error: 'speed must be numeric' });
+    const index = matterTithi(sunLong, moonLong, speed);
     return { speed, index, panchaka: tithiPanchaka(index) };
   });
 
@@ -686,12 +695,14 @@ export function buildServer() {
   // lagna lord, Jaimini karakas, chart shape, and raaja/vipareeta yogas.
   app.post('/kundali', async (req, reply) => {
     const b = req.body as Partial<KundaliInput>;
-    if (b?.lagnaSign == null || !b.planets) return reply.code(400).send({ error: 'lagnaSign (0-11) and planets are required' });
+    const intInRange = (v: unknown, lo: number, hi: number) => typeof v === 'number' && Number.isInteger(v) && v >= lo && v <= hi;
+    const finiteInRange = (v: unknown, lo: number, hi: number) => typeof v === 'number' && Number.isFinite(v) && v >= lo && v <= hi;
+    if (!intInRange(b?.lagnaSign, 0, 11) || !b.planets) return reply.code(400).send({ error: 'lagnaSign must be an integer 0-11 and planets are required' });
     const bad = KUNDALI_NINE.find((g) => {
       const p = b.planets![g];
-      return !p || p.sign == null || p.house == null || p.longitude == null;
+      return !p || !intInRange(p.sign, 0, 11) || !intInRange(p.house, 1, 12) || !finiteInRange(p.longitude, 0, 360);
     });
-    if (bad) return reply.code(400).send({ error: `planets.${bad} must have sign (0-11), house (1-12) and longitude (0-360)` });
+    if (bad) return reply.code(400).send({ error: `planets.${bad} must have sign (integer 0-11), house (integer 1-12) and longitude (0-360)` });
     return buildKundaliReading(b as KundaliInput);
   });
 

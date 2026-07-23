@@ -125,4 +125,14 @@ describe('blueprint kundali endpoint (full chart reading)', () => {
     const res = await app.inject({ method: 'POST', url: '/kundali', payload: { lagnaSign: 0, planets: { sun: { sign: 0, house: 1, longitude: 10 } } } });
     expect(res.statusCode).toBe(400);
   });
+
+  it('rejects out-of-range signs/houses/longitudes instead of returning a garbage reading', async () => {
+    const badSign = { ...planets, sun: { sign: 50, house: 1, longitude: 10 } };
+    expect((await app.inject({ method: 'POST', url: '/kundali', payload: { lagnaSign: 0, planets: badSign } })).statusCode).toBe(400);
+    const badHouse = { ...planets, sun: { sign: 0, house: 99, longitude: 10 } };
+    expect((await app.inject({ method: 'POST', url: '/kundali', payload: { lagnaSign: 0, planets: badHouse } })).statusCode).toBe(400);
+    const badLong = { ...planets, sun: { sign: 0, house: 1, longitude: 999 } };
+    expect((await app.inject({ method: 'POST', url: '/kundali', payload: { lagnaSign: 0, planets: badLong } })).statusCode).toBe(400);
+    expect((await app.inject({ method: 'POST', url: '/kundali', payload: { lagnaSign: 12, planets } })).statusCode).toBe(400);
+  });
 });
