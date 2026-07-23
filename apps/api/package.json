@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "description": "Local Vedic-astrology knowledge API — serves @aura/knowledge over HTTP for the Cosmic Mentor",
+  "engines": {
+    "node": ">=22.5.0"
+  },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",

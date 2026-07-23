@@ -29,6 +29,9 @@ is deep, deterministic, and tested.
 
 ## Run it locally
 
+Requires **Node 24+** (the API uses Node's built-in `node:sqlite`, so no native build step;
+Node 22.5–23.x work too but may need `--experimental-sqlite`).
+
 ```bash
 npm install          # from the repo root (installs all workspaces)
 npm run dev          # runs the API (:8787) + the web app (:5173) together

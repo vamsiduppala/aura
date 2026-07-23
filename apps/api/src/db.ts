@@ -15,7 +15,17 @@ type SqliteModule = typeof import('node:sqlite');
 type DatabaseSync = InstanceType<SqliteModule['DatabaseSync']>;
 const require = createRequire(import.meta.url);
 const sqliteId = 'node:sqlite';
-const { DatabaseSync } = require(sqliteId) as SqliteModule;
+let DatabaseSync: SqliteModule['DatabaseSync'];
+try {
+  ({ DatabaseSync } = require(sqliteId) as SqliteModule);
+} catch {
+  // node:sqlite is a built-in from Node 22.5 (flagless in Node 24+). Give a clear, actionable
+  // message instead of a cryptic module-resolution throw when someone runs an older Node.
+  throw new Error(
+    `aura-api needs Node's built-in "node:sqlite" (DatabaseSync), which isn't available in ${process.version}. ` +
+    'Please use Node 24 or newer (Node 22.5–23.x may need the --experimental-sqlite flag).',
+  );
+}
 
 const DEFAULT_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/aura.db');
 
