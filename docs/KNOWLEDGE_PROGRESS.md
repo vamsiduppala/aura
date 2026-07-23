@@ -61,7 +61,8 @@ resuming session can pick up exactly where it left off.
       Gola/Yuga/Soola/Kedaara/Paasa/Daama/Veenaa by distinct-sign count → `data/naabhasa.ts`
       `sankhyaYoga()`, verified vs the Sri Rama example (6→Daama). API: /yogas/sankhya.
       **20 Aakriti (shape) Naabhasa yogas** (Sakata/Kamala/Chakra/Samudra/Naukaa/… by house
-      distribution) → `matchAakritiYogas()`. API: /yogas/sankhya, /yogas/aakriti. TODO: more Raja variants
+      distribution) + Vajra/Yava (benefic-malefic kendra placement) → `matchAakritiYogas()`/`vajraYavaYoga()`.
+      API: /yogas/{sankhya,aakriti,vajra-yava}. Naabhasa set complete. TODO: more Raja variants
 - [~] Ch 12 Ashtakavarga (5364–7833): Bhinnashtakavarga (per-planet bindus, BPHS benefic-
       point tables) + Sarvashtakavarga (sum, 337 invariant) → `data/ashtakavarga.ts`
       (standalone from the engine's copy). API: POST /ashtakavarga. TODO: prastaara,

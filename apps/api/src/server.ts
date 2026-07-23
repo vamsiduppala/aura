@@ -10,7 +10,7 @@ import { openDb, getProfile, upsertProfile, type ProfileRow } from './db.js';
 import { register, login, userForToken, AuthError } from './auth.js';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
-  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, sankhyaYoga, matchAakritiYogas,
+  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, sankhyaYoga, matchAakritiYogas, vajraYavaYoga,
   FUNCTIONAL_NATURE, functionalNatureFor, TRANSIT_FROM_MOON, NATURAL_RELATIONS, REMEDIES,
   getGraha, getRasi, getBhava, getNakshatra, search,
   interpretPlacement, interpretLagnaLord, classifyDignity, DIGNITIES,
@@ -135,6 +135,12 @@ export function buildServer() {
     const q = req.query as { houses?: string };
     if (!q.houses) return reply.code(400).send({ error: 'houses=comma-separated houses (1-12 from lagna) the 7 planets occupy' });
     return { yogas: matchAakritiYogas(q.houses.split(',').map(Number)) };
+  });
+  // Vajra / Yava (benefic-malefic placement in the kendras).
+  app.get('/yogas/vajra-yava', async (req, reply) => {
+    const q = req.query as { benefics?: string; malefics?: string };
+    if (!q.benefics || !q.malefics) return reply.code(400).send({ error: 'benefics= and malefics= comma-separated houses (1-12) each group occupies' });
+    return { yoga: vajraYavaYoga(q.benefics.split(',').map(Number), q.malefics.split(',').map(Number)) };
   });
   app.get('/yogas/:key', async (req, reply) => {
     const y = YOGA_BY_KEY((req.params as { key: string }).key);

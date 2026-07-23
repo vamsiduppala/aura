@@ -8,7 +8,8 @@ export { NAKSHATRAS, NAKSHATRA_BY_INDEX } from './data/nakshatras.js';
 export { YOGAS, YOGA_BY_KEY } from './data/yogas.js';
 export {
   SANKHYA_YOGAS, sankhyaYoga, AAKRITI_YOGAS, matchAakritiYogas,
-  type SankhyaYoga, type AakritiYoga,
+  VAJRA_YOGA, YAVA_YOGA, vajraYavaYoga,
+  type SankhyaYoga, type AakritiYoga, type BeneficMaleficYoga,
 } from './data/naabhasa.js';
 export { DIVISIONALS, DIVISIONAL_BY_N, type DivisionalKnowledge } from './data/divisionals.js';
 export {

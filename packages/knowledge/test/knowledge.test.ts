@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY, sankhyaYoga, matchAakritiYogas,
+  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY, sankhyaYoga, matchAakritiYogas, vajraYavaYoga,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, charaKarakas,
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
   TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
@@ -627,6 +627,11 @@ describe('yogas', () => {
     expect(names([2, 4, 6, 8, 10, 12])).not.toContain('Chakra');    // even houses ≠ odd
     expect(names([1, 2, 3, 4])).toContain('Yoopa');
     expect(names([2, 6, 10])).toContain('Hala');                    // mutual trines, not from lagna
+  });
+  it('Vajra / Yava (benefic-malefic placement) yogas', () => {
+    expect(vajraYavaYoga([1, 7], [4, 10])!.name).toBe('Vajra');     // benefics in kendra 1/7
+    expect(vajraYavaYoga([4, 10], [1, 7])!.name).toBe('Yava');      // reverse
+    expect(vajraYavaYoga([1, 4], [7, 10])).toBeNull();
   });
 
   it('Sankhya Naabhasa yoga by distinct-sign count (Ch 11.5.4, Sri Rama → Daama)', () => {

@@ -64,3 +64,20 @@ export function matchAakritiYogas(occupiedHouses: number[]): AakritiYoga[] {
   const occ = [...new Set(occupiedHouses.map(normHouse))];
   return AAKRITI_YOGAS.filter((y) => y.houseSets.some((set) => occ.every((h) => set.includes(h))));
 }
+
+// ── Vajra / Yava (Aakriti yogas needing benefic/malefic placement) ────────────
+export interface BeneficMaleficYoga { name: string; means: string; effect: string }
+export const VAJRA_YOGA: BeneficMaleficYoga = { name: 'Vajra', means: 'a diamond', effect: 'valiant and happy in early and late life; not especially lucky, but free of craving — a fighter.' };
+export const YAVA_YOGA: BeneficMaleficYoga = { name: 'Yava', means: 'a grain', effect: 'religiously observant, strong-minded and charitable; happiest in mid-life, with wealth and good children.' };
+
+/**
+ * Vajra (benefics in 1st & 7th, malefics in 4th & 10th) or Yava (the reverse). Pass the
+ * houses (1..12 from lagna) occupied by natural benefics and by natural malefics.
+ */
+export function vajraYavaYoga(beneficHouses: number[], maleficHouses: number[]): BeneficMaleficYoga | null {
+  const b = new Set(beneficHouses.map(normHouse));
+  const m = new Set(maleficHouses.map(normHouse));
+  if (b.has(1) && b.has(7) && m.has(4) && m.has(10)) return VAJRA_YOGA;
+  if (m.has(1) && m.has(7) && b.has(4) && b.has(10)) return YAVA_YOGA;
+  return null;
+}
