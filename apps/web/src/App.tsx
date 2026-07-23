@@ -70,7 +70,7 @@ export function App() {
     );
   } else if (s.editing && chart) {
     body = <Onboarding onComplete={s.onboard} editing
-      initial={{ birth: s.birth!, goalArea, goalName }} />;
+      initial={{ birth: s.birth!, goalArea, goalName, displayName }} />;
   } else if (!chart || !daily) {
     body = <Onboarding onComplete={s.onboard} />;
   } else if (screen === 'audit') {
@@ -98,7 +98,7 @@ export function App() {
       {inApp ? <Sidebar screen={screen} go={s.go} totalReads={reads.count} onSettings={() => s.go('settings')}
         userName={userName} signedIn={!!s.user} onAccount={() => s.go('account')} onLogout={s.logout} onSignIn={s.showLogin} /> : null}
       <main className="main">
-        {inApp ? <TopBar totalReads={reads.count} onSettings={() => s.go('settings')} /> : null}
+        {inApp ? <TopBar totalReads={reads.count} onSettings={() => s.go('settings')} userName={userName} onAccount={() => s.go('account')} /> : null}
         <div className={`content${narrow ? ' narrow' : ''}${screen === 'blueprint' ? ' bp-content' : ''}`}>{body}</div>
         {showBottomNav ? <BottomNav screen={screen} go={s.go} /> : null}
       </main>

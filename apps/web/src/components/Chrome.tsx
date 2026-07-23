@@ -48,14 +48,18 @@ export function Sidebar({ screen, go, totalReads, onSettings, userName, signedIn
   );
 }
 
-/** Mobile top bar (brand + settings + count). */
-export function TopBar({ totalReads, onSettings }: { totalReads: number; onSettings: () => void }) {
+/** Mobile top bar (brand + account + settings + count). */
+export function TopBar({ totalReads, onSettings, userName, onAccount }: {
+  totalReads: number; onSettings: () => void; userName: string; onAccount: () => void;
+}) {
   return (
     <div className="topbar">
       <div className="brand"><span className="glyph" /> aura</div>
       <div className="tb-right">
         {totalReads > 0 ? <span>{readsLabel(totalReads)}</span> : null}
-        <button onClick={onSettings} title="Settings & privacy"
+        <button onClick={onAccount} title={`${userName} — account & birth details`} aria-label="Account"
+          className="tb-avatar">{userName.slice(0, 1).toUpperCase()}</button>
+        <button onClick={onSettings} title="Settings & privacy" aria-label="Settings"
           style={{ background: 'none', border: 'none', color: 'var(--mist-3)', cursor: 'pointer', fontSize: 16 }}>⚙</button>
       </div>
     </div>

@@ -61,7 +61,7 @@ export interface AuraState {
   logout: () => void;
   startEdit: () => void;
   cancelEdit: () => void;
-  onboard: (birth: BirthData, goalArea: LifeArea, goalName: string) => void;
+  onboard: (birth: BirthData, goalArea: LifeArea, goalName: string, displayName?: string) => void;
   setCheckin: (checkin: Checkin | undefined) => void;
   openReading: () => void;
   deleteAll: () => void;
@@ -171,15 +171,15 @@ export const useAura = create<AuraState>((set, get) => {
       set({ authStatus: 'anon', user: null, authError: null, birth: null, chart: null, daily: null, checkin: undefined, screen: 'onboarding' });
     },
 
-    onboard: (birth, area, name) => {
+    onboard: (birth, area, name, who) => {
       // Never "read" a crisis (SPEC §11.3).
       if (detectCrisis(name)) { set({ screen: 'support' }); return; }
-      const displayName = get().displayName;
+      const displayName = (who ?? '').trim() || get().displayName;
       saveProfile({ birth, goalArea: area, goalName: name, displayName });
       const d = compute(birth, area, undefined, get().now);
       // Editing an existing profile skips the retrospective audit; a fresh chart runs it.
       const wasEditing = get().editing;
-      set({ birth, goalArea: area, goalName: name, checkin: undefined, ...d, editing: false, screen: wasEditing ? 'today' : 'audit' });
+      set({ birth, goalArea: area, goalName: name, displayName, checkin: undefined, ...d, editing: false, screen: wasEditing ? 'today' : 'audit' });
       // Persist to the server when signed in (fire-and-forget; local copy already saved).
       if (get().authStatus === 'authed') apiSaveProfile({ birth, goalArea: area, goalName: name, displayName }).catch(() => {});
     },

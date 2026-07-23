@@ -8,6 +8,12 @@ import { useAura } from '../store/useAura';
 // the whole flow, catching runtime crashes in any screen that a build won't surface.
 beforeEach(() => { localStorage.clear(); useAura.getState().reset(); });
 
+/** Onboarding no longer pre-fills anything, so fill the required birth fields. */
+async function fillBirth(user: ReturnType<typeof userEvent.setup>) {
+  await user.type(screen.getByLabelText('Birth date'), '1993-06-15');
+  await user.type(screen.getByLabelText('Birth time'), '14:35');
+}
+
 describe('App smoke — the full flow renders without crashing', () => {
   it('onboarding → audit → today → forecast → mentor → blueprint', async () => {
     const user = userEvent.setup();
@@ -16,8 +22,9 @@ describe('App smoke — the full flow renders without crashing', () => {
     // Auth gate → continue on this device (guest / local mode)
     await user.click(screen.getByRole('button', { name: /Continue on this device only/i }));
 
-    // Onboarding
+    // Onboarding — nothing is pre-filled, so enter a real birth date/time first.
     expect(screen.getByText(/No charts to learn/i)).toBeInTheDocument();
+    await fillBirth(user);
     await user.click(screen.getByRole('button', { name: /Read my energy/i }));
 
     // Audit ("Prove It" retrospective) — engine run backwards
@@ -44,6 +51,7 @@ describe('App smoke — the full flow renders without crashing', () => {
     const user = userEvent.setup();
     render(<App />);
     await user.click(screen.getByRole('button', { name: /Continue on this device only/i }));
+    await fillBirth(user);
     const goal = screen.getByPlaceholderText(/my goal/i);
     await user.clear(goal);
     await user.type(goal, 'i want to end my life');

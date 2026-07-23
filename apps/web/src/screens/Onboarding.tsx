@@ -33,22 +33,24 @@ const numOrNaN = (s: string) => (s.trim() === '' ? NaN : Number(s));
 const TODAY = new Date().toISOString().slice(0, 10); // no one is born in the future
 
 export function Onboarding({ onComplete, initial, editing }: {
-  onComplete: (birth: BirthData, goalArea: LifeArea, goalName: string) => void;
-  initial?: { birth: BirthData; goalArea: LifeArea; goalName: string };
+  onComplete: (birth: BirthData, goalArea: LifeArea, goalName: string, displayName: string) => void;
+  initial?: { birth: BirthData; goalArea: LifeArea; goalName: string; displayName?: string };
   editing?: boolean;
 }) {
   const initCity = initial ? CITIES.findIndex((c) => c.name === initial.birth.place) : -1;
   const startCustom = !!initial && initCity < 0; // an edited profile whose place isn't a preset
-  const [date, setDate] = useState(initial?.birth.date ?? '2001-03-14');
-  const [time, setTime] = useState(initial?.birth.time ?? '09:42');
+  // Nothing is pre-filled for a new person — a stale demo date would silently build a wrong chart.
+  const [who, setWho] = useState(initial?.displayName ?? '');
+  const [date, setDate] = useState(initial?.birth.date ?? '');
+  const [time, setTime] = useState(initial?.birth.time ?? '');
   const [unknownTime, setUnknownTime] = useState(initial?.birth.unknownTime ?? false);
   const [cityIdx, setCityIdx] = useState(startCustom ? CUSTOM : (initCity >= 0 ? initCity : 0));
   const [cPlace, setCPlace] = useState(startCustom ? initial!.birth.place : '');
   const [cLat, setCLat] = useState(startCustom ? String(initial!.birth.lat) : '');
   const [cLng, setCLng] = useState(startCustom ? String(initial!.birth.lng) : '');
   const [cTz, setCTz] = useState(startCustom ? String(initial!.birth.tzOffsetMinutes / 60) : ''); // UTC offset, hours
-  const [goal, setGoal] = useState<LifeArea>(initial?.goalArea ?? 'money');
-  const [name, setName] = useState(initial?.goalName ?? 'Kai’s studio');
+  const [goal, setGoal] = useState<LifeArea>(initial?.goalArea ?? 'career');
+  const [name, setName] = useState(initial?.goalName ?? '');
 
   const isCustom = cityIdx === CUSTOM;
   const lat = numOrNaN(cLat), lng = numOrNaN(cLng), tzH = numOrNaN(cTz);
@@ -57,8 +59,10 @@ export function Onboarding({ onComplete, initial, editing }: {
     Number.isFinite(lng) && Math.abs(lng) <= 180 &&
     Number.isFinite(tzH) && Math.abs(tzH) <= 14
   );
-  const dateValid = date >= '1900-01-01' && date <= TODAY;
-  const canSubmit = customValid && dateValid;
+  // A birth date is required (no silent default); the time may be genuinely unknown.
+  const dateValid = date !== '' && date >= '1900-01-01' && date <= TODAY;
+  const timeValid = unknownTime || time !== '';
+  const canSubmit = customValid && dateValid && timeValid;
 
   const submit = () => {
     if (!canSubmit) return;
@@ -71,7 +75,7 @@ export function Onboarding({ onComplete, initial, editing }: {
         const city = CITIES[cityIdx]!;
         return { date, time: unknownTime ? undefined : time, unknownTime, place: city.name, lat: city.lat, lng: city.lng, tzOffsetMinutes: city.tz };
       })();
-    onComplete(birth, goal, name.trim() || 'my goal');
+    onComplete(birth, goal, name.trim() || 'my goal', who.trim());
   };
 
   return (
@@ -83,6 +87,12 @@ export function Onboarding({ onComplete, initial, editing }: {
           ? 'Fix your birth details and we’ll recompute your whole chart.'
           : 'No charts to learn. No jargon. Just your energy — translated from a system that’s been read for 5,000 years.'}</div>
 
+        <div className="field">
+          <span className="k">Your name</span>
+          <input value={who} onChange={(e) => setWho(e.target.value)} placeholder="what should we call you?"
+            maxLength={60} aria-label="Your name"
+            style={{ background: 'none', border: 'none', color: 'var(--mist)', textAlign: 'right', fontFamily: 'var(--sans)', fontSize: 15, outline: 'none' }} />
+        </div>
         <div className="field">
           <span className="k">Born on</span>
           <input type="date" value={date} min="1900-01-01" max={TODAY} onChange={(e) => setDate(e.target.value)} aria-label="Birth date" />

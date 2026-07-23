@@ -11,6 +11,8 @@ describe('Onboarding — custom birthplace', () => {
     render(<Onboarding onComplete={onComplete} />);
     const user = userEvent.setup();
 
+    await user.type(screen.getByLabelText('Birth date'), '1993-06-15');
+    await user.type(screen.getByLabelText('Birth time'), '14:35');
     await user.selectOptions(screen.getByLabelText('Birthplace'), '8'); // the "Other place…" option
     await user.type(screen.getByLabelText('Custom place name'), 'Chennai, IN');
     await user.type(screen.getByLabelText('Latitude'), '13.08');
@@ -30,6 +32,8 @@ describe('Onboarding — custom birthplace', () => {
   it('blocks submit until the custom coordinates are valid', async () => {
     render(<Onboarding onComplete={vi.fn()} />);
     const user = userEvent.setup();
+    await user.type(screen.getByLabelText('Birth date'), '1993-06-15');
+    await user.type(screen.getByLabelText('Birth time'), '14:35');
     await user.selectOptions(screen.getByLabelText('Birthplace'), '8');
     expect(screen.getByRole('button', { name: /Read my energy/i })).toBeDisabled();
     await user.type(screen.getByLabelText('Latitude'), '13.08');
@@ -43,7 +47,7 @@ describe('Onboarding — custom birthplace', () => {
     render(<Onboarding onComplete={onComplete} />);
     const user = userEvent.setup();
     const future = new Date(Date.now() + 366 * 86_400_000).toISOString().slice(0, 10);
-    await user.clear(screen.getByLabelText('Birth date'));
+    await user.type(screen.getByLabelText('Birth time'), '14:35');
     await user.type(screen.getByLabelText('Birth date'), future);
     expect(screen.getByRole('button', { name: /Read my energy/i })).toBeDisabled();
     await user.click(screen.getByRole('button', { name: /Read my energy/i }));

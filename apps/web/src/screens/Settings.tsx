@@ -83,23 +83,32 @@ export function Settings({ place, account, canEdit, onDelete, onBack, onLogout, 
 
         <div className="qh" style={{ marginBottom: 10 }}>Your data</div>
         <p className="body" style={{ marginBottom: 8 }}>
-          Your birth details ({place}) live only on this device{account === 'guest' ? '' : ' and your local aura server'}.
-          We never sell or share them, and nothing sensitive leaves your phone.
+          Your birth details ({place}) stay on this machine — in this browser
+          {account === 'guest' ? '' : ' and in your own local aura server’s database'}. Nothing is sent
+          to a third party, and there is no cloud account behind this.
         </p>
         {canEdit ? <Button size="sm" onClick={onEdit} className="!w-auto px-5" style={{ marginBottom: 8 }}>Edit birth details</Button> : null}
         <p className="disclaimer" style={{ textAlign: 'left', padding: 0, marginBottom: 26 }}>
-          On this web preview they’re stored in your browser’s local storage. The mobile app uses
-          the device’s encrypted secure storage.
+          Stored in this browser’s local storage{account === 'guest' ? '' : ', and in the SQLite file your local API writes under apps/api/data'}.
         </p>
 
         <button
           className="btn"
           style={{ background: 'transparent', color: 'var(--forge)', border: '1px solid rgba(255,110,88,0.4)', boxShadow: 'none' }}
-          onClick={() => { if (confirm('Delete everything? This removes your birth details and readings from this device.')) onDelete(); }}
+          onClick={() => {
+            const msg = account === 'guest'
+              ? 'Delete everything? This removes your birth details and readings from this device.'
+              : 'Delete everything? This permanently deletes your account, birth profile and readings from this device and your local aura server.';
+            if (confirm(msg)) onDelete();
+          }}
         >
           Delete everything
         </button>
-        <div className="fineprint" style={{ marginTop: 12 }}>One tap. Gone. No account, nothing to recover.</div>
+        <div className="fineprint" style={{ marginTop: 12 }}>
+          {account === 'guest'
+            ? 'One tap. Gone. Nothing to recover.'
+            : 'One tap. Your account and every reading are erased — nothing to recover.'}
+        </div>
       </div>
     </>
   );
