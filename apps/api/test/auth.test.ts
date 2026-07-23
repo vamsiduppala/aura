@@ -88,6 +88,42 @@ describe('auth + profile (Phase 2 local accounts)', () => {
     expect((await app.inject({ method: 'DELETE', url: '/account' })).statusCode).toBe(401);
   });
 
+  it('changes the password, invalidates the old one, and signs other sessions out', async () => {
+    const reg = await app.inject({ method: 'POST', url: '/auth/register', payload: { email: 'pw@example.com', password: 'originalpass' } });
+    const first = reg.json().token as string;
+    // A second device/session for the same account.
+    const second = (await app.inject({ method: 'POST', url: '/auth/login', payload: { email: 'pw@example.com', password: 'originalpass' } })).json().token as string;
+
+    const bad = await app.inject({ method: 'POST', url: '/auth/password', headers: { authorization: `Bearer ${first}` }, payload: { currentPassword: 'wrongpass', newPassword: 'brandnewpass' } });
+    expect(bad.statusCode).toBe(400);
+
+    const ok = await app.inject({ method: 'POST', url: '/auth/password', headers: { authorization: `Bearer ${first}` }, payload: { currentPassword: 'originalpass', newPassword: 'brandnewpass' } });
+    expect(ok.statusCode).toBe(200);
+
+    // Old password no longer logs in; the new one does.
+    expect((await app.inject({ method: 'POST', url: '/auth/login', payload: { email: 'pw@example.com', password: 'originalpass' } })).statusCode).toBe(401);
+    expect((await app.inject({ method: 'POST', url: '/auth/login', payload: { email: 'pw@example.com', password: 'brandnewpass' } })).statusCode).toBe(200);
+    // The caller keeps its session; the other device was signed out.
+    expect((await app.inject({ method: 'GET', url: '/auth/me', headers: { authorization: `Bearer ${first}` } })).statusCode).toBe(200);
+    expect((await app.inject({ method: 'GET', url: '/profile', headers: { authorization: `Bearer ${second}` } })).statusCode).toBe(401);
+  });
+
+  it('rejects a too-short new password and requires auth', async () => {
+    const tok = (await app.inject({ method: 'POST', url: '/auth/register', payload: { email: 'pw2@example.com', password: 'originalpass' } })).json().token as string;
+    expect((await app.inject({ method: 'POST', url: '/auth/password', headers: { authorization: `Bearer ${tok}` }, payload: { currentPassword: 'originalpass', newPassword: 'short' } })).statusCode).toBe(400);
+    expect((await app.inject({ method: 'POST', url: '/auth/password', payload: { currentPassword: 'a', newPassword: 'bbbbbbbbbb' } })).statusCode).toBe(401);
+  });
+
+  it('round-trips the display name on the profile', async () => {
+    const tok = (await app.inject({ method: 'POST', url: '/auth/register', payload: { email: 'dn@example.com', password: 'originalpass' } })).json().token as string;
+    await app.inject({
+      method: 'PUT', url: '/profile', headers: { authorization: `Bearer ${tok}` },
+      payload: { birth: { date: '1990-01-01', place: 'X', lat: 1, lng: 2, tzOffsetMinutes: 0 }, goalArea: 'self', goalName: 'g', displayName: 'Vamsi' },
+    });
+    const p = await app.inject({ method: 'GET', url: '/profile', headers: { authorization: `Bearer ${tok}` } });
+    expect(p.json().displayName).toBe('Vamsi');
+  });
+
   void json;
 });
 
