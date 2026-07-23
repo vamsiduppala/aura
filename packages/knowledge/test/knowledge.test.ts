@@ -3,7 +3,7 @@ import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY, sankhyaYoga, matchAakritiYogas, vajraYavaYoga,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, charaKarakas,
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
-  TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
+  TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase, sodhyaPindaTiming, SODHYA_PINDA_MATTERS,
   naturalRelation, temporaryRelation, compoundRelation,
   vedhaHouse, vedhaObstructors,
   REMEDIES, behaviouralRemedy,
@@ -772,6 +772,23 @@ describe('transits (gochara from Moon)', () => {
     expect(vedhaObstructors('mercury', 4, { 3: ['mars', 'saturn'] })).toEqual(['mars', 'saturn']);
     expect(vedhaObstructors('sun', 10, { 4: ['saturn'] })).toEqual([]); // Sun/Saturn exception
     expect(vedhaObstructors('moon', 1, { 5: ['mercury'] })).toEqual([]); // Moon/Mercury exception
+  });
+  it('timing with sodhya pinda (Ch 25.6) matches the book’s worked examples', () => {
+    // Father example: 5 rekhas × Sun pinda 86 = 430 → nak 25 (Poorvabhadra), rasi 10 (Cp).
+    const father = sodhyaPindaTiming(5, 86);
+    expect(father.product).toBe(430);
+    expect(father.nakshatra).toBe(25);
+    expect(father.rasi).toBe(10);
+    expect(father.companionNakshatras).toEqual([7, 16]); // 10th & 19th — all Jupiter-lorded
+    // Moon example: 6 rekhas × 122 = 732 → nak 3 (Krittika).
+    expect(sodhyaPindaTiming(6, 122).nakshatra).toBe(3);
+    // Zero-product case wraps: 0 rekhas × 203 = 0 → nak 27 (Revathi), rasi 12 (Pisces).
+    const zero = sodhyaPindaTiming(0, 203);
+    expect(zero.nakshatra).toBe(27);
+    expect(zero.rasi).toBe(12);
+    // Table 61 pairs each planet with its matter/house.
+    expect(SODHYA_PINDA_MATTERS.venus).toEqual({ house: 7, matter: 'marriage' });
+    expect(SODHYA_PINDA_MATTERS.saturn.house).toBe(8);
   });
 });
 

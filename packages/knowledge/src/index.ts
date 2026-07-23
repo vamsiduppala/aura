@@ -21,7 +21,8 @@ export {
 } from './data/functional.js';
 export {
   TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
-  VEDHA_STHAANA, VEDHA_EXCEPTIONS, vedhaHouse, vedhaObstructors, type TransitRule,
+  VEDHA_STHAANA, VEDHA_EXCEPTIONS, vedhaHouse, vedhaObstructors,
+  SODHYA_PINDA_MATTERS, sodhyaPindaTiming, type TransitRule, type SodhyaTiming,
 } from './data/transits.js';
 export {
   NATURAL_RELATIONS, naturalRelation, temporaryRelation, compoundRelation,

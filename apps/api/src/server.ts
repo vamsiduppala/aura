@@ -12,6 +12,7 @@ import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, sankhyaYoga, matchAakritiYogas, vajraYavaYoga,
   FUNCTIONAL_NATURE, functionalNatureFor, TRANSIT_FROM_MOON, NATURAL_RELATIONS, REMEDIES,
+  sodhyaPindaTiming, SODHYA_PINDA_MATTERS,
   getGraha, getRasi, getBhava, getNakshatra, search,
   interpretPlacement, interpretLagnaLord, classifyDignity, DIGNITIES,
   grahaAspectsFrom, rasiDrishti, argalaOn, ASPECT_NOTES,
@@ -163,6 +164,13 @@ export function buildServer() {
   app.get('/functional-nature', async () => FUNCTIONAL_NATURE);
   app.get('/functional-nature/:lagna', async (req) => functionalNatureFor(Number((req.params as { lagna: string }).lagna)));
   app.get('/transits', async () => TRANSIT_FROM_MOON);
+  // Timing with Sodhya Pinda (25.6): rekhas (in the target house) × the planet's sodhya pinda →
+  // the nakshatra/rasi where Saturn's transit troubles the matter and Jupiter's supports it.
+  app.get('/transits/sodhya-timing', async (req, reply) => {
+    const q = req.query as { rekhas?: string; pinda?: string };
+    if (q.rekhas == null || q.pinda == null) return reply.code(400).send({ error: 'rekhas and pinda are required' });
+    return { ...sodhyaPindaTiming(Number(q.rekhas), Number(q.pinda)), matters: SODHYA_PINDA_MATTERS };
+  });
   app.get('/relationships', async () => NATURAL_RELATIONS);
   app.get('/dignities', async () => DIGNITIES);
   // Aspects & argalas (Ch 10). Compute what a planet/house aspects or intervenes on.

@@ -75,3 +75,42 @@ export function vedhaObstructors(
   if (vh == null) return [];
   return (occupantsByHouse[vh] ?? []).filter((o) => o !== graha && !isExceptionPair(graha, o));
 }
+
+// ── Timing with Sodhya Pinda (Ch 25.6, Table 61) ──────────────────────────────
+// Fix the planet + house for a matter, take the rekhas that planet has in that house (its own
+// BAV), multiply by the planet's sodhya pinda; the product mod 27 gives the nakshatra and mod 12
+// the rasi where a Saturn transit hurts the matter and a Jupiter transit helps it.
+
+type TimingPlanet = 'sun' | 'moon' | 'mars' | 'mercury' | 'jupiter' | 'venus' | 'saturn';
+
+/** Table 61 — the matter Parasara ties to each planet + the house counted from it. */
+export const SODHYA_PINDA_MATTERS: Record<TimingPlanet, { house: number; matter: string }> = {
+  sun: { house: 9, matter: 'father' },
+  moon: { house: 4, matter: 'mother' },
+  mars: { house: 3, matter: 'siblings' },
+  mercury: { house: 10, matter: 'profession' },
+  jupiter: { house: 5, matter: 'children' },
+  venus: { house: 7, matter: 'marriage' },
+  saturn: { house: 8, matter: 'longevity' },
+};
+
+export interface SodhyaTiming {
+  product: number;      // rekhas × sodhya pinda
+  nakshatra: number;    // 1..27 (Aswini..Revathi); a 0 remainder wraps to 27 (Revathi)
+  rasi: number;         // 1..12 (Aries..Pisces); a 0 remainder wraps to 12 (Pisces)
+  /** The 10th and 19th nakshatras from it — same Vimsottari lord, so they act together. */
+  companionNakshatras: [number, number];
+}
+
+/**
+ * Time a matter from a planet's sodhya pinda (25.6). `rekhas` = the bindus that planet has in the
+ * target house within its own BAV; `pinda` = its sodhya pinda. Saturn transiting the returned
+ * nakshatra/rasi troubles the matter; Jupiter transiting it supports the matter.
+ */
+export function sodhyaPindaTiming(rekhas: number, pinda: number): SodhyaTiming {
+  const product = rekhas * pinda;
+  const nak = product % 27 === 0 ? 27 : product % 27;
+  const rasi = product % 12 === 0 ? 12 : product % 12;
+  const from = (n: number): number => ((nak - 1 + n) % 27) + 1;
+  return { product, nakshatra: nak, rasi, companionNakshatras: [from(9), from(18)] };
+}

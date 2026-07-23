@@ -117,8 +117,10 @@ resuming session can pick up exactly where it left off.
 ## Part 3 — Transit Analysis
 - [~] Ch 25 Transits & Natal References (13172–15364): gochara favourable houses per planet from
       Moon + Sade Sati phase + **rasi gochara vedha** (Table 63 obstruction houses + father-son
-      exceptions, `vedhaHouse`/`vedhaObstructors`, verified vs Bill Gates) → `data/transits.ts`.
-      API: /transit/vedha. TODO: full result tables, ashtakavarga transit
+      exceptions, `vedhaHouse`/`vedhaObstructors`, verified vs Bill Gates) + **timing with sodhya
+      pinda** (25.6, Table 61: rekhas × pinda → nakshatra/rasi + 10th/19th companions,
+      `sodhyaPindaTiming`/`SODHYA_PINDA_MATTERS`, verified vs the father/Moon/zero examples)
+      → `data/transits.ts`. API: /transit/vedha, GET /transits/sodhya-timing. TODO: full result tables
 - [~] Ch 26 Transits: Miscellaneous (15365–16282): 9-fold taras (Table 64), special
       nakshatras (karma/jaati/naidhana… 26.4.2), nakshatra-based aspects (26.5) → `data/taras.ts`
       (taraOf/specialNakshatra/nakshatraAspectsFrom), verified vs the Bill Gates example.
