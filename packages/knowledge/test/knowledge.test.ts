@@ -18,7 +18,7 @@ import {
   tithiOf, nityaYoga, karanaOf, horaLord,
   dashaBalanceAtBirth, dashaSequence, antardashas, nakshatraLord, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
-  marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality,
+  marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality, maheswara,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
   narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
@@ -470,6 +470,11 @@ describe('longevity (Ch 14) — marakas, Rudra 8th, three-pairs', () => {
     expect(rudra8thSign(1)).toBe(2);  // Taurus → Gemini (anti-zodiacal)
     expect(rudra8thSign(6)).toBe(1);  // Libra → Taurus
   });
+  it('Maheswara = the 8th lord from the Atmakaraka (Ch 14.3 example)', () => {
+    expect(maheswara(2)).toBe('saturn');  // AK in Gemini → 8th is Capricorn → Saturn
+    expect(maheswara(0)).toBe('mars');    // AK in Aries → 8th is Scorpio → Mars
+  });
+
   it('three-pairs longevity category (Table 33) + combination', () => {
     expect(pairLongevity('movable', 'movable')).toBe('long');
     expect(pairLongevity('fixed', 'fixed')).toBe('short');

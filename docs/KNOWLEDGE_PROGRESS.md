@@ -70,9 +70,10 @@ resuming session can pick up exactly where it left off.
 - [~] Ch 13 Interpreting Charts (7834–8433): functional nature per lagna (Table 30) + yogakaraka
       + baadhaka rule → `data/functional.ts` DONE. TODO: analysis method (13.4) + examples
 - [~] Ch 14 Longevity (8434–8656): marakas (2nd/7th houses + their lords), Rudra special
-      8th house (Table 32), three-pairs longevity range (Table 33/34: short/middle/long)
-      → `data/longevity.ts`. API: /longevity/marakas, /longevity/estimate. TODO: full
-      strength-based Rudra/Maheswara selection (needs chart strengths + chara karakas)
+      8th house (Table 32), Maheswara (14.3: 8th lord from the Atmakaraka's sign), three-pairs
+      longevity range (Table 33/34: short/middle/long) → `data/longevity.ts`. API:
+      /longevity/marakas, /longevity/estimate, /longevity/maheswara. TODO: full strength-based
+      Rudra/Maheswara *exception* selection (needs chart strengths + chara-karaka occupancy)
 - [~] Ch 15 Strength of Planets/Rasis (8657–9318): avasthas — Baladi (age, Table 35,
       verified), Jagradi (alertness) + Deeptadi (mood, dignity part) → `data/avasthas.ts`.
       API: /avastha. TODO: shadbala detail (engine has composite), Vimsopaka, co-lord/rasi

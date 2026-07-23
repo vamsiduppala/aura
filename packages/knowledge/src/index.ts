@@ -70,7 +70,7 @@ export {
 } from './data/ashtottari.js';
 export {
   MARAKA_HOUSES, marakaLords, RUDRA_8TH_SIGN, rudra8thSign, signModality,
-  pairLongevity, LONGEVITY_RANGES, combineThreePairs, LONGEVITY_NOTES,
+  pairLongevity, LONGEVITY_RANGES, combineThreePairs, LONGEVITY_NOTES, maheswara,
   type LifeSpan, type Modality,
 } from './data/longevity.js';
 export {

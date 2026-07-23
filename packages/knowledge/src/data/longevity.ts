@@ -60,6 +60,18 @@ export function combineThreePairs(cats: [LifeSpan, LifeSpan, LifeSpan]): LifeSpa
   return (Object.entries(count).sort((x, y) => y[1] - x[1])[0]![0]) as LifeSpan;
 }
 
+/**
+ * Maheswara (Ch 14.3) — the lord of the 8th house from the Atmakaraka's sign; it shows the
+ * channels through which the soul strives for liberation. `akSign` = the sign the AK
+ * occupies (0..11). Core rule only: the exceptions (8th lord in own/exaltation → stronger of
+ * its 8th/12th lords; Rahu/Ketu with AK or its 8th → use the 6th lord instead) need chart
+ * strength/occupancy and are applied by the caller. Rahu/Ketu never lord a sign here, so the
+ * Rahu→Mercury / Ketu→Jupiter substitution does not arise from the plain rule.
+ */
+export function maheswara(akSign: number): Graha {
+  return RASI_BY_INDEX(mod12(akSign + 7)).lord;
+}
+
 export const LONGEVITY_NOTES: string[] = [
   'For good longevity the 3rd and 8th houses (houses of life) and their lords should be strong, and the 2nd and 7th (houses of death / marakas) and their lords weak.',
   'A malefic strongly conjoining or aspecting the 2nd/7th houses or their lords also acts as a maraka.',

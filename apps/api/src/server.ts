@@ -24,6 +24,7 @@ import {
   dashaBalanceAtBirth, antardashas, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas,
   marakaLords, MARAKA_HOUSES, signModality, pairLongevity, combineThreePairs, LONGEVITY_RANGES,
+  maheswara, rudra8thSign,
   type LifeSpan,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
   narayanaProgression, narayanaDasaLength, narayanaAntardashas,
@@ -272,6 +273,14 @@ export function buildServer() {
     const cats = b.pairs.map(([x, y]) => pairLongevity(signModality(x), signModality(y))) as [LifeSpan, LifeSpan, LifeSpan];
     const combined = combineThreePairs(cats);
     return { pairs: cats, combined, years: LONGEVITY_RANGES[combined] };
+  });
+  // Maheswara (14.3): lord of the special-8th from the Atmakaraka's sign. Also returns the
+  // Rudra special-8th sign for the same input, so the whole "critical points" set is one call.
+  app.get('/longevity/maheswara', async (req, reply) => {
+    const q = req.query as { akSign?: string };
+    if (q.akSign == null) return reply.code(400).send({ error: 'akSign (0-11, the sign the Atmakaraka occupies) is required' });
+    const s = Number(q.akSign);
+    return { akSign: s, maheswara: maheswara(s), rudra8thSign: rudra8thSign(s) };
   });
 
   // Tajaka annual-chart techniques (Ch 28) — muntha, harsha bala, the six aspects.
