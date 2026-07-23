@@ -369,6 +369,17 @@ describe('Tajaka techniques (Ch 28) — verified against Example 119', () => {
     // artha = 2nd house − 2nd lord + Lagna; A=310°50', B=19°10', C=280°50' (same day/night)
     expect(saham(310 + 50 / 60, 19 + 10 / 60, 280 + 50 / 60, false, true)).toBeCloseTo(212.5, 3);
   });
+  it('samartha & vanik sahams match the book’s Example 121 (a night chart)', () => {
+    const dm = (d: number, m: number) => d + m / 60;
+    const ctx = {
+      lagna: dm(280, 50), lagnaLord: dm(19, 10), // Saturn (lagna lord)
+      mars: dm(354, 58), moon: dm(345, 14), mercury: dm(311, 28),
+      sun: 0, jupiter: 0, venus: 0, saturn: dm(19, 10),
+    };
+    const s = computeSahams(ctx, false); // night
+    expect(s.samartha).toBeCloseTo(dm(335, 2), 1); // 5 Pi 02 — the +30° (not-between) branch
+    expect(s.vanik).toBeCloseTo(dm(247, 4), 1);    // 7 Sg 04
+  });
   it('computeSahams resolves chained sahams in order (Yasas←Punya, Preeti←Sastra)', () => {
     const ctx = { sun: 10, moon: 100, mars: 200, mercury: 50, jupiter: 150, venus: 250, saturn: 300, lagna: 50, lagnaLord: 40 };
     const s = computeSahams(ctx, true);
