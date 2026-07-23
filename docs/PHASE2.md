@@ -44,9 +44,18 @@ The web app finds the API at `http://localhost:8787` by default; override with
 All the Phase-1 knowledge routes (`/grahas`, `/dasha/*`, `/tajaka/*`, `/varga`, …) remain
 available on the same server for the Cosmic Mentor and future live-data wiring.
 
+**Blueprint kundali via the API:** `POST /kundali` takes computed positions
+(`{ lagnaSign, planets: { sun:{sign,house,longitude,retrograde?,combust?}, … all 9 } }`) and
+returns the whole house-by-house reading — each house's occupants with dignity + a plain-language
+placement interpretation, the lagna lord's reading, the Jaimini karakas (AK/AmK/DK), the chart's
+Naabhasa shape, and any raaja / vipareeta yogas. It's the authoritative server-side chart reading;
+the web still computes the same thing on-device to stay offline-first, so the round-trip is opt-in.
+
 ## Status
 
-- [x] Local SQLite DB + auth (register/login) + profile save/load — `apps/api` (6 tests)
+- [x] Local SQLite DB + auth (register/login) + profile save/load — `apps/api` (8 tests)
+- [x] `POST /kundali` — the full blueprint chart reading served from the backend (composes the
+      knowledge layer into houses + occupant interpretations + karakas + shape + raaja/vipareeta)
 - [x] Web register/login screen + guest mode; profile persists to the API when signed in
 - [x] Settings shows account + sign-out; App gates on auth state
 - [x] Blueprint "Your timing clocks" — Vimshottari/Ashtottari/Narayana pulled from the API

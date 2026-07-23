@@ -49,6 +49,57 @@ import {
 
 type Dignity = Parameters<typeof jagradiAvastha>[0];
 
+// ── Full chart reading (the "blueprint kundali") ──────────────────────────────
+// Composes the knowledge layer into one house-by-house reading from a set of computed positions
+// (a client runs the ephemeris; this turns positions into the interpreted chart). Offline-first
+// clients can still compute this on-device — this is the authoritative server-side surface.
+interface KundaliPlanetInput { sign: number; house: number; longitude: number; retrograde?: boolean; combust?: boolean }
+interface KundaliInput { lagnaSign: number; planets: Record<Graha, KundaliPlanetInput> }
+
+const KUNDALI_SEVEN: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn'];
+const KUNDALI_NINE: Graha[] = [...KUNDALI_SEVEN, 'rahu', 'ketu'];
+
+function buildKundaliReading(input: KundaliInput) {
+  const { lagnaSign, planets } = input;
+  const lagnaRasi = getRasi(lagnaSign);
+  const lagnaLord = lagnaRasi.lord;
+  const ll = planets[lagnaLord]!;
+
+  const houses = [];
+  for (let h = 1; h <= 12; h++) {
+    const sign = (lagnaSign + h - 1) % 12;
+    const b = getBhava(h);
+    const lord = getRasi(sign).lord;
+    const occupants = KUNDALI_NINE.filter((g) => planets[g].house === h).map((g) => {
+      const p = planets[g];
+      const dignity = classifyDignity(g, p.sign);
+      const interp = interpretPlacement({ graha: g, house: h, sign: p.sign, dignity, retrograde: p.retrograde, combust: p.combust });
+      return { graha: g, sign: p.sign, signName: getRasi(p.sign).english, dignity, retrograde: !!p.retrograde, combust: !!p.combust, ...interp };
+    });
+    houses.push({
+      house: h, name: b.english, sanskrit: b.sanskrit, categories: b.categories,
+      significations: b.significations, sign, signName: getRasi(sign).english,
+      lord, lordHouse: planets[lord]!.house, occupants,
+    });
+  }
+
+  const ck = charaKarakas(Object.fromEntries([...KUNDALI_SEVEN, 'rahu'].map((g) => [g, planets[g as Graha]!.longitude])));
+  const karaka = (code: string) => ck.find((k) => k.code === code)?.graha;
+  const aakriti = matchAakritiYogas(KUNDALI_SEVEN.map((g) => planets[g].house));
+  const shape = aakriti[0] ?? sankhyaYoga(KUNDALI_SEVEN.map((g) => planets[g].sign));
+  const signs = Object.fromEntries(KUNDALI_NINE.map((g) => [g, planets[g].sign])) as PlanetSigns;
+
+  return {
+    lagna: { sign: lagnaSign, signName: lagnaRasi.english, traits: lagnaRasi.indications.slice(0, 4),
+      lord: lagnaLord, lordHouse: ll.house, lordReading: interpretLagnaLord(lagnaLord, ll.house, ll.sign) },
+    houses,
+    karakas: { atmakaraka: karaka('AK'), amatyakaraka: karaka('AmK'), darakaraka: karaka('DK'), all: ck },
+    shape: { name: shape.name, means: shape.means, effect: shape.effect },
+    rajaYogas: rajaYogas(lagnaSign, signs),
+    vipareeta: vipareetaYoga(lagnaSign, signs),
+  };
+}
+
 export function buildServer() {
   const app = Fastify({ logger: false });
   openDb(); // local SQLite (users, sessions, profiles)
@@ -622,6 +673,19 @@ export function buildServer() {
       return reply.code(400).send({ error: 'lord, house and sign are required' });
     }
     return interpretLagnaLord(b.lord, b.house, b.sign);
+  });
+  // The whole "blueprint kundali" reading from computed positions. POST { lagnaSign, planets:{
+  // sun:{sign,house,longitude,retrograde?,combust?}, … all 9 } } → house-by-house interpretation,
+  // lagna lord, Jaimini karakas, chart shape, and raaja/vipareeta yogas.
+  app.post('/kundali', async (req, reply) => {
+    const b = req.body as Partial<KundaliInput>;
+    if (b?.lagnaSign == null || !b.planets) return reply.code(400).send({ error: 'lagnaSign (0-11) and planets are required' });
+    const bad = KUNDALI_NINE.find((g) => {
+      const p = b.planets![g];
+      return !p || p.sign == null || p.house == null || p.longitude == null;
+    });
+    if (bad) return reply.code(400).send({ error: `planets.${bad} must have sign (0-11), house (1-12) and longitude (0-360)` });
+    return buildKundaliReading(b as KundaliInput);
   });
 
   return app;

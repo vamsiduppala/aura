@@ -66,3 +66,39 @@ describe('auth + profile (Phase 2 local accounts)', () => {
 
   void json;
 });
+
+describe('blueprint kundali endpoint (full chart reading)', () => {
+  // Aries lagna: house = sign + 1. Two planets share the 1st house.
+  const planets = {
+    sun: { sign: 0, house: 1, longitude: 10 },
+    moon: { sign: 3, house: 4, longitude: 100 },
+    mars: { sign: 0, house: 1, longitude: 5 },
+    mercury: { sign: 1, house: 2, longitude: 45 },
+    jupiter: { sign: 8, house: 9, longitude: 250 },
+    venus: { sign: 1, house: 2, longitude: 40 },
+    saturn: { sign: 6, house: 7, longitude: 190 },
+    rahu: { sign: 2, house: 3, longitude: 75 },
+    ketu: { sign: 8, house: 9, longitude: 255 },
+  };
+
+  it('reads the whole chart from computed positions', async () => {
+    const res = await app.inject({ method: 'POST', url: '/kundali', payload: { lagnaSign: 0, planets } });
+    expect(res.statusCode).toBe(200);
+    const k = res.json();
+    expect(k.lagna.signName).toBe('Aries');
+    expect(k.lagna.lord).toBe('mars');           // Aries lord
+    expect(k.lagna.lordReading.text.length).toBeGreaterThan(20);
+    expect(k.houses).toHaveLength(12);
+    expect(k.houses[0].occupants.map((o: { graha: string }) => o.graha).sort()).toEqual(['mars', 'sun']);
+    expect(k.houses[0].occupants[0].text.length).toBeGreaterThan(20); // real interpretation text
+    expect(['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu']).toContain(k.karakas.atmakaraka);
+    expect(k.shape.name.length).toBeGreaterThan(0);
+    expect(typeof k.vipareeta.present).toBe('boolean');
+    expect(Array.isArray(k.rajaYogas)).toBe(true);
+  });
+
+  it('rejects an incomplete chart', async () => {
+    const res = await app.inject({ method: 'POST', url: '/kundali', payload: { lagnaSign: 0, planets: { sun: { sign: 0, house: 1, longitude: 10 } } } });
+    expect(res.statusCode).toBe(400);
+  });
+});
