@@ -23,7 +23,7 @@ import {
   sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART,
   ashtakavarga, bhinnashtakavarga, sodhitaAshtakavarga, sodhyaPinda, AV_PLANETS,
   type RefSigns, type AVPlanet,
-  panchanga, horaLord,
+  panchanga, horaLord, matterTithi, tithiPanchaka,
   dashaBalanceAtBirth, antardashas, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas,
   marakaLords, MARAKA_HOUSES, signModality, pairLongevity, combineThreePairs, LONGEVITY_RANGES,
@@ -498,6 +498,14 @@ export function buildServer() {
     const q = req.query as { weekday?: string; hora?: string };
     if (q.weekday == null || q.hora == null) return reply.code(400).send({ error: 'weekday (0=Sun..6=Sat) and hora (1-24) are required' });
     return { weekday: Number(q.weekday), hora: Number(q.hora), lord: horaLord(Number(q.weekday), Number(q.hora)) };
+  });
+  // Matter tithi (26.8) — a tithi advancing `speed`× as fast (karma=10, dhana=2), for Sarvatobhadra.
+  app.get('/matter-tithi', async (req, reply) => {
+    const q = req.query as { sunLong?: string; moonLong?: string; speed?: string };
+    if (q.sunLong == null || q.moonLong == null) return reply.code(400).send({ error: 'sunLong and moonLong (0-360) required; optional speed (default 1; karma 10, dhana 2)' });
+    const speed = q.speed == null ? 1 : Number(q.speed);
+    const index = matterTithi(Number(q.sunLong), Number(q.moonLong), speed);
+    return { speed, index, panchaka: tithiPanchaka(index) };
   });
 
   // Ashtakavarga (Ch 12). POST the 8 reference signs → BAV per planet + SAV (+ 337 total).

@@ -64,6 +64,7 @@ export {
 } from './data/ashtakavarga.js';
 export {
   tithiOf, nityaYoga, karanaOf, horaLord, panchanga,
+  matterTithi, tithiPanchaka, KARMA_TITHI_SPEED, DHANA_TITHI_SPEED, TITHI_PANCHAKA,
   NITYA_YOGAS, WEEKDAY_LORD, type Tithi, type Panchanga,
 } from './data/panchanga.js';
 export {

@@ -133,8 +133,11 @@ resuming session can pick up exactly where it left off.
       Latta / the transit "kick" (26.7 — Sun/Mars/Jup/Sat forward, Moon/Merc/Ven/Rahu
       backward) → `lattaNakshatra()`, verified vs all 8 book examples. API:
       /transit/{tara,special-nakshatras,nakshatra-aspects,latta,murthi}. Murthis (26.2 — gold/
-      silver/copper/iron transit form by transit-Moon house) → murthiOf(). TODO: rasi-vedha,
-      body-part tables, sarvatobhadra chakra
+      silver/copper/iron transit form by transit-Moon house) → murthiOf(). Sarvatobhadra chakra
+      (26.8): the matter-tithi formula (karma ×10 / dhana ×2 faster tithis) + the five-fold
+      Nanda/Bhadra/Jaya/Rikta/Poorna class → `data/panchanga.ts` `matterTithi`/`tithiPanchaka`.
+      API: /matter-tithi. (The full 9×9 chakra grid + vedha needs Figure 3 and the author himself
+      is tentative about it — left out.) TODO: body-part tables
 
 ## Part 4 — Tajaka Analysis
 - [~] Ch 27 Tajaka Chart Basics (16295–16620): annual-chart concept (solar return). Muntha

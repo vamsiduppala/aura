@@ -24,6 +24,25 @@ export function tithiOf(sunLong: number, moonLong: number): Tithi {
   return { index, paksha: shukla ? 'shukla' : 'krishna', day, name };
 }
 
+/** Speed multipliers for the matter-specific tithis used with Sarvatobhadra chakra (Ch 26.8). */
+export const KARMA_TITHI_SPEED = 10;   // "karma tithi" (profession) advances 10× as fast
+export const DHANA_TITHI_SPEED = 2;    // "dhana tithi" (wealth) advances 2× as fast
+
+/**
+ * A "matter tithi" (26.8): the Moon–Sun elongation multiplied by a speed factor before the 12° step,
+ * giving a tithi number 1..30 that changes `speed`× as fast as the normal tithi. Speed 1 is the
+ * ordinary janma tithi; 10 gives the karma tithi (profession), 2 the dhana tithi (wealth). Used as a
+ * natal reference point whose transit vedha is judged on the Sarvatobhadra chakra.
+ */
+export function matterTithi(sunLong: number, moonLong: number, speed = 1): number {
+  return Math.floor(mod360(speed * (moonLong - sunLong)) / 12) + 1; // 1..30
+}
+
+/** The five-fold class of a tithi (26.8) — repeats every 5 within each paksha. */
+export const TITHI_PANCHAKA = ['Nanda', 'Bhadra', 'Jaya', 'Rikta', 'Poorna'] as const;
+export const tithiPanchaka = (tithiIndex: number): (typeof TITHI_PANCHAKA)[number] =>
+  TITHI_PANCHAKA[(((tithiIndex - 1) % 5) + 5) % 5]!;
+
 // ── Nitya-yoga (Sun + Moon) ───────────────────────────────────────────────────
 export const NITYA_YOGAS = [
   'Vishkambha', 'Preeti', 'Aayushmaan', 'Saubhaagya', 'Sobhana', 'Atiganda', 'Sukarman',

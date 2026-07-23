@@ -17,7 +17,7 @@ import {
   sunUpagrahas, partLords, upagrahaFraction,
   ashtakavarga, bhinnashtakavarga, AV_PLANETS,
   trikonaSodhana, ekadhipatyaSodhana, sodhitaAshtakavarga, sodhyaPinda,
-  tithiOf, nityaYoga, karanaOf, horaLord,
+  tithiOf, nityaYoga, karanaOf, horaLord, matterTithi, tithiPanchaka, KARMA_TITHI_SPEED, DHANA_TITHI_SPEED,
   dashaBalanceAtBirth, dashaSequence, antardashas, nakshatraLord, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
   marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality, maheswara,
@@ -652,6 +652,22 @@ describe('panchanga (Ch 1) — verified against the book’s worked examples', (
   it('karana: fixed Kimstughna at the first half-tithi, movable ones repeat', () => {
     expect(karanaOf(0, 1).name).toBe('Kimstughna'); // slot 0
     expect(karanaOf(0, 7).name).toBe('Bava');       // slot 1
+  });
+  it('matter tithi (Ch 26.8): speed 1 = janma tithi; karma ×10, dhana ×2 run faster', () => {
+    // Speed 1 matches the ordinary tithi index for any elongation.
+    expect(matterTithi(0, 40, 1)).toBe(tithiOf(0, 40).index);
+    expect(matterTithi(10, 100, 1)).toBe(tithiOf(10, 100).index);
+    // Karma tithi = floor((10·(moon−sun) mod 360)/12)+1. 30° elongation ×10 = 300° → 300/12=25 → 26.
+    expect(matterTithi(0, 30, KARMA_TITHI_SPEED)).toBe(26);
+    // Dhana tithi ×2: 30° → 60° → 60/12=5 → 6.
+    expect(matterTithi(0, 30, DHANA_TITHI_SPEED)).toBe(6);
+    // Always in range 1..30.
+    for (let e = 0; e < 360; e += 17) {
+      const t = matterTithi(0, e, KARMA_TITHI_SPEED);
+      expect(t).toBeGreaterThanOrEqual(1); expect(t).toBeLessThanOrEqual(30);
+    }
+    // Five-fold class cycles Nanda…Poorna.
+    expect([1, 2, 3, 4, 5, 6].map(tithiPanchaka)).toEqual(['Nanda', 'Bhadra', 'Jaya', 'Rikta', 'Poorna', 'Nanda']);
   });
 });
 
