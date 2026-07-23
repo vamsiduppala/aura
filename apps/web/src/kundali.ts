@@ -3,12 +3,12 @@
 // language — the Blueprint's full-kundali section the user asked for:
 //   "Saturn, Ketu in 5th house (Pisces) in Scorpio lagna, meaning your loving
 //    pattern is a little serious and a little detached."
-import type { Chart, Graha } from '@aura/engine';
+import type { Chart, Graha, Energy } from '@aura/engine';
 import { SIGN_LORD } from '@aura/engine';
 import {
   interpretPlacement, interpretLagnaLord, classifyDignity, getRasi, getBhava, charaKarakas,
-  matchAakritiYogas, sankhyaYoga,
-  type Dignity,
+  matchAakritiYogas, sankhyaYoga, rajaYogas, vipareetaYoga,
+  type Dignity, type PlanetSigns,
 } from '@aura/knowledge';
 
 /** Classical order for stable, familiar sequencing (Sun → Ketu). */
@@ -39,8 +39,13 @@ export interface Kundali {
   atmakaraka: Graha;       // Jaimini AK — the soul's core planet
   darakaraka: Graha;       // Jaimini DK — the planet describing the spouse
   shape: { name: string; means: string; effect: string }; // the chart's Naabhasa "shape" yoga
+  /** Extra "born gifts" from the knowledge layer that the base engine detector doesn't emit
+   *  (Vipareeta Raaja + the specifically-named Dharma-Karmadhipati raja yoga). */
+  extraGifts: ExtraGift[];
   rows: KundaliRow[]; // ordered by house asc, then classical order (co-tenants sit together)
 }
+
+export interface ExtraGift { key: string; name: string; blurb: string; energy: Energy }
 
 const KARAKA_BODIES: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu'];
 const SEVEN: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn'];
@@ -56,6 +61,29 @@ export function dignityChip(d: Dignity): string {
     case 'enemy': return 'in a tough sign';
     default: return '';
   }
+}
+
+/** Yogas from the knowledge layer that the base engine detector doesn't surface. */
+function computeExtraGifts(chart: Chart): ExtraGift[] {
+  const signs = Object.fromEntries(ORDER.map((g) => [g, chart.planets[g].sign])) as PlanetSigns;
+  const out: ExtraGift[] = [];
+  if (vipareetaYoga(chart.lagnaSign, signs).present) {
+    out.push({
+      key: 'vipareeta',
+      name: 'Rise Through Adversity',
+      blurb: 'The very things that block others tend to clear your path. Setbacks flip into openings — you often win precisely where the odds looked worst.',
+      energy: 'main',
+    });
+  }
+  if (rajaYogas(chart.lagnaSign, signs).some((l) => l.dharmaKarmadhipati)) {
+    out.push({
+      key: 'dharma-karmadhipati',
+      name: 'Calling and Fortune Aligned',
+      blurb: 'Your sense of purpose and your work pull in the same direction. When you act on what you believe is right, standing and good fortune tend to follow.',
+      energy: 'grow',
+    });
+  }
+  return out;
 }
 
 export function buildKundali(chart: Chart): Kundali {
@@ -89,6 +117,7 @@ export function buildKundali(chart: Chart): Kundali {
   const shape = aakriti[0] ?? sankhyaYoga(SEVEN.map((g) => chart.planets[g].sign));
 
   return {
+    extraGifts: computeExtraGifts(chart),
     lagnaSign: chart.lagnaSign,
     lagnaSignName: getRasi(chart.lagnaSign).english,
     lagnaSignNote: getRasi(chart.lagnaSign).indications.slice(0, 3).join(', '),

@@ -8,8 +8,16 @@ import { computeYearAhead, type YearAhead } from '../services/yearAhead';
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
 export function Blueprint({ aura, chart }: { aura: Aura; chart: Chart; goalName: string }) {
-  const yogas = aura.yogas(chart);
   const k = useMemo(() => buildHouses(chart), [chart]);
+  // The engine's born-gift yogas, enriched with the knowledge-layer ones it doesn't emit. When the
+  // specific Dharma-Karmadhipati is present we drop the engine's generic "raja" card so the rise
+  // shows once, by its proper name.
+  const yogas = useMemo(() => {
+    const engine = aura.yogas(chart);
+    const hasDK = k.extraGifts.some((g) => g.key === 'dharma-karmadhipati');
+    const base = hasDK ? engine.filter((y) => y.key !== 'raja') : engine;
+    return [...base, ...k.extraGifts];
+  }, [aura, chart, k.extraGifts]);
 
   return (
     <div className="view s6 bp-wide">
