@@ -10,7 +10,7 @@ import { openDb, getProfile, upsertProfile, type ProfileRow } from './db.js';
 import { register, login, userForToken, AuthError } from './auth.js';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
-  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS,
+  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, sankhyaYoga,
   FUNCTIONAL_NATURE, functionalNatureFor, TRANSIT_FROM_MOON, NATURAL_RELATIONS, REMEDIES,
   getGraha, getRasi, getBhava, getNakshatra, search,
   interpretPlacement, interpretLagnaLord, classifyDignity, DIGNITIES,
@@ -123,6 +123,12 @@ export function buildServer() {
   app.get('/nakshatras', async () => NAKSHATRAS);
   app.get('/nakshatras/:i', async (req) => getNakshatra(Number((req.params as { i: string }).i)));
   app.get('/yogas', async () => YOGAS);
+  // Sankhya Naabhasa yoga (Ch 11.5.4): the yoga from the count of distinct signs the 7 planets occupy.
+  app.get('/yogas/sankhya', async (req, reply) => {
+    const q = req.query as { signs?: string };
+    if (!q.signs) return reply.code(400).send({ error: 'signs=comma-separated signs (0-11) of the 7 planets (Sun..Saturn)' });
+    return sankhyaYoga(q.signs.split(',').map(Number));
+  });
   app.get('/yogas/:key', async (req, reply) => {
     const y = YOGA_BY_KEY((req.params as { key: string }).key);
     return y ?? reply.code(404).send({ error: 'unknown yoga' });

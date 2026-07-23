@@ -57,7 +57,10 @@ resuming session can pick up exactly where it left off.
       /aspects/notes, /argala.
 - [~] Ch 11 Yogas (4621–5363): Ravi (Vesi/Vosi/Ubhayachara/Budha-Aditya), Chandra (Sunapha/Anapha/
       Duradhara/Kemadruma/Chandra-Mangala/Adhi/Gajakesari), 5 Mahapurusha, Raja/Dhana/Vipareeta/
-      Neechabhanga → `data/yogas.ts` (20 yogas, rule+effect). TODO: full Naabhasa (32) + more Raja variants
+      Neechabhanga → `data/yogas.ts` (20 yogas, rule+effect); **Sankhya Naabhasa yogas (7)** —
+      Gola/Yuga/Soola/Kedaara/Paasa/Daama/Veenaa by distinct-sign count → `data/naabhasa.ts`
+      `sankhyaYoga()`, verified vs the Sri Rama example (6→Daama). API: /yogas/sankhya.
+      TODO: 20 Aakriti (shape) Naabhasa yogas + more Raja variants
 - [~] Ch 12 Ashtakavarga (5364–7833): Bhinnashtakavarga (per-planet bindus, BPHS benefic-
       point tables) + Sarvashtakavarga (sum, 337 invariant) → `data/ashtakavarga.ts`
       (standalone from the engine's copy). API: POST /ashtakavarga. TODO: prastaara,

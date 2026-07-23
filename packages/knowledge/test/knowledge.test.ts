@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
+  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY, sankhyaYoga,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, charaKarakas,
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
   TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
@@ -595,6 +595,15 @@ describe('yogas', () => {
   });
   it('yogas are searchable', () => {
     expect(search('raja').some((h) => h.kind === 'yoga')).toBe(true);
+  });
+
+  it('Sankhya Naabhasa yoga by distinct-sign count (Ch 11.5.4, Sri Rama → Daama)', () => {
+    // Sri Rama: 7 planets across Ar,Ta,Cn,Li,Cp,Pi = 6 distinct signs → Daama.
+    expect(sankhyaYoga([0, 1, 3, 6, 9, 11, 0]).name).toBe('Daama');
+    expect(sankhyaYoga([0, 0, 0, 0, 0, 0, 0]).name).toBe('Gola');      // 1 sign
+    expect(sankhyaYoga([0, 1, 2, 3, 4, 5, 6]).name).toBe('Veenaa');    // 7 signs
+    expect(sankhyaYoga([0, 1, 2, 0, 1, 2, 0]).name).toBe('Soola');     // 3 signs
+    expect(sankhyaYoga([0, 1, 2, 3, 0, 1, 2]).count).toBe(4);          // Kedaara
   });
 });
 
