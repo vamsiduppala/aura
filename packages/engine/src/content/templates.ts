@@ -78,7 +78,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
       'Name what you’re feeling in one honest sentence. Naming the tide loosens its grip.',
     ],
     watch: [
-      'You may read a neutral message as a rejection. Check the story before you react to it.',
+      'A low hour will make a small slight feel permanent. Give it until tomorrow before you answer it.',
       'The urge to withdraw completely will be strong. Rest, yes — disappear, no.',
     ],
     remedies: [
@@ -111,7 +111,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     ],
     move: [
       'Point the drive at the hardest useful task and go. Physical, decisive action beats stewing today.',
-      'Start the thing you’ve been circling. Momentum is the reward for moving first.',
+      'Do the hardest piece first, before the day negotiates you down. Momentum is the reward for moving first.',
     ],
     watch: [
       'A conversation could turn into a clash over nothing. Hold the sharp message 24 hours before you send it.',
@@ -280,7 +280,7 @@ export const CONTENT: Record<Energy, EnergyContent> = {
     ],
     watch: [
       'Something will bait your urgency — a message, a comparison, a “now or never.” It’s a mirage; let it sit 24 hours.',
-      'Comparison will whisper you’re losing. You’re not behind — you’re running someone else’s race in your head.',
+      'Comparison will bite hardest right after you open a feed. Notice that trigger, then close it.',
     ],
     remedies: [
       'Fix your sleep window for 7 days — up early, down early — and cut screens before bed. The fog and overthinking feed on late nights; morning light beats any plan.',
