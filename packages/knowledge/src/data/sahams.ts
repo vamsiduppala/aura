@@ -82,3 +82,44 @@ export function computeSahams(ctx: SahamContext, day = true): Record<string, num
   }
   return out;
 }
+
+/**
+ * The seven Table 74 sahams whose formulas reference a bhava cusp, a house lord, or a sign lord —
+ * so they need chart data beyond the planets. Jalapatana uses the fixed point Cancer 15° (105°).
+ * Karyasiddhi is the one saham whose day/night difference swaps the operands (Sun/sun-sign-lord by
+ * day, Moon/moon-sign-lord by night) rather than reversing A−B+C, so it's handled explicitly.
+ */
+export interface BhavaSahamContext {
+  lagna: number; sun: number; moon: number; mars: number; saturn: number;
+  h6: number; h8: number; h9: number; h11: number;  // bhava (house) cusp longitudes
+  h9lord: number; h11lord: number;                  // longitudes of the 9th and 11th lords
+  sunSignLord: number; moonSignLord: number;        // longitudes of the lords of the Sun-sign / Moon-sign
+}
+
+/** Human-readable formulas for the bhava-based sahams (Table 74 nos. 20/21/25/27/33/35/36). */
+export const BHAVA_SAHAM_FORMULAS: Record<string, { meaning: string; formula: string }> = {
+  mrityu: { meaning: 'death', formula: '8th house − Moon + Lagna (same day & night)' },
+  paradesa: { meaning: 'foreign countries', formula: '9th house − 9th lord + Lagna (same day & night)' },
+  santapa: { meaning: 'sadness', formula: 'Saturn − Moon + 6th house' },
+  karyasiddhi: { meaning: 'success in endeavours', formula: 'Saturn − Sun + lord of Sun-sign (night: Saturn − Moon + lord of Moon-sign)' },
+  jalapatana: { meaning: 'crossing an ocean', formula: 'Cancer 15° − Saturn + Lagna' },
+  apamrityu: { meaning: 'bad death', formula: '8th house − Mars + Lagna' },
+  labha: { meaning: 'material gains', formula: '11th house − 11th lord + Lagna (same day & night)' },
+};
+
+const CANCER_15 = 105; // Cancer 15° — the fixed point in the Jalapatana formula.
+
+/** Compute the seven bhava-based Table 74 sahams (needs cusp + house-lord + sign-lord longitudes). */
+export function computeBhavaSahams(ctx: BhavaSahamContext, day = true): Record<string, number> {
+  return {
+    mrityu: saham(ctx.h8, ctx.moon, ctx.lagna, day, true),
+    paradesa: saham(ctx.h9, ctx.h9lord, ctx.lagna, day, true),
+    santapa: saham(ctx.saturn, ctx.moon, ctx.h6, day),
+    karyasiddhi: day
+      ? saham(ctx.saturn, ctx.sun, ctx.sunSignLord, true, true)
+      : saham(ctx.saturn, ctx.moon, ctx.moonSignLord, true, true),
+    jalapatana: saham(CANCER_15, ctx.saturn, ctx.lagna, day),
+    apamrityu: saham(ctx.h8, ctx.mars, ctx.lagna, day),
+    labha: saham(ctx.h11, ctx.h11lord, ctx.lagna, day, true),
+  };
+}

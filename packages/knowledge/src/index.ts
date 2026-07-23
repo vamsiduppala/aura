@@ -109,8 +109,8 @@ export {
   type TajakaAspect, type ClassicalGraha,
 } from './data/tajaka.js';
 export {
-  saham, computeSahams, SAHAM_FORMULAS,
-  type SahamToken, type SahamFormula, type SahamContext,
+  saham, computeSahams, SAHAM_FORMULAS, computeBhavaSahams, BHAVA_SAHAM_FORMULAS,
+  type SahamToken, type SahamFormula, type SahamContext, type BhavaSahamContext,
 } from './data/sahams.js';
 export {
   TAJAKA_SPEED_ORDER, tajakaSpeedRank, fasterPlanet, ithasala, ishkavala, induvara,

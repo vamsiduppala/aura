@@ -26,7 +26,7 @@ import {
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
   kalachakraPada, isSavya,
   taraOf, specialNakshatra, nakshatraAspectsFrom, lattaNakshatra, murthiOf,
-  muntha, harshaBala, uchchaBala, haddaLord, saham, computeSahams,
+  muntha, harshaBala, uchchaBala, haddaLord, saham, computeSahams, computeBhavaSahams,
   ithasala, ishkavala, induvara, fasterPlanet,
   muddaDasa, muddaDays, patyayiniDasa, patyayiniAntardasas, sudarsanaDasa, sudarsanaAllRefs,
   muhurtaCheck, ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES,
@@ -368,6 +368,23 @@ describe('Tajaka techniques (Ch 28) — verified against Example 119', () => {
   it('saham point calc: artha saham example → 212°30′ (2°30′ Sc)', () => {
     // artha = 2nd house − 2nd lord + Lagna; A=310°50', B=19°10', C=280°50' (same day/night)
     expect(saham(310 + 50 / 60, 19 + 10 / 60, 280 + 50 / 60, false, true)).toBeCloseTo(212.5, 3);
+  });
+  it('bhava-based sahams (Table 74) complete the set, incl. Karyasiddhi’s day/night operand swap', () => {
+    const ctx = {
+      lagna: 50, sun: 20, moon: 100, mars: 200, saturn: 300,
+      h6: 190, h8: 250, h9: 280, h11: 340, h9lord: 40, h11lord: 60,
+      sunSignLord: 30, moonSignLord: 70,
+    };
+    const day = computeBhavaSahams(ctx, true);
+    expect(day.mrityu).toBeCloseTo(saham(ctx.h8, ctx.moon, ctx.lagna, true, true), 4);   // 8th − Moon + Lagna
+    expect(day.labha).toBeCloseTo(saham(ctx.h11, ctx.h11lord, ctx.lagna, true, true), 4); // 11th − 11th lord + Lagna
+    expect(day.jalapatana).toBeCloseTo(saham(105, ctx.saturn, ctx.lagna, true), 4);       // Cancer 15° − Saturn + Lagna
+    // Karyasiddhi swaps operands by day/night (not a plain A/B reversal).
+    expect(day.karyasiddhi).toBeCloseTo(saham(ctx.saturn, ctx.sun, ctx.sunSignLord, true, true), 4);
+    const night = computeBhavaSahams(ctx, false);
+    expect(night.karyasiddhi).toBeCloseTo(saham(ctx.saturn, ctx.moon, ctx.moonSignLord, true, true), 4);
+    // All seven present → Table 74 fully covered (28 + 7 = the 35 tabled point-sahams).
+    expect(Object.keys(day).sort()).toEqual(['apamrityu', 'jalapatana', 'karyasiddhi', 'labha', 'mrityu', 'paradesa', 'santapa']);
   });
   it('samartha & vanik sahams match the book’s Example 121 (a night chart)', () => {
     const dm = (d: number, m: number) => d + m / 60;

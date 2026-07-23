@@ -38,7 +38,8 @@ import {
   charaKarakas,
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   DEEP_EXALTATION, uchchaBala, haddaLord, type ClassicalGraha,
-  saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
+  saham, computeSahams, SAHAM_FORMULAS, computeBhavaSahams, BHAVA_SAHAM_FORMULAS,
+  type SahamContext, type BhavaSahamContext,
   ithasala, ishkavala, induvara, TAJAKA_YOGAS,
   muddaDasa, patyayiniDasa, patyayiniAntardasas, type PatyayiniToken, sudarsanaDasa, sudarsanaAllRefs,
   muhurtaCheck, MUHURTA_GUIDELINES,
@@ -353,6 +354,15 @@ export function buildServer() {
       return reply.code(400).send({ error: `ctx must include longitudes for: ${need.join(', ')}`, formulas: SAHAM_FORMULAS });
     }
     return computeSahams(b.ctx, b.day !== false);
+  });
+  // The seven bhava-based sahams (Table 74) — need cusp + house-lord + sign-lord longitudes.
+  app.post('/tajaka/sahams-bhava', async (req, reply) => {
+    const b = req.body as { ctx?: BhavaSahamContext; day?: boolean };
+    const need = ['lagna', 'sun', 'moon', 'mars', 'saturn', 'h6', 'h8', 'h9', 'h11', 'h9lord', 'h11lord', 'sunSignLord', 'moonSignLord'];
+    if (!b?.ctx || need.some((k) => (b.ctx as unknown as Record<string, number>)[k] == null)) {
+      return reply.code(400).send({ error: `ctx must include longitudes for: ${need.join(', ')}`, formulas: BHAVA_SAHAM_FORMULAS });
+    }
+    return computeBhavaSahams(b.ctx, b.day !== false);
   });
 
   // Muhurta (Ch 36) — electional quality check + the per-task guidelines.

@@ -143,10 +143,12 @@ resuming session can pick up exactly where it left off.
       Tajaka aspects (trine/sextile/square/conjunction/opposition/semi-sextile) + deeptamsa
       orbs, and Harsha Bala (4×5-unit sources) → `data/tajaka.ts`, verified vs Example 119.
       API: /tajaka/{muntha,harsha,aspects}. Sahams (28.8): saham() point calc (A−B+C with
-      day/night + 30° rule) + 28 of Table 74's sahams (incl. Vivaha/Putra/Matri/Karma/Roga/
-      Kali/Vivaha/Preeti — the marriage & children sahams the Part 6 charts use; chained sahams
-      resolved in order) → `data/sahams.ts`, verified vs the artha-saham example. API:
-      /tajaka/saham, /tajaka/sahams. (The 7 bhava-cusp sahams await house-cusp longitudes.)
+      day/night + 30° rule) + **all 35 tabled point-sahams of Table 74** — 28 planet/lagna-based
+      via `computeSahams` (incl. Vivaha/Putra the Part 6 charts use; chained sahams in order,
+      samartha & vanik verified vs Example 121) + the 7 bhava-cusp ones via `computeBhavaSahams`
+      (Mrityu/Paradesa/Santapa/Karyasiddhi/Jalapatana/Apamrityu/Labha, incl. Karyasiddhi's
+      day/night operand swap) → `data/sahams.ts`. API: /tajaka/saham, /tajaka/sahams,
+      /tajaka/sahams-bhava. Table 74 complete.
       Pancha-Vargeeya components — Uchcha bala + Hadda lords (28.4) in `data/tajaka.ts`.
       **Dwaadasa Vargeeya Bala (28.5)** — D-1..D-12 strong-minus-weak varga count →
       `data/varga.ts` `dwadasaVargeeyaBala`/`vargaStanding`. API: /tajaka/{uchcha-bala,hadda},
