@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY, sankhyaYoga,
+  GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY, sankhyaYoga, matchAakritiYogas,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, charaKarakas,
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
   TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase,
@@ -615,6 +615,18 @@ describe('yogas', () => {
   });
   it('yogas are searchable', () => {
     expect(search('raja').some((h) => h.kind === 'yoga')).toBe(true);
+  });
+
+  it('Aakriti (shape) Naabhasa yogas by house distribution (Ch 11.5.3)', () => {
+    const names = (h: number[]) => matchAakritiYogas(h).map((y) => y.name);
+    expect(names([1, 7])).toContain('Sakata');
+    expect(names([4, 10])).toContain('Vihanga');
+    expect(names([1, 5, 9])).toContain('Sringaataka');
+    expect(names([1, 4, 7, 10])).toContain('Kamala');
+    expect(names([2, 4, 6, 8, 10, 12])).toContain('Samudra');
+    expect(names([2, 4, 6, 8, 10, 12])).not.toContain('Chakra');    // even houses ≠ odd
+    expect(names([1, 2, 3, 4])).toContain('Yoopa');
+    expect(names([2, 6, 10])).toContain('Hala');                    // mutual trines, not from lagna
   });
 
   it('Sankhya Naabhasa yoga by distinct-sign count (Ch 11.5.4, Sri Rama → Daama)', () => {

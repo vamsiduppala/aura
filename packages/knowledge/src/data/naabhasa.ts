@@ -27,3 +27,40 @@ export function sankhyaYoga(planetSigns: number[]): { count: number } & SankhyaY
   const count = Math.min(7, Math.max(1, distinct));
   return { count, ...SANKHYA_YOGAS[count]! };
 }
+
+// ── Aakriti (shape) Naabhasa yogas (Ch 11.5.3) ────────────────────────────────
+// Based on which HOUSES (from lagna) the seven planets occupy. Each yoga allows one or
+// more house-sets; it applies when every occupied house falls within a set. (Precedence
+// between overlapping shapes is author-dependent, so we surface all that apply.)
+const consec = (start: number, len: number): number[] => Array.from({ length: len }, (_, i) => ((start - 1 + i) % 12) + 1);
+
+export interface AakritiYoga { name: string; means: string; effect: string; houseSets: number[][] }
+
+export const AAKRITI_YOGAS: AakritiYoga[] = [
+  { name: 'Sakata', means: 'a cart', effect: 'struggle, ill health and isolation; life feels like pulling a heavy load.', houseSets: [[1, 7]] },
+  { name: 'Vihanga', means: 'a bird', effect: 'a restless wanderer and messenger; quarrelsome and unabashed.', houseSets: [[4, 10]] },
+  { name: 'Gadaa', means: 'a mace', effect: 'wealth, gold and gems; performs rites and knows the sciences and songs.', houseSets: [[1, 4], [4, 7], [7, 10], [10, 1]] },
+  { name: 'Sringaataka', means: 'a crossroads', effect: 'happy, wealthy and liked by rulers; a noble marriage.', houseSets: [[1, 5, 9]] },
+  { name: 'Hala', means: 'a plough', effect: 'a farmer’s lot — hard-working but poor, deserted and worried.', houseSets: [[2, 6, 10], [3, 7, 11], [4, 8, 12]] },
+  { name: 'Kamala', means: 'a lotus', effect: 'kingly — strong character, fame, long life, pure and good deeds.', houseSets: [[1, 4, 7, 10]] },
+  { name: 'Vaapi', means: 'a reservoir', effect: 'a mind that amasses wealth; comforts and command.', houseSets: [[2, 5, 8, 11], [3, 6, 9, 12]] },
+  { name: 'Yoopa', means: 'a sacrificial post', effect: 'spiritual knowledge, sattva and steady married life.', houseSets: [consec(1, 4)] },
+  { name: 'Sara', means: 'an arrow', effect: 'a sharp, harsh vocation (hunter/warden); hard on others.', houseSets: [consec(4, 4)] },
+  { name: 'Sakti', means: 'a weapon', effect: 'unhappy and unlucky but firm, long-lived and sharp in conflict.', houseSets: [consec(7, 4)] },
+  { name: 'Danda', means: 'a staff', effect: 'loss of family and support; hardship and mean company.', houseSets: [consec(10, 4)] },
+  { name: 'Naukaa', means: 'a ship', effect: 'earns through water/trade; well-known and desirous, but rough and miserly.', houseSets: [consec(1, 7)] },
+  { name: 'Koota', means: 'a fort', effect: 'a jailer’s life in hills and forts; poor and hard.', houseSets: [consec(4, 7)] },
+  { name: 'Chatra', means: 'an umbrella', effect: 'kind, helpful and intelligent; liked by rulers, long-lived.', houseSets: [consec(7, 7)] },
+  { name: 'Chaapa', means: 'a bow', effect: 'a keeper of secrets who wanders; unfortunate but happy mid-life.', houseSets: [consec(10, 7)] },
+  { name: 'ArdhaChandra', means: 'a half-moon', effect: 'an army chief — strong, handsome, favoured by rulers, adorned.', houseSets: [2, 3, 5, 6, 8, 9, 11, 12].map((s) => consec(s, 7)) },
+  { name: 'Chakra', means: 'a wheel', effect: 'an emperor — many rulers bow to them.', houseSets: [[1, 3, 5, 7, 9, 11]] },
+  { name: 'Samudra', means: 'an ocean', effect: 'stable wealth, gems and luxuries; soft-natured and well-liked.', houseSets: [[2, 4, 6, 8, 10, 12]] },
+];
+
+const normHouse = (h: number): number => ((h - 1) % 12 + 12) % 12 + 1;
+
+/** All Aakriti (shape) yogas that apply, given the houses (1..12 from lagna) the 7 planets occupy. */
+export function matchAakritiYogas(occupiedHouses: number[]): AakritiYoga[] {
+  const occ = [...new Set(occupiedHouses.map(normHouse))];
+  return AAKRITI_YOGAS.filter((y) => y.houseSets.some((set) => occ.every((h) => set.includes(h))));
+}

@@ -10,7 +10,7 @@ import { openDb, getProfile, upsertProfile, type ProfileRow } from './db.js';
 import { register, login, userForToken, AuthError } from './auth.js';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
-  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, sankhyaYoga,
+  DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, sankhyaYoga, matchAakritiYogas,
   FUNCTIONAL_NATURE, functionalNatureFor, TRANSIT_FROM_MOON, NATURAL_RELATIONS, REMEDIES,
   getGraha, getRasi, getBhava, getNakshatra, search,
   interpretPlacement, interpretLagnaLord, classifyDignity, DIGNITIES,
@@ -129,6 +129,12 @@ export function buildServer() {
     const q = req.query as { signs?: string };
     if (!q.signs) return reply.code(400).send({ error: 'signs=comma-separated signs (0-11) of the 7 planets (Sun..Saturn)' });
     return sankhyaYoga(q.signs.split(',').map(Number));
+  });
+  // Aakriti (shape) Naabhasa yogas (Ch 11.5.3): the yogas the 7 planets' house distribution forms.
+  app.get('/yogas/aakriti', async (req, reply) => {
+    const q = req.query as { houses?: string };
+    if (!q.houses) return reply.code(400).send({ error: 'houses=comma-separated houses (1-12 from lagna) the 7 planets occupy' });
+    return { yogas: matchAakritiYogas(q.houses.split(',').map(Number)) };
   });
   app.get('/yogas/:key', async (req, reply) => {
     const y = YOGA_BY_KEY((req.params as { key: string }).key);
