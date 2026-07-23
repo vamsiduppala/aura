@@ -7,6 +7,7 @@ import type { Chart, Graha } from '@aura/engine';
 import { SIGN_LORD } from '@aura/engine';
 import {
   interpretPlacement, interpretLagnaLord, classifyDignity, getRasi, getBhava, charaKarakas,
+  matchAakritiYogas, sankhyaYoga,
   type Dignity,
 } from '@aura/knowledge';
 
@@ -37,10 +38,12 @@ export interface Kundali {
   lagnaLordText: string;
   atmakaraka: Graha;       // Jaimini AK — the soul's core planet
   darakaraka: Graha;       // Jaimini DK — the planet describing the spouse
+  shape: { name: string; means: string; effect: string }; // the chart's Naabhasa "shape" yoga
   rows: KundaliRow[]; // ordered by house asc, then classical order (co-tenants sit together)
 }
 
 const KARAKA_BODIES: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu'];
+const SEVEN: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn'];
 
 /** A human dignity chip label, or '' when there's nothing notable to flag. */
 export function dignityChip(d: Dignity): string {
@@ -81,6 +84,10 @@ export function buildKundali(chart: Chart): Kundali {
   const ck = charaKarakas(Object.fromEntries(KARAKA_BODIES.map((g) => [g, chart.planets[g].siderealLong])));
   const karaka = (code: string): Graha => ck.find((k) => k.code === code)!.graha;
 
+  // The chart's Naabhasa "shape": a house-based Aakriti yoga if any, else the Sankhya yoga.
+  const aakriti = matchAakritiYogas(SEVEN.map((g) => chart.planets[g].house));
+  const shape = aakriti[0] ?? sankhyaYoga(SEVEN.map((g) => chart.planets[g].sign));
+
   return {
     lagnaSign: chart.lagnaSign,
     lagnaSignName: getRasi(chart.lagnaSign).english,
@@ -90,6 +97,7 @@ export function buildKundali(chart: Chart): Kundali {
     lagnaLordText,
     atmakaraka: karaka('AK'),
     darakaraka: karaka('DK'),
+    shape: { name: shape.name, means: shape.means, effect: shape.effect },
     rows,
   };
 }

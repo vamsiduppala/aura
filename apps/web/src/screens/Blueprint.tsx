@@ -61,6 +61,13 @@ export function Blueprint({ aura, chart }: { aura: Aura; chart: Chart; goalName:
           </div>
         </div>
 
+        <div className="clock-row">
+          <span className="clock-dot" style={{ background: 'var(--smoke)' }} />
+          <div className="clock-txt">
+            <b>Chart shape</b> — <span style={{ color: 'var(--mist)' }}>{k.shape.name}</span> ({k.shape.means}): {k.shape.effect}
+          </div>
+        </div>
+
         {yogas.length > 0 ? (
           <div style={{ marginTop: 20 }}>
             <div className="label" style={{ marginBottom: 12 }}>Born gifts · rare in your chart</div>
