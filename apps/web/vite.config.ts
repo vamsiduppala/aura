@@ -22,4 +22,22 @@ export default defineConfig({
   server: { port: 5173, host: true },
   // The engine is a source-TS workspace package; let Vite transpile it.
   optimizeDeps: { include: ['astronomia'] },
+  build: {
+    // astronomia's VSOP87 ephemeris tables are inherently ~1.1MB and change ~never, so we isolate
+    // them into their own long-cached chunk (below) rather than shrink them; raise the size-warning
+    // threshold past that known chunk so the build output stays clean.
+    chunkSizeWarningLimit: 1200,
+    // Split the heavy, rarely-changing vendors into their own chunks. astronomia's VSOP87 tables
+    // (imported deeply as `astronomia/data/vsop87B*`) are the bulk, so match the whole package path
+    // — the array form only caught the bare entry and left the data in the app chunk.
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/astronomia')) return 'astronomia';
+          if (id.includes('node_modules/react') || id.includes('node_modules/scheduler')) return 'react';
+          return undefined;
+        },
+      },
+    },
+  },
 });
