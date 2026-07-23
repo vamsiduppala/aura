@@ -19,7 +19,8 @@ import {
   vargaSign, allVargas, VARGA_DIVISORS,
   specialLagnas, SPECIAL_LAGNA_USE,
   sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART,
-  ashtakavarga, type RefSigns,
+  ashtakavarga, bhinnashtakavarga, sodhitaAshtakavarga, sodhyaPinda, AV_PLANETS,
+  type RefSigns, type AVPlanet,
   panchanga, horaLord,
   dashaBalanceAtBirth, antardashas, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas,
@@ -432,6 +433,24 @@ export function buildServer() {
       return reply.code(400).send({ error: `signs must include all of: ${need.join(', ')} (each 0-11)` });
     }
     return ashtakavarga(b.signs as RefSigns);
+  });
+  // Sodhita Ashtakavarga + Sodhya Pinda per planet (12.7). Same 8 reference signs: BAV, then
+  // trikona + ekadhipatya reduction (occupancy = the 7 planets' signs), then the pinda.
+  app.post('/ashtakavarga/sodhya', async (req, reply) => {
+    const b = req.body as { signs?: Partial<RefSigns> };
+    const need = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'asc'];
+    if (!b?.signs || need.some((k) => b.signs![k as keyof RefSigns] == null)) {
+      return reply.code(400).send({ error: `signs must include all of: ${need.join(', ')} (each 0-11)` });
+    }
+    const refs = b.signs as RefSigns;
+    const planetSigns = Object.fromEntries(AV_PLANETS.map((p) => [p, refs[p]])) as Record<AVPlanet, number>;
+    const occupied = AV_PLANETS.map((p) => refs[p]);
+    const out = {} as Record<AVPlanet, { soav: number[]; rasiPinda: number; grahaPinda: number; sodhyaPinda: number }>;
+    for (const p of AV_PLANETS) {
+      const soav = sodhitaAshtakavarga(bhinnashtakavarga(p, refs), occupied);
+      out[p] = { soav, ...sodhyaPinda(soav, planetSigns) };
+    }
+    return out;
   });
 
   // Upagrahas (Ch 4). Sun-based longitudes + time-based part-lords / rising fraction.

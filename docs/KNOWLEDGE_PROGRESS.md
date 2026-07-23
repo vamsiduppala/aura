@@ -63,10 +63,12 @@ resuming session can pick up exactly where it left off.
       **20 Aakriti (shape) Naabhasa yogas** (Sakata/Kamala/Chakra/Samudra/Naukaa/… by house
       distribution) + Vajra/Yava (benefic-malefic kendra placement) → `matchAakritiYogas()`/`vajraYavaYoga()`.
       API: /yogas/{sankhya,aakriti,vajra-yava}. Naabhasa set complete. TODO: more Raja variants
-- [~] Ch 12 Ashtakavarga (5364–7833): Bhinnashtakavarga (per-planet bindus, BPHS benefic-
-      point tables) + Sarvashtakavarga (sum, 337 invariant) → `data/ashtakavarga.ts`
-      (standalone from the engine's copy). API: POST /ashtakavarga. TODO: prastaara,
-      trikona/ekadhipatya sodhana, sodhya pindas.
+- [x] Ch 12 Ashtakavarga (5364–7833): Bhinnashtakavarga (per-planet bindus, BPHS benefic-
+      point tables) + Sarvashtakavarga (sum, 337 invariant); Sodhita AV via trikona (12.7.1) +
+      ekadhipatya (12.7.2) reductions; Sodhya Pinda (12.7.3, Rasimana/Grahamana multipliers)
+      → `data/ashtakavarga.ts` (standalone from the engine's copy). Verified vs Examples 40–43
+      (Mercury sodhya pinda 152). API: POST /ashtakavarga, POST /ashtakavarga/sodhya.
+      (Prastaara grid is only a presentation layout of the same bindus — not encoded.)
 - [~] Ch 13 Interpreting Charts (7834–8433): functional nature per lagna (Table 30) + yogakaraka
       + baadhaka rule → `data/functional.ts` DONE. TODO: analysis method (13.4) + examples
 - [~] Ch 14 Longevity (8434–8656): marakas (2nd/7th houses + their lords), Rudra special

@@ -15,6 +15,7 @@ import {
   bhavaLagna, horaLagna, ghatiLagna, sreeLagna,
   sunUpagrahas, partLords, upagrahaFraction,
   ashtakavarga, bhinnashtakavarga, AV_PLANETS,
+  trikonaSodhana, ekadhipatyaSodhana, sodhitaAshtakavarga, sodhyaPinda,
   tithiOf, nityaYoga, karanaOf, horaLord,
   dashaBalanceAtBirth, dashaSequence, antardashas, nakshatraLord, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
@@ -570,6 +571,44 @@ describe('ashtakavarga (Ch 12) — the SAV total is the 337 invariant', () => {
       const refs = mk({ sun: seed, moon: (seed + 2) % 12, mars: (seed + 4) % 12, mercury: (seed + 6) % 12, jupiter: (seed + 8) % 12, venus: (seed + 10) % 12, saturn: (seed + 1) % 12, asc: (seed + 5) % 12 });
       expect(ashtakavarga(refs).total).toBe(337);
     }
+  });
+
+  // Trikona sodhana reproduces the book's Mercury BAV → SoAV (Example 40): fiery {7,4,4}→{3,0,0},
+  // watery {4,4,4}→{0,0,0}, and groups holding a zero pass through untouched.
+  it('Trikona Sodhana matches the book’s Example 40 (Mercury’s BAV → SoAV)', () => {
+    // indices Ar,Ta,Ge,Cn,Le,Vi,Li,Sc,Sg,Cp,Aq,Pi
+    const bav = [7, 1, 3, 4, 4, 0, 0, 4, 4, 0, 2, 4];
+    expect(trikonaSodhana(bav)).toEqual([3, 1, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0]);
+  });
+
+  // Ekadhipatya sodhana, the five hypothetical cases the book uses to fix every rule (Example 42),
+  // on Venus's pair Ta(1)/Li(6). Only the pair under test is non-zero so no other pair reduces.
+  it('Ekadhipatya Sodhana obeys every branch (book Example 42 a–e, Ta/Li)', () => {
+    const row = (ta: number, li: number) => { const r = new Array(12).fill(0); r[1] = ta; r[6] = li; return r; };
+    // (a) both occupied → unchanged
+    expect(ekadhipatyaSodhana(row(4, 2), [1, 6])).toEqual(row(4, 2));
+    // (b) Ta occupied, Li empty, Li lower → Li=0
+    expect(ekadhipatyaSodhana(row(4, 2), [1])).toEqual(row(4, 0));
+    // (c) Ta empty, Li occupied, Ta higher → Ta takes Li's value (2)
+    expect(ekadhipatyaSodhana(row(4, 2), [6])).toEqual(row(2, 2));
+    // (d) both empty, different → higher falls to lower (both 2)
+    expect(ekadhipatyaSodhana(row(4, 2), [])).toEqual(row(2, 2));
+    // (e) both empty, equal → both 0
+    expect(ekadhipatyaSodhana(row(2, 2), [])).toEqual(row(0, 0));
+  });
+
+  // End-to-end (Example 43): Mercury's SoAV [3,1,3,0,…,2,0] → rasi pinda 77, graha pinda 75, sodhya 152.
+  it('Sodhya Pinda reproduces the book’s Example 43 (Mercury = 152)', () => {
+    const bav = [7, 1, 3, 4, 4, 0, 0, 4, 4, 0, 2, 4];
+    // Sun, Mars, Mercury in Ge(2); Venus in Ar(0); the rest parked in zero-SoAV signs.
+    const occupied = [2, 0, 3, 4, 5]; // Ge, Ar, and empty Cn/Le/Vi — pairs still each hold a zero
+    const soav = sodhitaAshtakavarga(bav, occupied);
+    expect(soav).toEqual([3, 1, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0]);
+    const signs = { sun: 2, moon: 3, mars: 2, mercury: 2, jupiter: 4, venus: 0, saturn: 5 };
+    const sp = sodhyaPinda(soav, signs);
+    expect(sp.rasiPinda).toBe(77);
+    expect(sp.grahaPinda).toBe(75);
+    expect(sp.sodhyaPinda).toBe(152);
   });
 });
 

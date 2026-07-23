@@ -52,7 +52,9 @@ export {
 } from './data/upagrahas.js';
 export {
   ashtakavarga, bhinnashtakavarga, AV_TABLE, AV_PLANETS,
-  type AVPlanet, type AVRef, type RefSigns, type AshtakavargaResult,
+  trikonaSodhana, ekadhipatyaSodhana, sodhitaAshtakavarga, sodhyaPinda,
+  TRIKONA_GROUPS, EKADHIPATYA_PAIRS, RASI_MULTIPLIER, GRAHA_MULTIPLIER,
+  type AVPlanet, type AVRef, type RefSigns, type AshtakavargaResult, type SodhyaPinda,
 } from './data/ashtakavarga.js';
 export {
   tithiOf, nityaYoga, karanaOf, horaLord, panchanga,
