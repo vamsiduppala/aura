@@ -62,7 +62,10 @@ resuming session can pick up exactly where it left off.
       `sankhyaYoga()`, verified vs the Sri Rama example (6→Daama). API: /yogas/sankhya.
       **20 Aakriti (shape) Naabhasa yogas** (Sakata/Kamala/Chakra/Samudra/Naukaa/… by house
       distribution) + Vajra/Yava (benefic-malefic kendra placement) → `matchAakritiYogas()`/`vajraYavaYoga()`.
-      API: /yogas/{sankhya,aakriti,vajra-yava}. Naabhasa set complete. TODO: more Raja variants
+      API: /yogas/{sankhya,aakriti,vajra-yava}. Naabhasa set complete. **Raaja/Vipareeta detection**
+      (11.7): quadrant↔trine lord links by conjunction/aspect/parivartana incl. Dharma-Karmadhipati,
+      + Vipareeta (Harsha/Sarala/Vimala) → `data/rajayoga.ts` `rajaYogas()`/`vipareetaYoga()`,
+      verified vs the Cp-lagna Dharma-Karmadhipati example. API: POST /yogas/raja.
 - [x] Ch 12 Ashtakavarga (5364–7833): Bhinnashtakavarga (per-planet bindus, BPHS benefic-
       point tables) + Sarvashtakavarga (sum, 337 invariant); Sodhita AV via trikona (12.7.1) +
       ekadhipatya (12.7.2) reductions; Sodhya Pinda (12.7.3, Rasimana/Grahamana multipliers)

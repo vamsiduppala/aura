@@ -11,6 +11,7 @@ import { register, login, userForToken, AuthError } from './auth.js';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, sankhyaYoga, matchAakritiYogas, vajraYavaYoga,
+  rajaYogas, vipareetaYoga, type PlanetSigns,
   FUNCTIONAL_NATURE, functionalNatureFor, TRANSIT_FROM_MOON, NATURAL_RELATIONS, REMEDIES,
   sodhyaPindaTiming, SODHYA_PINDA_MATTERS,
   getGraha, getRasi, getBhava, getNakshatra, search,
@@ -144,6 +145,19 @@ export function buildServer() {
     const q = req.query as { benefics?: string; malefics?: string };
     if (!q.benefics || !q.malefics) return reply.code(400).send({ error: 'benefics= and malefics= comma-separated houses (1-12) each group occupies' });
     return { yoga: vajraYavaYoga(q.benefics.split(',').map(Number), q.malefics.split(',').map(Number)) };
+  });
+  // Raaja & Vipareeta Raaja yogas (11.7): POST { lagnaSign, signs:{sun..ketu} } → the quadrant/trine
+  // lord links (conjunction/aspect/exchange, incl. Dharma-Karmadhipati) + the vipareeta reading.
+  app.post('/yogas/raja', async (req, reply) => {
+    const b = req.body as { lagnaSign?: number; signs?: Partial<PlanetSigns> };
+    const need = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu', 'ketu'];
+    if (b?.lagnaSign == null || !b.signs || need.some((k) => (b.signs as Record<string, number>)[k] == null)) {
+      return reply.code(400).send({ error: 'lagnaSign (0-11) and signs for all 9 grahas (0-11) required' });
+    }
+    return {
+      raja: rajaYogas(b.lagnaSign, b.signs as PlanetSigns),
+      vipareeta: vipareetaYoga(b.lagnaSign, b.signs as PlanetSigns),
+    };
   });
   app.get('/yogas/:key', async (req, reply) => {
     const y = YOGA_BY_KEY((req.params as { key: string }).key);

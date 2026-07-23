@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY, sankhyaYoga, matchAakritiYogas, vajraYavaYoga,
+  rajaYogas, vipareetaYoga, houseLord, houseOf,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, charaKarakas,
   FUNCTIONAL_NATURE, functionalNatureFor, baadhakaHouse,
   TRANSIT_FROM_MOON, isFavourableTransit, sadeSatiPhase, sodhyaPindaTiming, SODHYA_PINDA_MATTERS,
@@ -685,6 +686,59 @@ describe('yogas', () => {
     expect(sankhyaYoga([0, 1, 2, 3, 4, 5, 6]).name).toBe('Veenaa');    // 7 signs
     expect(sankhyaYoga([0, 1, 2, 0, 1, 2, 0]).name).toBe('Soola');     // 3 signs
     expect(sankhyaYoga([0, 1, 2, 3, 0, 1, 2]).count).toBe(4);          // Kedaara
+  });
+});
+
+describe('Raaja & Vipareeta Raaja yogas (Ch 11.7)', () => {
+  // A base map placing every planet somewhere harmless; individual tests override two of them.
+  const base = { sun: 0, moon: 0, mars: 0, mercury: 0, jupiter: 0, venus: 0, saturn: 0, rahu: 0, ketu: 0 };
+
+  it('house lords are the sign lords counted from the lagna', () => {
+    // Capricorn (9) lagna: 9th = Virgo → Mercury, 10th = Libra → Venus (the book’s example).
+    expect(houseLord(9, 9)).toBe('mercury');
+    expect(houseLord(9, 10)).toBe('venus');
+    expect(houseOf(9, 1)).toBe(5); // Taurus is the 5th from Capricorn
+  });
+
+  it('Dharma-Karmadhipati by conjunction — Cp lagna, Mercury+Venus in Taurus (book 11.7.2)', () => {
+    const links = rajaYogas(9, { ...base, mercury: 1, venus: 1 });
+    const dk = links.find((l) => l.dharmaKarmadhipati);
+    expect(dk).toBeTruthy();
+    expect(dk!.association).toBe('conjunction');
+    expect([dk!.quadrantLord, dk!.trineLord].sort()).toEqual(['mercury', 'venus']);
+  });
+
+  it('detects a Raaja yoga by mutual aspect (Cp lagna: 9th & 10th lords in mutual 7th)', () => {
+    // Venus (10th lord) in Aries → house 4; Mercury (9th lord) in Libra → house 10; they aspect (7th).
+    const links = rajaYogas(9, { ...base, venus: 0, mercury: 6 });
+    expect(links.some((l) => l.association === 'aspect' && l.dharmaKarmadhipati)).toBe(true);
+  });
+
+  it('detects a Raaja yoga by parivartana (exchange)', () => {
+    // Cp lagna: 4th lord Mars, 5th lord Venus. Mars in Taurus (Venus’s sign), Venus in Aries (Mars’s).
+    const links = rajaYogas(9, { ...base, mars: 1, venus: 0 });
+    const ex = links.find((l) => l.association === 'exchange');
+    expect(ex).toBeTruthy();
+    expect([ex!.quadrantLord, ex!.trineLord].sort()).toEqual(['mars', 'venus']);
+  });
+
+  it('Vipareeta Raaja yoga — Harsha/Sarala/Vimala when a dusthana lord sits in its own dusthana', () => {
+    // Aries (0) lagna: 6th = Virgo → Mercury, 8th = Scorpio → Mars, 12th = Pisces → Jupiter.
+    const v = vipareetaYoga(0, { ...base, mercury: 5, mars: 7, jupiter: 11 });
+    expect(v.harsha).toBe(true);   // Mercury in the 6th
+    expect(v.sarala).toBe(true);   // Mars in the 8th
+    expect(v.vimala).toBe(true);   // Jupiter in the 12th
+    expect(v.present).toBe(true);
+  });
+
+  it('Vipareeta counts a dusthana lord in a *different* dusthana, but not in a good house', () => {
+    // Aries lagna, 6th lord Mercury in the 12th (Pisces) → present, but not Harsha (not the 6th).
+    const good = vipareetaYoga(0, { ...base, mercury: 11 });
+    expect(good.present).toBe(true);
+    expect(good.harsha).toBe(false);
+    // 6th lord Mercury in the 5th (a trine, not a dusthana) → no vipareeta.
+    const none = vipareetaYoga(0, { ...base, mercury: 4 });
+    expect(none.present).toBe(false);
   });
 });
 

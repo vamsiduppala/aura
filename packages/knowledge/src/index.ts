@@ -11,6 +11,10 @@ export {
   VAJRA_YOGA, YAVA_YOGA, vajraYavaYoga,
   type SankhyaYoga, type AakritiYoga, type BeneficMaleficYoga,
 } from './data/naabhasa.js';
+export {
+  rajaYogas, vipareetaYoga, houseLord, houseOf, QUADRANTS, TRINES, DUSTHANAS,
+  type PlanetSigns, type RajaAssociation, type RajaYogaLink, type VipareetaYoga,
+} from './data/rajayoga.js';
 export { DIVISIONALS, DIVISIONAL_BY_N, type DivisionalKnowledge } from './data/divisionals.js';
 export {
   CHARA_KARAKAS, STHIRA_KARAKAS, NAISARGIKA_HOUSE_KARAKA, charaKarakas,
