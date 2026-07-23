@@ -104,7 +104,8 @@ export {
 } from './data/taras.js';
 export {
   muntha, MUNTHA_IN_HOUSE, TAJAKA_ASPECTS, DEEPTAMSA, HARSHA_HOUSE, harshaBala,
-  type TajakaAspect,
+  DEEP_EXALTATION, uchchaBala, HADDA_LORDS, haddaLord,
+  type TajakaAspect, type ClassicalGraha,
 } from './data/tajaka.js';
 export {
   saham, computeSahams, SAHAM_FORMULAS,

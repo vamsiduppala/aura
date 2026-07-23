@@ -37,6 +37,7 @@ import {
   vedhaHouse, VEDHA_STHAANA,
   charaKarakas,
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
+  DEEP_EXALTATION, uchchaBala, haddaLord, type ClassicalGraha,
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
   ithasala, ishkavala, induvara, TAJAKA_YOGAS,
   muddaDasa, sudarsanaDasa, sudarsanaAllRefs,
@@ -319,6 +320,19 @@ export function buildServer() {
     return { graha: q.graha, units: harshaBala(q.graha as Graha, Number(q.house), q.exaltedOrOwn === 'true', q.day === 'true') };
   });
   app.get('/tajaka/aspects', async () => ({ aspects: TAJAKA_ASPECTS, deeptamsa: DEEPTAMSA }));
+  // Uchcha bala (28.4.2): closeness to deep exaltation, 0-20, from a sidereal longitude.
+  app.get('/tajaka/uchcha-bala', async (req, reply) => {
+    const q = req.query as { graha?: string; longitude?: string };
+    if (!q.graha || q.longitude == null) return reply.code(400).send({ error: 'graha (a luminary/tara-graha) and longitude (0-360) required' });
+    if (DEEP_EXALTATION[q.graha as ClassicalGraha] == null) return reply.code(404).send({ error: 'graha must be one of sun,moon,mars,mercury,jupiter,venus,saturn' });
+    return { graha: q.graha, units: uchchaBala(q.graha as ClassicalGraha, Number(q.longitude)) };
+  });
+  // Hadda (Egyptian term) lord (28.4.3, Table 72) of a sign+degree.
+  app.get('/tajaka/hadda', async (req, reply) => {
+    const q = req.query as { sign?: string; degree?: string };
+    if (q.sign == null || q.degree == null) return reply.code(400).send({ error: 'sign (0-11) and degree (0-30, within the sign) required' });
+    return { sign: Number(q.sign), degree: Number(q.degree), lord: haddaLord(Number(q.sign), Number(q.degree)) };
+  });
   // Sahams (28.8): a raw A−B+C point, or all tabled sahams from a context of longitudes.
   app.get('/tajaka/saham', async (req, reply) => {
     const q = req.query as { a?: string; b?: string; c?: string; day?: string; same?: string };

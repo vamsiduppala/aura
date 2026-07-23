@@ -26,7 +26,7 @@ import {
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
   kalachakraPada, isSavya,
   taraOf, specialNakshatra, nakshatraAspectsFrom, lattaNakshatra, murthiOf,
-  muntha, harshaBala, saham, computeSahams,
+  muntha, harshaBala, uchchaBala, haddaLord, saham, computeSahams,
   ithasala, ishkavala, induvara, fasterPlanet,
   muddaDasa, muddaDays, sudarsanaDasa, sudarsanaAllRefs,
   muhurtaCheck, ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES,
@@ -343,6 +343,22 @@ describe('Tajaka techniques (Ch 28) — verified against Example 119', () => {
     expect(harshaBala('saturn', 10, false, false)).toBe(5); // only the night-feminine +5
     expect(harshaBala('sun', 2, false, false)).toBe(0);     // masculine, night, non-masculine house
     expect(harshaBala('mars', 2, false, false)).toBe(0);
+  });
+  it('Uchcha bala matches the book (Jupiter at 8°30′ Vi → 12.94, Ch 28.4.2)', () => {
+    // Jupiter at 158°30'; deep debilitation 5° Cp = 275° → 116.5°/180 × 20 ≈ 12.94.
+    expect(near(uchchaBala('jupiter', 158.5), 12.94, 0.01)).toBe(true);
+    // Full 20 at deep exaltation, 0 at deep debilitation.
+    expect(near(uchchaBala('jupiter', 95), 20, 0.001)).toBe(true);       // 5° Cn
+    expect(near(uchchaBala('jupiter', 275), 0, 0.001)).toBe(true);       // 5° Cp
+    expect(near(uchchaBala('sun', 10), 20, 0.001)).toBe(true);           // 10° Ar
+  });
+  it('Hadda (Egyptian term) lords match Table 72', () => {
+    expect(haddaLord(0, 3)).toBe('jupiter');   // Ar 0–6
+    expect(haddaLord(0, 22)).toBe('mars');     // Ar 20–25
+    expect(haddaLord(0, 29)).toBe('saturn');   // Ar 25–30
+    expect(haddaLord(6, 0)).toBe('saturn');    // Li 0–6
+    expect(haddaLord(11, 15)).toBe('jupiter'); // Pi 12–16
+    expect(haddaLord(8, 5)).toBe('jupiter');   // Sg 0–12
   });
 });
 

@@ -61,3 +61,51 @@ export function harshaBala(graha: Graha, house: number, exaltedOrOwn: boolean, d
   if (dayBirth !== fem) b += 5; // day → masculine, night → feminine
   return b;
 }
+
+// ── Pancha Vargeeya Bala components (28.4) ────────────────────────────────────
+// Only the two fully-specified, worked-example-backed pieces are computed here: Uchcha bala
+// (closeness to deep exaltation) and the Hadda (Egyptian term) lord table. The dignity-tier
+// balas (kshetra/drekkana/navamsa/hadda-bala) are own/friend/enemy point lookups whose neutral
+// (sama) tier the book leaves unstated, so they're left to a caller with an explicit convention.
+
+/** The seven planets that have a classical exaltation point. */
+export type ClassicalGraha = 'sun' | 'moon' | 'mars' | 'mercury' | 'jupiter' | 'venus' | 'saturn';
+
+/** Deep-exaltation longitudes (0..360) — where each planet earns the full 20 units of uchcha bala. */
+export const DEEP_EXALTATION: Record<ClassicalGraha, number> = {
+  sun: 10, moon: 33, mars: 298, mercury: 165, jupiter: 95, venus: 357, saturn: 200,
+};
+
+/**
+ * Uchcha bala (28.4.2): how close a planet is to its deep-exaltation point, 0–20 units. Full 20 at
+ * deep exaltation, 0 at deep debilitation (exactly 180° away). `longitude` = sidereal longitude 0..360.
+ */
+export function uchchaBala(graha: ClassicalGraha, longitude: number): number {
+  const debil = (DEEP_EXALTATION[graha] + 180) % 360;
+  let diff = Math.abs((((longitude % 360) + 360) % 360) - debil);
+  if (diff > 180) diff = 360 - diff;
+  return 20 * (diff / 180);
+}
+
+/** Hadda (Egyptian term) lords, per sign 0..11, as [upperBoundDegree, lord] ascending (Table 72). */
+export const HADDA_LORDS: [number, Graha][][] = [
+  [[6, 'jupiter'], [12, 'venus'], [20, 'mercury'], [25, 'mars'], [30, 'saturn']],   // Ar
+  [[8, 'venus'], [14, 'mercury'], [22, 'jupiter'], [27, 'saturn'], [30, 'mars']],   // Ta
+  [[6, 'mercury'], [12, 'venus'], [17, 'jupiter'], [24, 'mars'], [30, 'saturn']],   // Ge
+  [[7, 'mars'], [13, 'venus'], [19, 'mercury'], [26, 'jupiter'], [30, 'saturn']],   // Cn
+  [[6, 'jupiter'], [11, 'venus'], [18, 'saturn'], [24, 'mercury'], [30, 'mars']],   // Le
+  [[7, 'mercury'], [17, 'venus'], [21, 'jupiter'], [28, 'mars'], [30, 'saturn']],   // Vi
+  [[6, 'saturn'], [14, 'mercury'], [21, 'jupiter'], [28, 'venus'], [30, 'mars']],   // Li
+  [[7, 'mars'], [11, 'venus'], [19, 'mercury'], [24, 'jupiter'], [30, 'saturn']],   // Sc
+  [[12, 'jupiter'], [17, 'venus'], [21, 'mercury'], [26, 'mars'], [30, 'saturn']],  // Sg
+  [[7, 'mercury'], [14, 'jupiter'], [22, 'venus'], [26, 'saturn'], [30, 'mars']],   // Cp
+  [[7, 'mercury'], [13, 'venus'], [20, 'jupiter'], [25, 'mars'], [30, 'saturn']],   // Aq
+  [[12, 'venus'], [16, 'jupiter'], [19, 'mercury'], [28, 'mars'], [30, 'saturn']],  // Pi
+];
+
+/** The hadda (Egyptian term) lord of a sign (0..11) at a degree-within-sign (0..30) (28.4.3). */
+export function haddaLord(sign: number, degreeInSign: number): Graha {
+  const bounds = HADDA_LORDS[mod12(sign)]!;
+  for (const [upper, lord] of bounds) if (degreeInSign < upper) return lord;
+  return bounds[bounds.length - 1]![1]!; // exactly 30° → the last term
+}

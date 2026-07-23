@@ -81,8 +81,11 @@ resuming session can pick up exactly where it left off.
       Rudra/Maheswara *exception* selection (needs chart strengths + chara-karaka occupancy)
 - [~] Ch 15 Strength of Planets/Rasis (8657–9318): avasthas — Baladi (age, Table 35,
       verified), Jagradi (alertness) + Deeptadi (mood, dignity part) → `data/avasthas.ts`.
-      API: /avastha. TODO: shadbala detail (engine has composite), Vimsopaka, co-lord/rasi
-      strength, conjunction-based mood states (Vikala/Khala/Kopita/Lajjita)
+      API: /avastha. Uchcha bala (28.4.2, deep-exaltation closeness 0–20, verified vs the book's
+      Jupiter→12.94) + Hadda/Egyptian-term lords (Table 72) → `data/tajaka.ts`
+      `uchchaBala`/`haddaLord`. API: /tajaka/uchcha-bala, /tajaka/hadda. TODO: shadbala detail
+      (out of the book's scope — engine has a composite), Vimsopaka (book gives only the concept),
+      the remaining dignity-tier balas (book leaves the neutral tier unstated)
 
 ## Part 2 — Dasa Analysis
 - [x] Ch 16 Vimsottari Dasa (9345–9925): 120y, order+years (Table 38), nakshatra lords,
