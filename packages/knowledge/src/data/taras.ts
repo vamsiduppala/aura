@@ -67,3 +67,18 @@ export const NAKSHATRA_ASPECTS: Record<Graha, number[]> = {
 export function nakshatraAspectsFrom(graha: Graha, nak: number): number[] {
   return NAKSHATRA_ASPECTS[graha].map((n) => mod27(nak + n - 1));
 }
+
+// ── Latta / the transit "kick" (26.7) ─────────────────────────────────────────
+// Each planet kicks a nakshatra a fixed count from its transit position — forward
+// (purolatta) for Sun/Mars/Jupiter/Saturn, backward (prishtha) for Moon/Mercury/Venus/Rahu.
+// Offsets are the 0-based step (inclusive Nth nakshatra − 1); Ketu has no latta.
+export const LATTA_OFFSET: Partial<Record<Graha, number>> = {
+  sun: 11, mars: 2, jupiter: 5, saturn: 7,        // purolatta (forward): 12th/3rd/6th/8th
+  moon: -21, mercury: -6, venus: -4, rahu: -8,    // prishtha (backward): 22nd/7th/5th/9th
+};
+
+/** The nakshatra (0..26) a planet's latta lands on while transiting `transitNak`; null if none (Ketu). */
+export function lattaNakshatra(graha: Graha, transitNak: number): number | null {
+  const off = LATTA_OFFSET[graha];
+  return off == null ? null : mod27(transitNak + off);
+}

@@ -22,7 +22,7 @@ import {
   narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
   kalachakraPada, isSavya,
-  taraOf, specialNakshatra, nakshatraAspectsFrom,
+  taraOf, specialNakshatra, nakshatraAspectsFrom, lattaNakshatra,
   muntha, harshaBala, saham, computeSahams,
   ithasala, ishkavala, induvara, fasterPlanet,
   muddaDasa, muddaDays, sudarsanaDasa, sudarsanaAllRefs,
@@ -358,6 +358,17 @@ describe('transit taras & special nakshatras (Ch 26) — verified vs the Bill Ga
   it('nakshatra-based aspects (26.5): Jupiter aspects the 10th/15th/19th', () => {
     expect(nakshatraAspectsFrom('jupiter', 0)).toEqual([9, 14, 18]); // from Aswini
     expect(nakshatraAspectsFrom('sun', 0)).toEqual([13, 14]);
+  });
+  it('latta / the transit kick (26.7) — verified against the book’s examples', () => {
+    expect(lattaNakshatra('sun', 4)).toBe(15);      // Sun in Mrigasira → Vishakha (12th fwd)
+    expect(lattaNakshatra('mars', 4)).toBe(6);      // Mars in Mrigasira → Punarvasu (3rd fwd)
+    expect(lattaNakshatra('jupiter', 2)).toBe(7);   // Jupiter in Krittika → Pushya (6th fwd)
+    expect(lattaNakshatra('saturn', 2)).toBe(9);    // Saturn in Krittika → Magha (8th fwd)
+    expect(lattaNakshatra('moon', 16)).toBe(22);    // Moon in Anuradha → Dhanishtha (22nd bwd)
+    expect(lattaNakshatra('mercury', 6)).toBe(0);   // Mercury in Punarvasu → Aswini (7th bwd)
+    expect(lattaNakshatra('venus', 4)).toBe(0);     // Venus in Mrigasira → Aswini (5th bwd)
+    expect(lattaNakshatra('rahu', 6)).toBe(25);     // Rahu in Punarvasu → U.Bhadra (9th bwd)
+    expect(lattaNakshatra('ketu', 0)).toBeNull();   // Ketu has no latta
   });
 });
 

@@ -115,8 +115,10 @@ resuming session can pick up exactly where it left off.
 - [~] Ch 26 Transits: Miscellaneous (15365–16282): 9-fold taras (Table 64), special
       nakshatras (karma/jaati/naidhana… 26.4.2), nakshatra-based aspects (26.5) → `data/taras.ts`
       (taraOf/specialNakshatra/nakshatraAspectsFrom), verified vs the Bill Gates example.
-      API: /transit/{tara,special-nakshatras,nakshatra-aspects}. TODO: murthis, rasi-vedha,
-      latta, body-part tables, sarvatobhadra chakra
+      Latta / the transit "kick" (26.7 — Sun/Mars/Jup/Sat forward, Moon/Merc/Ven/Rahu
+      backward) → `lattaNakshatra()`, verified vs all 8 book examples. API:
+      /transit/{tara,special-nakshatras,nakshatra-aspects,latta}. TODO: murthis, rasi-vedha,
+      body-part tables, sarvatobhadra chakra
 
 ## Part 4 — Tajaka Analysis
 - [~] Ch 27 Tajaka Chart Basics (16295–16620): annual-chart concept (solar return). Muntha

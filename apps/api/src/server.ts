@@ -29,7 +29,7 @@ import {
   narayanaProgression, narayanaDasaLength, narayanaAntardashas,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa,
   kalachakraPada,
-  taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS,
+  taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS, lattaNakshatra,
   charaKarakas,
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
@@ -351,6 +351,12 @@ export function buildServer() {
     const jn = Number(q.janmaNak);
     return Object.fromEntries(Object.keys(SPECIAL_NAKSHATRAS).map((k) =>
       [k, { nakshatra: specialNakshatra(jn, k as keyof typeof SPECIAL_NAKSHATRAS), shows: SPECIAL_NAKSHATRAS[k as keyof typeof SPECIAL_NAKSHATRAS]!.shows }]));
+  });
+  app.get('/transit/latta', async (req, reply) => {
+    const q = req.query as { graha?: string; nak?: string };
+    if (!q.graha || q.nak == null) return reply.code(400).send({ error: 'graha and nak (0-26, transit nakshatra) required' });
+    if (!GRAHAS[q.graha]) return reply.code(404).send({ error: 'unknown graha' });
+    return { graha: q.graha, transitNak: Number(q.nak), latta: lattaNakshatra(q.graha as Graha, Number(q.nak)) };
   });
   app.get('/transit/nakshatra-aspects', async (req, reply) => {
     const q = req.query as { graha?: string; nak?: string };
