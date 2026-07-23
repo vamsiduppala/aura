@@ -12,7 +12,7 @@ import {
   interpretPlacement, interpretLagnaLord, classifyDignity,
   grahaAspectsFrom, rasiDrishti, argalaOn,
   arudhaOf, allArudhas, grahaArudhas,
-  vargaSign,
+  vargaSign, vargaStanding, dwadasaVargeeyaBala,
   bhavaLagna, horaLagna, ghatiLagna, sreeLagna,
   sunUpagrahas, partLords, upagrahaFraction,
   ashtakavarga, bhinnashtakavarga, AV_PLANETS,
@@ -216,6 +216,22 @@ describe('divisional charts (Ch 6) — verified against the book’s worked exam
   });
   it('D-60 Shashtyamsa', () => {
     expect(vargaSign(at(SC, 12 + 58 / 60), 60)).toBe(8); // Jup 12°58' Sc → Sg
+  });
+  it('Dwaadasa Vargeeya Bala (Ch 28.5) — varga standing + strong/weak count across D-1..D-12', () => {
+    // vargaStanding: exaltation/own → strong, debilitation → weak, a neutral dispositor → neutral.
+    expect(vargaStanding('sun', 0)).toBe('strong');    // Aries — exalted
+    expect(vargaStanding('sun', 6)).toBe('weak');      // Libra — debilitated
+    expect(vargaStanding('sun', 4)).toBe('strong');    // Leo — own
+    expect(vargaStanding('saturn', 6)).toBe('strong'); // Libra — exalted
+    expect(vargaStanding('sun', 2)).toBe('neutral');   // Gemini — Mercury (neutral to the Sun)
+
+    const r = dwadasaVargeeyaBala('sun', at(AR, 10));  // Sun 10° Aries — deeply exalted in D-1
+    expect(r.perVarga[1]).toBe(1);                     // strong in the rasi chart
+    expect(r.bala).toBe(r.strong - r.weak);
+    expect(r.strong + r.weak).toBeLessThanOrEqual(12);
+    expect(r.strong).toBeGreaterThanOrEqual(1);
+    // Sun deeply debilitated in D-1 (10° Libra) is weak there.
+    expect(dwadasaVargeeyaBala('sun', 6 * 30 + 10).perVarga[1]).toBe(-1);
   });
 });
 

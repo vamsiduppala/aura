@@ -3,7 +3,13 @@
 // longitude to the sign it occupies in a divisional chart. All 20 divisions the book
 // defines are implemented and verified against its worked examples (Mercury 11°Ge /
 // Jupiter 19°Sc etc.). This is the core varga calculation any chart engine needs.
+// Also holds Dwaadasa Vargeeya Bala (Ch 28.5) — a varga-count strength.
 // ─────────────────────────────────────────────────────────────────────────────
+
+import type { Graha } from '../types.js';
+import { dignityOf } from './dignities.js';
+import { naturalRelation } from './relationships.js';
+import { RASI_BY_INDEX } from './rasis.js';
 
 const mod12 = (n: number): number => ((n % 12) + 12) % 12;
 
@@ -93,4 +99,47 @@ export function allVargas(longitude: number): Record<number, number> {
   const out: Record<number, number> = {};
   for (const d of VARGA_DIVISORS) out[d] = vargaSign(longitude, d);
   return out;
+}
+
+// ── Dwaadasa Vargeeya Bala (Ch 28.5) ──────────────────────────────────────────
+
+/**
+ * A planet's standing in a sign: 'strong' in its exaltation/own/moolatrikona/friend's rasi,
+ * 'weak' in its debilitation/enemy's rasi, else 'neutral' (Ch 28.5's strong/weak criterion).
+ */
+export function vargaStanding(graha: Graha, sign: number): 'strong' | 'weak' | 'neutral' {
+  const d = dignityOf(graha);
+  const s = mod12(sign);
+  if (d.exalt === s || d.moolatrikona === s || d.own.includes(s)) return 'strong';
+  if (d.debil === s) return 'weak';
+  const lord = RASI_BY_INDEX(s).lord;
+  if (lord === graha) return 'strong';
+  const rel = naturalRelation(graha, lord);
+  return rel === 'friend' ? 'strong' : rel === 'enemy' ? 'weak' : 'neutral';
+}
+
+/** The twelve divisional charts Dwaadasa Vargeeya Bala is counted over (D-1 … D-12). */
+export const DWADASA_VARGAS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
+
+export interface DwadasaBala {
+  strong: number;   // charts (of 12) where the planet is strong
+  weak: number;     // charts where it is weak
+  bala: number;     // strong − weak (positive = strong overall)
+  perVarga: Record<number, 1 | 0 | -1>; // +1 strong / 0 neutral / −1 weak, per divisor
+}
+
+/**
+ * Dwaadasa Vargeeya Bala (28.5): across D-1..D-12, the count of charts where the planet is strong
+ * (exaltation/own/friend's rasi) minus the count where it is weak (debilitation/enemy's rasi). A
+ * positive value means it is strong overall. `longitude` is the planet's sidereal longitude (0..360).
+ */
+export function dwadasaVargeeyaBala(graha: Graha, longitude: number): DwadasaBala {
+  let strong = 0, weak = 0;
+  const perVarga: Record<number, 1 | 0 | -1> = {};
+  for (const d of DWADASA_VARGAS) {
+    const st = vargaStanding(graha, vargaSign(longitude, d));
+    perVarga[d] = st === 'strong' ? 1 : st === 'weak' ? -1 : 0;
+    if (st === 'strong') strong++; else if (st === 'weak') weak++;
+  }
+  return { strong, weak, bala: strong - weak, perVarga };
 }

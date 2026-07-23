@@ -45,7 +45,8 @@ export {
   type ArudhaResult,
 } from './data/arudhas.js';
 export {
-  vargaSign, allVargas, VARGA_DIVISORS, type VargaDivisor,
+  vargaSign, allVargas, VARGA_DIVISORS, vargaStanding, dwadasaVargeeyaBala, DWADASA_VARGAS,
+  type VargaDivisor, type DwadasaBala,
 } from './data/varga.js';
 export {
   bhavaLagna, horaLagna, ghatiLagna, sreeLagna, specialLagnas,

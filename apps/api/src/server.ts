@@ -18,7 +18,7 @@ import {
   interpretPlacement, interpretLagnaLord, classifyDignity, DIGNITIES,
   grahaAspectsFrom, rasiDrishti, argalaOn, ASPECT_NOTES,
   arudhaTable, ARUDHA_NAMES, grahaArudhas, OWN_SIGNS,
-  vargaSign, allVargas, VARGA_DIVISORS,
+  vargaSign, allVargas, VARGA_DIVISORS, dwadasaVargeeyaBala,
   specialLagnas, SPECIAL_LAGNA_USE,
   sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART,
   ashtakavarga, bhinnashtakavarga, sodhitaAshtakavarga, sodhyaPinda, AV_PLANETS,
@@ -218,6 +218,13 @@ export function buildServer() {
     const q = req.query as { longitude?: string };
     if (q.longitude == null) return reply.code(400).send({ error: 'longitude (0-360) is required' });
     return { longitude: Number(q.longitude), vargas: allVargas(Number(q.longitude)) };
+  });
+  // Dwaadasa Vargeeya Bala (28.5): the D-1..D-12 strong-minus-weak count for a planet.
+  app.get('/varga/dwadasa-bala', async (req, reply) => {
+    const q = req.query as { graha?: string; longitude?: string };
+    if (!q.graha || q.longitude == null) return reply.code(400).send({ error: 'graha and longitude (0-360) are required' });
+    if (!GRAHAS[q.graha]) return reply.code(404).send({ error: 'unknown graha' });
+    return { graha: q.graha, ...dwadasaVargeeyaBala(q.graha as Graha, Number(q.longitude)) };
   });
 
   // Narayana dasa (Ch 18) — rasi dasa progression, lengths, antardasas.

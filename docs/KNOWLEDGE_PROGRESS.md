@@ -144,7 +144,11 @@ resuming session can pick up exactly where it left off.
       orbs, and Harsha Bala (4×5-unit sources) → `data/tajaka.ts`, verified vs Example 119.
       API: /tajaka/{muntha,harsha,aspects}. Sahams (28.8): saham() point calc (A−B+C with
       day/night + 30° rule) + Table 74 subset (Punya/Vidya/Yasas/Mitra/…) → `data/sahams.ts`,
-      verified vs the artha-saham example. API: /tajaka/saham, /tajaka/sahams. TODO: panchavargeeya bala
+      verified vs the artha-saham example. API: /tajaka/saham, /tajaka/sahams.
+      Pancha-Vargeeya components — Uchcha bala + Hadda lords (28.4) in `data/tajaka.ts`.
+      **Dwaadasa Vargeeya Bala (28.5)** — D-1..D-12 strong-minus-weak varga count →
+      `data/varga.ts` `dwadasaVargeeyaBala`/`vargaStanding`. API: /tajaka/{uchcha-bala,hadda},
+      /varga/dwadasa-bala. (Full Pancha-Vargeeya total needs the book's unstated neutral tier.)
 - [x] Ch 29 Tajaka Yogas (17265–17434): Ithasala (applying, faster-behind → fulfilment) vs
       Eesarpha (separating), poorna check, Nakta; Ishkavala/Induvara (house distribution);
       planet speed order → `data/tajakayoga.ts`, verified vs the Moon/Venus examples.
