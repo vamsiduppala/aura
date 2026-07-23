@@ -369,11 +369,17 @@ describe('Tajaka techniques (Ch 28) — verified against Example 119', () => {
     // artha = 2nd house − 2nd lord + Lagna; A=310°50', B=19°10', C=280°50' (same day/night)
     expect(saham(310 + 50 / 60, 19 + 10 / 60, 280 + 50 / 60, false, true)).toBeCloseTo(212.5, 3);
   });
-  it('computeSahams resolves Punya first (Yasas depends on it)', () => {
+  it('computeSahams resolves chained sahams in order (Yasas←Punya, Preeti←Sastra)', () => {
     const ctx = { sun: 10, moon: 100, mars: 200, mercury: 50, jupiter: 150, venus: 250, saturn: 300, lagna: 50, lagnaLord: 40 };
     const s = computeSahams(ctx, true);
     expect(s.punya).toBeCloseTo(saham(ctx.moon, ctx.sun, ctx.lagna, true), 3);   // Moon−Sun+Lagna
     expect(s.yasas).toBeCloseTo(saham(ctx.jupiter, s.punya!, ctx.lagna, true), 3); // Jupiter−Punya+Lagna
+    // Vivaha (marriage) = Venus − Saturn + Lagna; Putra (children) = Jupiter − Moon + Lagna (Table 74).
+    expect(s.vivaha).toBeCloseTo(saham(ctx.venus, ctx.saturn, ctx.lagna, true), 3);
+    expect(s.putra).toBeCloseTo(saham(ctx.jupiter, ctx.moon, ctx.lagna, true), 3);
+    // Preeti chains on the earlier-computed Sastra saham.
+    expect(s.sastra).toBeCloseTo(saham(ctx.jupiter, ctx.saturn, ctx.mercury, true), 3);
+    expect(s.preeti).toBeCloseTo(saham(s.sastra!, s.punya!, ctx.lagna, true), 3);
   });
   it('Harsha bala matches the book (Moon 15, Mercury/Venus 10, Jupiter/Saturn 5, Sun/Mars 0)', () => {
     // Example 119: night birth; Moon 3rd, Mercury 2nd, Venus 1st, Jupiter 4th; none exalted/own.
