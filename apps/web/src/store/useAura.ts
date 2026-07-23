@@ -12,7 +12,7 @@ import type { Screen } from '../components/Chrome';
 import { loadProfile, saveProfile, loadReads, bumpReads, clearAll, type ReadsState } from '../services/storage';
 import {
   me, login as apiLogin, register as apiRegister, logout as apiLogout,
-  saveProfile as apiSaveProfile, deleteAccount as apiDeleteAccount, getToken, type AuthUser,
+  saveProfile as apiSaveProfile, deleteAccount as apiDeleteAccount, apiReachable, getToken, type AuthUser,
 } from '../services/api';
 
 const engine = new Aura(new AstronomiaEphemeris());
@@ -112,7 +112,11 @@ export const useAura = create<AuraState>((set, get) => {
         }
       } catch { /* token invalid or API unreachable → fall back */ }
       const local = loadProfile();
-      set(local ? { authStatus: 'guest', screen: 'today' } : { authStatus: 'anon' });
+      if (local) { set({ authStatus: 'guest', screen: 'today' }); return; }
+      // No token and no local profile. Only force the sign-in screen if the server is actually
+      // reachable — otherwise register/login can't work, so send them straight to guest onboarding.
+      const online = await apiReachable();
+      set(online ? { authStatus: 'anon' } : { authStatus: 'guest', screen: 'onboarding' });
     },
 
     doLogin: async (email, password) => {
