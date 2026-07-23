@@ -10,14 +10,24 @@ import { Forecast } from './screens/Forecast';
 import { Chat } from './screens/Chat';
 import { Blueprint } from './screens/Blueprint';
 import { Settings } from './screens/Settings';
+import { Account } from './screens/Account';
 import { Support } from './screens/Support';
 import { Sidebar, TopBar, BottomNav, type Screen } from './components/Chrome';
+import { downloadReport } from './services/report';
 
 const WIDE: Screen[] = ['today', 'forecast', 'chat', 'blueprint'];
 
 export function App() {
   const s = useAura();
-  const { aura, now, screen, chart, daily, goalArea, goalName, reads, authStatus } = s;
+  const { aura, now, screen, chart, daily, goalArea, goalName, displayName, reads, authStatus } = s;
+
+  // What the app calls you: your own name, else the email local-part, else "Guest".
+  const userName = displayName.trim() || s.user?.email.split('@')[0] || 'Guest';
+  const account = s.user ? { email: s.user.email } : ('guest' as const);
+  const onDownload = () => {
+    if (!chart || !s.birth) return;
+    void downloadReport({ aura, chart, birth: s.birth, displayName: userName, goalName, now });
+  };
 
   // Verify any stored session token with the local API once on mount.
   useEffect(() => { if (authStatus === 'loading') void s.initAuth(); }, [authStatus, s]);
@@ -42,8 +52,14 @@ export function App() {
     body = <Support onBack={() => s.go(s.birth ? 'today' : 'onboarding')} />;
   } else if (screen === 'settings') {
     body = <Settings place={s.birth?.place ?? 'this device'}
-      account={s.user ? { email: s.user.email } : 'guest'} canEdit={!!chart}
-      onDelete={s.deleteAll} onBack={() => s.go('today')} onLogout={s.logout} onSignIn={s.showLogin} onEdit={s.startEdit} />;
+      account={account} canEdit={!!chart}
+      onDelete={s.deleteAll} onBack={() => s.go('today')} onLogout={s.logout} onSignIn={s.showLogin}
+      onEdit={() => s.go('account')} onAccount={() => s.go('account')} />;
+  } else if (screen === 'account' && s.birth) {
+    body = <Account account={account} displayName={displayName} birth={s.birth}
+      goalArea={goalArea} goalName={goalName} memberSince={s.user?.createdAt}
+      onSave={s.saveAccount} onBack={() => s.go('today')} onLogout={s.logout}
+      onSignIn={s.showLogin} onDelete={s.deleteAll} onDownload={onDownload} />;
   } else if (s.error) {
     body = (
       <div className="view" style={{ paddingTop: 40 }}>
@@ -74,12 +90,13 @@ export function App() {
   } else if (screen === 'chat') {
     body = <Chat aura={aura} chart={chart} now={now} />;
   } else {
-    body = <Blueprint aura={aura} chart={chart} goalName={goalName} />;
+    body = <Blueprint aura={aura} chart={chart} goalName={goalName} onDownload={onDownload} />;
   }
 
   return (
     <div className="app">
-      {inApp ? <Sidebar screen={screen} go={s.go} totalReads={reads.count} onSettings={() => s.go('settings')} /> : null}
+      {inApp ? <Sidebar screen={screen} go={s.go} totalReads={reads.count} onSettings={() => s.go('settings')}
+        userName={userName} signedIn={!!s.user} onAccount={() => s.go('account')} onLogout={s.logout} onSignIn={s.showLogin} /> : null}
       <main className="main">
         {inApp ? <TopBar totalReads={reads.count} onSettings={() => s.go('settings')} /> : null}
         <div className={`content${narrow ? ' narrow' : ''}${screen === 'blueprint' ? ' bp-content' : ''}`}>{body}</div>

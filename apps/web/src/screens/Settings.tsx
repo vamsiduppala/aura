@@ -5,11 +5,12 @@ import { apiReachable, API_BASE } from '../services/api';
 import { Button } from '@/components/ui/button';
 
 /** About / privacy / delete + Cosmic Mentor key (SPEC §11.1, §11.6). */
-export function Settings({ place, account, canEdit, onDelete, onBack, onLogout, onSignIn, onEdit }: {
+export function Settings({ place, account, canEdit, onDelete, onBack, onLogout, onSignIn, onEdit, onAccount }: {
   place: string;
   account: { email: string } | 'guest';
   canEdit: boolean;
-  onDelete: () => void; onBack: () => void; onLogout: () => void; onSignIn: () => void; onEdit: () => void;
+  onDelete: () => void; onBack: () => void; onLogout: () => void; onSignIn: () => void;
+  onEdit: () => void; onAccount: () => void;
 }) {
   const [keyInput, setKeyInput] = useState('');
   const [saved, setSaved] = useState(hasUserKey());
@@ -41,7 +42,10 @@ export function Settings({ place, account, canEdit, onDelete, onBack, onLogout, 
         ) : (
           <>
             <p className="body" style={{ marginBottom: 8 }}>Signed in as <b style={{ color: 'var(--mist)' }}>{account.email}</b>. Your profile is saved to your local aura server.</p>
-            <button className="btn ghost" onClick={onLogout} style={{ textAlign: 'left', padding: '2px 0', marginBottom: 26 }}>Sign out</button>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 26 }}>
+              <Button size="sm" onClick={onAccount} className="!w-auto px-5">Manage account</Button>
+              <Button size="sm" variant="ghost" onClick={onLogout} className="!w-auto px-5">Sign out</Button>
+            </div>
           </>
         )}
 

@@ -7,7 +7,7 @@ import { computeYearAhead, type YearAhead } from '../services/yearAhead';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
-export function Blueprint({ aura, chart }: { aura: Aura; chart: Chart; goalName: string }) {
+export function Blueprint({ aura, chart, onDownload }: { aura: Aura; chart: Chart; goalName: string; onDownload?: () => void }) {
   const k = useMemo(() => buildHouses(chart), [chart]);
   // The engine's born-gift yogas, enriched with the knowledge-layer ones it doesn't emit. When the
   // specific Dharma-Karmadhipati is present we drop the engine's generic "raja" card so the rise
@@ -24,6 +24,11 @@ export function Blueprint({ aura, chart }: { aura: Aura; chart: Chart; goalName:
       <div className="hd">
         <h2>Your chart</h2>
         <div className="sub">Your life read house by house — where each energy landed, and how it plays out.</div>
+        {onDownload ? (
+          <button className="bp-download" onClick={onDownload} title="Download your full chart report">
+            ↓ Download full report
+          </button>
+        ) : null}
       </div>
 
       {/* Planet strengths — a short, plain list, no cards. */}

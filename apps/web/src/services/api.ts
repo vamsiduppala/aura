@@ -6,8 +6,8 @@ import type { BirthData, LifeArea } from '@aura/engine';
 export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'http://localhost:8787';
 const TOKEN_KEY = 'aura.token';
 
-export interface AuthUser { id: number; email: string }
-export interface ServerProfile { birth: BirthData; goalArea: LifeArea; goalName: string }
+export interface AuthUser { id: number; email: string; createdAt?: string }
+export interface ServerProfile { birth: BirthData; goalArea: LifeArea; goalName: string; displayName?: string }
 
 export function getToken(): string | null {
   try { return localStorage.getItem(TOKEN_KEY); } catch { return null; }
@@ -62,6 +62,18 @@ export async function me(): Promise<{ user: AuthUser; profile: ServerProfile | n
   if (res.status === 401) { clearToken(); return null; }
   if (!res.ok) return null;
   return res.json();
+}
+
+/** Change the signed-in user's password. Throws with the server's message on failure. */
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  let res: Response;
+  try {
+    res = await req('/auth/password', { method: 'POST', body: JSON.stringify({ currentPassword, newPassword }) });
+  } catch {
+    throw new Error(UNREACHABLE);
+  }
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error ?? 'Could not change your password.');
 }
 
 /** Permanently delete the signed-in user's account + all their server data. Best-effort:

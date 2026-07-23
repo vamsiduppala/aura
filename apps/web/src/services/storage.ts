@@ -7,7 +7,7 @@ import type { BirthData, LifeArea } from '@aura/engine';
 const PROFILE_KEY = 'aura.v1';
 const READS_KEY = 'aura.reads';
 
-export interface Profile { birth: BirthData; goalArea: LifeArea; goalName: string; }
+export interface Profile { birth: BirthData; goalArea: LifeArea; goalName: string; displayName?: string; }
 export interface ReadsState { count: number; lastDay: string }
 
 function read<T>(key: string, fallback: T): T {

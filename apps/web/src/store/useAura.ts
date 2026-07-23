@@ -44,6 +44,8 @@ export interface AuraState {
   birth: BirthData | null;
   goalArea: LifeArea;
   goalName: string;
+  /** The person's own name, shown in the app chrome. Editable on the Account screen. */
+  displayName: string;
   checkin?: Checkin;
   reads: ReadsState;
   chart: Chart | null;
@@ -64,12 +66,17 @@ export interface AuraState {
   openReading: () => void;
   deleteAll: () => void;
   reset: () => void;
+  /** Save edited account/profile fields (name, focus, birth details) locally + to the server. */
+  saveAccount: (patch: { displayName?: string; goalArea?: LifeArea; goalName?: string; birth?: BirthData }) => void;
 }
 
 /** Apply a loaded profile (from server or local) to the derived state. */
-function applyProfile(get: () => AuraState, p: { birth: BirthData; goalArea: LifeArea; goalName: string }) {
+function applyProfile(get: () => AuraState, p: { birth: BirthData; goalArea: LifeArea; goalName: string; displayName?: string }) {
   const d = compute(p.birth, p.goalArea, undefined, get().now);
-  return { birth: p.birth, goalArea: p.goalArea, goalName: p.goalName, checkin: undefined, ...d };
+  return {
+    birth: p.birth, goalArea: p.goalArea, goalName: p.goalName,
+    displayName: p.displayName ?? '', checkin: undefined, ...d,
+  };
 }
 
 export const useAura = create<AuraState>((set, get) => {
@@ -90,6 +97,7 @@ export const useAura = create<AuraState>((set, get) => {
     birth: saved?.birth ?? null,
     goalArea,
     goalName: saved?.goalName ?? 'my goal',
+    displayName: saved?.displayName ?? '',
     checkin: undefined,
     reads: loadReads(),
     ...initial,
@@ -141,7 +149,7 @@ export const useAura = create<AuraState>((set, get) => {
         // making them re-enter it — "continue on this device" → "create an account" keeps their chart.
         const { birth, goalArea, goalName } = get();
         if (birth) {
-          apiSaveProfile({ birth, goalArea, goalName }).catch(() => {});
+          apiSaveProfile({ birth, goalArea, goalName, displayName: get().displayName }).catch(() => {});
           set({ user, authStatus: 'authed', authBusy: false, screen: 'today' });
         } else {
           set({ user, authStatus: 'authed', authBusy: false, screen: 'onboarding' });
@@ -166,13 +174,28 @@ export const useAura = create<AuraState>((set, get) => {
     onboard: (birth, area, name) => {
       // Never "read" a crisis (SPEC §11.3).
       if (detectCrisis(name)) { set({ screen: 'support' }); return; }
-      saveProfile({ birth, goalArea: area, goalName: name });
+      const displayName = get().displayName;
+      saveProfile({ birth, goalArea: area, goalName: name, displayName });
       const d = compute(birth, area, undefined, get().now);
       // Editing an existing profile skips the retrospective audit; a fresh chart runs it.
       const wasEditing = get().editing;
       set({ birth, goalArea: area, goalName: name, checkin: undefined, ...d, editing: false, screen: wasEditing ? 'today' : 'audit' });
       // Persist to the server when signed in (fire-and-forget; local copy already saved).
-      if (get().authStatus === 'authed') apiSaveProfile({ birth, goalArea: area, goalName: name }).catch(() => {});
+      if (get().authStatus === 'authed') apiSaveProfile({ birth, goalArea: area, goalName: name, displayName }).catch(() => {});
+    },
+
+    // Account-screen saves: patch any of name / focus / goal / birth, recompute, persist both ways.
+    saveAccount: (patch) => {
+      const s = get();
+      const birth = patch.birth ?? s.birth;
+      if (!birth) return;
+      const goalArea = patch.goalArea ?? s.goalArea;
+      const goalName = patch.goalName ?? s.goalName;
+      const displayName = patch.displayName ?? s.displayName;
+      const d = compute(birth, goalArea, s.checkin, s.now);
+      saveProfile({ birth, goalArea, goalName, displayName });
+      set({ birth, goalArea, goalName, displayName, ...d });
+      if (s.authStatus === 'authed') apiSaveProfile({ birth, goalArea, goalName, displayName }).catch(() => {});
     },
 
     startEdit: () => set({ editing: true, screen: 'onboarding' }),

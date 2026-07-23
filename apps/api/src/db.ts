@@ -33,7 +33,7 @@ export interface UserRow { id: number; email: string; password_hash: string; sal
 export interface ProfileRow {
   user_id: number; birth_date: string; birth_time: string | null; unknown_time: number;
   place: string; lat: number; lng: number; tz_offset: number;
-  goal_area: string; goal_name: string; updated_at: string;
+  goal_area: string; goal_name: string; display_name: string; updated_at: string;
 }
 
 let db: DatabaseSync;
@@ -71,6 +71,12 @@ export function openDb(path = process.env.AURA_DB_PATH ?? DEFAULT_PATH): Databas
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `);
+  // Migration: profiles.display_name (the person's own name, shown in the app chrome). SQLite has
+  // no "ADD COLUMN IF NOT EXISTS", so check the table info first — keeps older DBs working.
+  const cols = db.prepare('PRAGMA table_info(profiles)').all() as unknown as { name: string }[];
+  if (!cols.some((c) => c.name === 'display_name')) {
+    db.exec("ALTER TABLE profiles ADD COLUMN display_name TEXT NOT NULL DEFAULT ''");
+  }
   return db;
 }
 
@@ -109,12 +115,23 @@ export function upsertProfile(p: ProfileRow): void {
   const { updated_at: _ignored, ...params } = p; // updated_at is set by datetime('now'), not bound
   void _ignored;
   getDb().prepare(`
-    INSERT INTO profiles (user_id, birth_date, birth_time, unknown_time, place, lat, lng, tz_offset, goal_area, goal_name, updated_at)
-    VALUES (@user_id, @birth_date, @birth_time, @unknown_time, @place, @lat, @lng, @tz_offset, @goal_area, @goal_name, datetime('now'))
+    INSERT INTO profiles (user_id, birth_date, birth_time, unknown_time, place, lat, lng, tz_offset, goal_area, goal_name, display_name, updated_at)
+    VALUES (@user_id, @birth_date, @birth_time, @unknown_time, @place, @lat, @lng, @tz_offset, @goal_area, @goal_name, @display_name, datetime('now'))
     ON CONFLICT(user_id) DO UPDATE SET
       birth_date=@birth_date, birth_time=@birth_time, unknown_time=@unknown_time, place=@place,
-      lat=@lat, lng=@lng, tz_offset=@tz_offset, goal_area=@goal_area, goal_name=@goal_name, updated_at=datetime('now')
+      lat=@lat, lng=@lng, tz_offset=@tz_offset, goal_area=@goal_area, goal_name=@goal_name,
+      display_name=@display_name, updated_at=datetime('now')
   `).run(params as unknown as Record<string, string | number | null>);
+}
+
+/** Set a new password hash + salt for a user (used by the change-password flow). */
+export function updateUserPassword(userId: number, passwordHash: string, salt: string): void {
+  getDb().prepare('UPDATE users SET password_hash = ?, salt = ? WHERE id = ?').run(passwordHash, salt, userId);
+}
+
+/** Drop every session except `keepToken` — used after a password change so other devices sign out. */
+export function deleteOtherSessions(userId: number, keepToken: string): void {
+  getDb().prepare('DELETE FROM sessions WHERE user_id = ? AND token != ?').run(userId, keepToken);
 }
 
 /**

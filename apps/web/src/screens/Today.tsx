@@ -1,10 +1,8 @@
-import { useMemo } from 'react';
 import type { PhaseWindows, ReadingInput } from '@aura/engine';
 import { AuraOrb } from '../components/AuraOrb';
 import { PlanetTag } from '../components/PlanetTag';
 import { Button } from '@/components/ui/button';
-import { energyColor, energyLabel, energyGloss, grahaColor, grahaOfEnergy, fmtMonYY } from '../ui';
-import { nicknameFor } from '../nicknames';
+import { energyColor, energyLabel, energyGloss, fmtMonYY } from '../ui';
 
 export function Today({ input, phases, todayLine, remedyShort, onOpenReading, onCheckin }: {
   input: ReadingInput;
@@ -19,16 +17,8 @@ export function Today({ input, phases, todayLine, remedyShort, onOpenReading, on
   const major = phases?.major.energy ?? input.majorEnergy;
   const passing = phases?.passing.energy ?? input.passingEnergy;
 
-  // A playful nickname matching the current antardasha planet — fresh each reload.
-  const antarGraha = grahaOfEnergy(passing);
-  const nickname = useMemo(() => nicknameFor(antarGraha), [antarGraha]);
-
   return (
     <div className="today-hero">
-      <div className="today-greet">
-        Hey, <span style={{ color: grahaColor(antarGraha) }}>{nickname}</span>
-      </div>
-
       <div className="today-stage">
       <div className="today-orb">
         <AuraOrb e1={energyColor(major)} e2={energyColor(passing)} size={210} />

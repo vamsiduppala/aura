@@ -1,4 +1,4 @@
-export type Screen = 'onboarding' | 'audit' | 'today' | 'reading' | 'checkin' | 'forecast' | 'blueprint' | 'settings' | 'support' | 'chat';
+export type Screen = 'onboarding' | 'audit' | 'today' | 'reading' | 'checkin' | 'forecast' | 'blueprint' | 'settings' | 'support' | 'chat' | 'account';
 
 const TABS: { key: Screen; label: string }[] = [
   { key: 'today', label: 'Today' },
@@ -9,9 +9,10 @@ const TABS: { key: Screen; label: string }[] = [
 
 function readsLabel(n: number): string { return `${n} ${n === 1 ? 'reading' : 'readings'}`; }
 
-/** Desktop left navigation. */
-export function Sidebar({ screen, go, totalReads, onSettings }: {
+/** Desktop left navigation. The account block sits at the very bottom: who you are, then sign-out. */
+export function Sidebar({ screen, go, totalReads, onSettings, userName, signedIn, onAccount, onLogout, onSignIn }: {
   screen: Screen; go: (s: Screen) => void; totalReads: number; onSettings: () => void;
+  userName: string; signedIn: boolean; onAccount: () => void; onLogout: () => void; onSignIn: () => void;
 }) {
   return (
     <aside className="sidebar">
@@ -26,9 +27,22 @@ export function Sidebar({ screen, go, totalReads, onSettings }: {
         aria-current={screen === 'settings' ? 'page' : undefined}>
         <span className="dot" />Settings
       </button>
+
       <div className="side-foot">
         {totalReads > 0 ? <div className="side-reads">{readsLabel(totalReads)}</div> : null}
-        Private. On-device.<br />Delete anytime.
+        <div className="side-priv">Private. On-device.<br />Delete anytime.</div>
+
+        <button className={`side-acct${screen === 'account' ? ' on' : ''}`} onClick={onAccount}
+          aria-current={screen === 'account' ? 'page' : undefined} title="Account & birth details">
+          <span className="side-avatar" aria-hidden>{userName.slice(0, 1).toUpperCase()}</span>
+          <span className="side-acct-txt">
+            <span className="side-acct-name">{userName}</span>
+            <span className="side-acct-sub">{signedIn ? 'View account' : 'On this device'}</span>
+          </span>
+        </button>
+        <button className="side-signout" onClick={signedIn ? onLogout : onSignIn}>
+          {signedIn ? 'Sign out' : 'Sign in'}
+        </button>
       </div>
     </aside>
   );

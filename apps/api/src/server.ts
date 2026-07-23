@@ -7,7 +7,7 @@
 
 import Fastify from 'fastify';
 import { openDb, getProfile, upsertProfile, deleteUser, type ProfileRow } from './db.js';
-import { register, login, userForToken, AuthError } from './auth.js';
+import { register, login, userForToken, changePassword, AuthError } from './auth.js';
 import {
   GRAHAS, RASIS, BHAVAS, NAKSHATRAS, YOGAS, YOGA_BY_KEY,
   DIVISIONALS, DIVISIONAL_BY_N, CHARA_KARAKAS, STHIRA_KARAKAS, sankhyaYoga, matchAakritiYogas, vajraYavaYoga,
@@ -131,7 +131,8 @@ export function buildServer() {
       date: r.birth_date, time: r.birth_time ?? undefined, unknownTime: !!r.unknown_time,
       place: r.place, lat: r.lat, lng: r.lng, tzOffsetMinutes: r.tz_offset,
     },
-    goalArea: r.goal_area, goalName: r.goal_name,
+    goalArea: r.goal_area, goalName: r.goal_name, displayName: r.display_name || '',
+    updatedAt: r.updated_at,
   });
 
   app.post('/auth/register', async (req, reply) => {
@@ -159,7 +160,7 @@ export function buildServer() {
   app.put('/profile', async (req, reply) => {
     const user = userForToken(bearer(req));
     if (!user) return reply.code(401).send({ error: 'not authenticated' });
-    const b = req.body as { birth?: Record<string, unknown>; goalArea?: string; goalName?: string };
+    const b = req.body as { birth?: Record<string, unknown>; goalArea?: string; goalName?: string; displayName?: string };
     const birth = b?.birth;
     if (!birth || !birth.date || birth.lat == null || birth.lng == null || birth.tzOffsetMinutes == null || !birth.place) {
       return reply.code(400).send({ error: 'birth { date, place, lat, lng, tzOffsetMinutes } required' });
@@ -169,9 +170,25 @@ export function buildServer() {
       birth_date: String(birth.date), birth_time: (birth.time as string) ?? null,
       unknown_time: birth.unknownTime ? 1 : 0, place: String(birth.place),
       lat: Number(birth.lat), lng: Number(birth.lng), tz_offset: Number(birth.tzOffsetMinutes),
-      goal_area: b.goalArea ?? 'career', goal_name: b.goalName ?? '', updated_at: '',
+      goal_area: b.goalArea ?? 'career', goal_name: b.goalName ?? '',
+      display_name: (b.displayName ?? '').slice(0, 60), updated_at: '',
     });
     return { ok: true };
+  });
+  // Change password (re-checks the current one, then signs other devices out).
+  app.post('/auth/password', async (req, reply) => {
+    const token = bearer(req);
+    const user = userForToken(token);
+    if (!user) return reply.code(401).send({ error: 'not authenticated' });
+    const b = req.body as { currentPassword?: string; newPassword?: string };
+    if (!b?.currentPassword || !b?.newPassword) return reply.code(400).send({ error: 'currentPassword and newPassword are required' });
+    try {
+      changePassword(user.id, b.currentPassword, b.newPassword, token!);
+      return { ok: true };
+    } catch (e) {
+      if (e instanceof AuthError) return reply.code(400).send({ error: e.message });
+      throw e;
+    }
   });
   // Permanently delete the signed-in user's account and all their data (backs "Delete everything").
   app.delete('/account', async (req, reply) => {
