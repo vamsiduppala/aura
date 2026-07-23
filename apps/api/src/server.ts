@@ -29,7 +29,7 @@ import {
   narayanaProgression, narayanaDasaLength, narayanaAntardashas,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa,
   kalachakraPada,
-  taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS, lattaNakshatra,
+  taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS, lattaNakshatra, murthiOf,
   charaKarakas,
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   saham, computeSahams, SAHAM_FORMULAS, type SahamContext,
@@ -351,6 +351,11 @@ export function buildServer() {
     const jn = Number(q.janmaNak);
     return Object.fromEntries(Object.keys(SPECIAL_NAKSHATRAS).map((k) =>
       [k, { nakshatra: specialNakshatra(jn, k as keyof typeof SPECIAL_NAKSHATRAS), shows: SPECIAL_NAKSHATRAS[k as keyof typeof SPECIAL_NAKSHATRAS]!.shows }]));
+  });
+  app.get('/transit/murthi', async (req, reply) => {
+    const q = req.query as { house?: string };
+    if (q.house == null) return reply.code(400).send({ error: 'house (1-12): transit Moon from natal Moon when the planet enters the rasi' });
+    return murthiOf(Number(q.house));
   });
   app.get('/transit/latta', async (req, reply) => {
     const q = req.query as { graha?: string; nak?: string };

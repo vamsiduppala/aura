@@ -117,7 +117,8 @@ resuming session can pick up exactly where it left off.
       (taraOf/specialNakshatra/nakshatraAspectsFrom), verified vs the Bill Gates example.
       Latta / the transit "kick" (26.7 — Sun/Mars/Jup/Sat forward, Moon/Merc/Ven/Rahu
       backward) → `lattaNakshatra()`, verified vs all 8 book examples. API:
-      /transit/{tara,special-nakshatras,nakshatra-aspects,latta}. TODO: murthis, rasi-vedha,
+      /transit/{tara,special-nakshatras,nakshatra-aspects,latta,murthi}. Murthis (26.2 — gold/
+      silver/copper/iron transit form by transit-Moon house) → murthiOf(). TODO: rasi-vedha,
       body-part tables, sarvatobhadra chakra
 
 ## Part 4 — Tajaka Analysis

@@ -22,7 +22,7 @@ import {
   narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
   kalachakraPada, isSavya,
-  taraOf, specialNakshatra, nakshatraAspectsFrom, lattaNakshatra,
+  taraOf, specialNakshatra, nakshatraAspectsFrom, lattaNakshatra, murthiOf,
   muntha, harshaBala, saham, computeSahams,
   ithasala, ishkavala, induvara, fasterPlanet,
   muddaDasa, muddaDays, sudarsanaDasa, sudarsanaAllRefs,
@@ -369,6 +369,14 @@ describe('transit taras & special nakshatras (Ch 26) — verified vs the Bill Ga
     expect(lattaNakshatra('venus', 4)).toBe(0);     // Venus in Mrigasira → Aswini (5th bwd)
     expect(lattaNakshatra('rahu', 6)).toBe(25);     // Rahu in Punarvasu → U.Bhadra (9th bwd)
     expect(lattaNakshatra('ketu', 0)).toBeNull();   // Ketu has no latta
+  });
+  it('murthis / transit forms (26.2, Table 62)', () => {
+    expect(murthiOf(1).name).toBe('Swarna');  // 1/6/11 → gold, favourable
+    expect(murthiOf(11).favorable).toBe(true);
+    expect(murthiOf(5).name).toBe('Rajata');  // 2/5/9 → silver
+    expect(murthiOf(7).name).toBe('Taamra');  // 3/7/10 → copper, unfavourable
+    expect(murthiOf(4).name).toBe('Loha');    // 4/8/12 → iron, highly unfavourable
+    expect(murthiOf(8).favorable).toBe(false);
   });
 });
 

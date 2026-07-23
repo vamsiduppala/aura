@@ -87,8 +87,8 @@ export {
 } from './data/kalachakra.js';
 export {
   TARAS, taraOf, SPECIAL_NAKSHATRAS, specialNakshatra,
-  NAKSHATRA_ASPECTS, nakshatraAspectsFrom, LATTA_OFFSET, lattaNakshatra,
-  type Tara, type TaraResult,
+  NAKSHATRA_ASPECTS, nakshatraAspectsFrom, LATTA_OFFSET, lattaNakshatra, murthiOf,
+  type Tara, type TaraResult, type Murthi,
 } from './data/taras.js';
 export {
   muntha, MUNTHA_IN_HOUSE, TAJAKA_ASPECTS, DEEPTAMSA, HARSHA_HOUSE, harshaBala,

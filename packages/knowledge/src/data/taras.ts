@@ -82,3 +82,23 @@ export function lattaNakshatra(graha: Graha, transitNak: number): number | null 
   const off = LATTA_OFFSET[graha];
   return off == null ? null : mod27(transitNak + off);
 }
+
+// ── Murthis / the "form" of a transiting planet (26.2) ────────────────────────
+// When a planet enters a rasi, the house of the transit Moon (from the natal Moon) at that
+// moment gives the planet a golden/silver/copper/iron form for that transit (Table 62).
+export interface Murthi { name: string; metal: string; result: string; favorable: boolean }
+
+const MURTHIS: Record<string, Murthi> = {
+  swarna: { name: 'Swarna', metal: 'gold', result: 'highly favourable', favorable: true },
+  rajata: { name: 'Rajata', metal: 'silver', result: 'favourable', favorable: true },
+  taamra: { name: 'Taamra', metal: 'copper', result: 'unfavourable', favorable: false },
+  loha: { name: 'Loha', metal: 'iron', result: 'highly unfavourable', favorable: false },
+};
+/** House (1..12, transit Moon from natal Moon) → murthi key. */
+const MURTHI_BY_HOUSE = ['', 'swarna', 'rajata', 'taamra', 'loha', 'rajata', 'swarna', 'taamra', 'loha', 'rajata', 'taamra', 'swarna', 'loha'];
+
+/** The murthi (form) of a transiting planet from the transit-Moon's house (1..12) off the natal Moon. */
+export function murthiOf(houseFromMoon: number): Murthi {
+  const h = ((houseFromMoon - 1) % 12 + 12) % 12 + 1;
+  return MURTHIS[MURTHI_BY_HOUSE[h]!]!;
+}
