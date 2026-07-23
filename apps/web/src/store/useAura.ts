@@ -133,7 +133,15 @@ export const useAura = create<AuraState>((set, get) => {
       set({ authBusy: true, authError: null });
       try {
         const user = await apiRegister(email, password);
-        set({ user, authStatus: 'authed', authBusy: false, screen: 'onboarding' });
+        // If they'd already entered a profile as a guest, migrate it into the new account instead of
+        // making them re-enter it — "continue on this device" → "create an account" keeps their chart.
+        const { birth, goalArea, goalName } = get();
+        if (birth) {
+          apiSaveProfile({ birth, goalArea, goalName }).catch(() => {});
+          set({ user, authStatus: 'authed', authBusy: false, screen: 'today' });
+        } else {
+          set({ user, authStatus: 'authed', authBusy: false, screen: 'onboarding' });
+        }
       } catch (e) { set({ authBusy: false, authError: (e as Error).message }); }
     },
 
