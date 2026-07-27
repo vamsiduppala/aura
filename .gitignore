@@ -42,3 +42,12 @@ apps/api/data/
 *.db
 *.db-wal
 *.db-shm
+
+# Capacitor native build outputs (the android/ and ios/ projects ARE committed)
+apps/web/android/app/build/
+apps/web/android/build/
+apps/web/android/.gradle/
+apps/web/android/local.properties
+apps/web/ios/App/Pods/
+apps/web/ios/App/build/
+apps/web/ios/App/Podfile.lock
