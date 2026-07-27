@@ -86,7 +86,7 @@ export function App() {
       onDone={(c) => { s.setCheckin(c); s.go('reading'); }}
       onSkip={() => { s.setCheckin(undefined); s.go('reading'); }} />;
   } else if (screen === 'forecast') {
-    body = <Forecast aura={aura} chart={chart} now={now} goalArea={goalArea} major={daily.input.majorEnergy} />;
+    body = <Forecast aura={aura} chart={chart} now={now} goalArea={goalArea} major={daily.input.majorEnergy} passing={daily.input.passingEnergy} />;
   } else if (screen === 'chat') {
     body = <Chat aura={aura} chart={chart} now={now} />;
   } else {

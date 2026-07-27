@@ -50,7 +50,7 @@ describe('App smoke — the full flow renders without crashing', () => {
 
     // Forecast (nav renders in both sidebar + bottom bar under jsdom → take the first)
     await user.click(screen.getAllByRole('button', { name: /^Forecast$/i })[0]!);
-    await waitFor(() => expect(screen.getByText(/% through/i)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(/Your season right now/i)).toBeInTheDocument());
 
     // Cosmic Mentor chat
     await user.click(screen.getAllByRole('button', { name: /^Mentor$/i })[0]!);
