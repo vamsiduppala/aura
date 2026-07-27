@@ -14,6 +14,7 @@ import { Account } from './screens/Account';
 import { Support } from './screens/Support';
 import { Sidebar, TopBar, BottomNav, type Screen } from './components/Chrome';
 import { downloadReport } from './services/report';
+import { TodaySkeleton, ErrorState } from './components/States';
 
 const WIDE: Screen[] = ['today', 'forecast', 'chat', 'blueprint'];
 
@@ -33,7 +34,11 @@ export function App() {
   useEffect(() => { if (authStatus === 'loading') void s.initAuth(); }, [authStatus, s]);
 
   if (authStatus === 'loading') {
-    return <div className="app"><main className="main"><div className="content narrow"><div className="auth-loading">Loading your chart…</div></div></main></div>;
+    return (
+      <div className="app"><main className="main"><div className="content">
+        <TodaySkeleton />
+      </div></main></div>
+    );
   }
   if (authStatus === 'anon') {
     return (
@@ -62,11 +67,7 @@ export function App() {
       onSignIn={s.showLogin} onDelete={s.deleteAll} onDownload={onDownload} />;
   } else if (s.error) {
     body = (
-      <div className="view" style={{ paddingTop: 40 }}>
-        <div className="serif-h" style={{ fontSize: 24, marginBottom: 12 }}>Something didn’t compute.</div>
-        <div className="disclaimer" style={{ textAlign: 'left', padding: 0 }}>{s.error}</div>
-        <button className="btn" style={{ marginTop: 20, maxWidth: 240 }} onClick={s.deleteAll}>Start over</button>
-      </div>
+      <ErrorState detail={s.error} onRetry={() => s.go('account')} onReset={s.deleteAll} />
     );
   } else if (s.editing && chart) {
     body = <Onboarding onComplete={s.onboard} editing

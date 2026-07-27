@@ -6,6 +6,7 @@ import { loadChartDashas, type DashaSnapshot } from '../services/liveData';
 import { computeYearAhead, type YearAhead } from '../services/yearAhead';
 import { buildPortrait, buildTechnicalFacts } from '../services/portrait';
 import { readEmptyHouse } from '../services/emptyHouse';
+import { SectionSkeleton } from '../components/States';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
@@ -181,7 +182,14 @@ function TimingSystems({ chart }: { chart: Chart }) {
     return () => { alive = false; };
   }, [chart]);
 
-  if (!d) return null;
+  if (!d) {
+    return (
+      <div style={{ marginTop: 24 }}>
+        <div className="label" style={{ marginBottom: 6 }}>Your timing clocks</div>
+        <SectionSkeleton lines={3} label="Loading your timing systems" />
+      </div>
+    );
+  }
   return (
     <div style={{ marginTop: 24 }}>
       <div className="label" style={{ marginBottom: 6 }}>Your timing clocks</div>

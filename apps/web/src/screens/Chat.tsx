@@ -81,7 +81,12 @@ export function Chat({ aura, chart, now, goalArea }: { aura: Aura; chart: Chart;
             </div>
           ))
         )}
-        {busy ? <div className="bubble mentor typing">reading your timing…</div> : null}
+        {busy ? (
+          <div className="bubble mentor typing">
+            <span className="think-dots" aria-hidden><i /><i /><i /></span>
+            reading your chart…
+          </div>
+        ) : null}
         <div ref={endRef} />
       </div>
 
