@@ -12,6 +12,7 @@ import {
   MENTOR_SYSTEM_PROMPT, detectCrisis, checkNoDoom, SUPPORT_MESSAGE, ENERGY_META,
 } from '@aura/engine';
 import { MENTOR_TOOLS, runMentorTool, type ToolContext } from './mentorTools';
+import { streamGemini, TOOL_LABELS, MentorApiError } from './mentorStream';
 
 const LS_KEY = 'aura.geminiKey';
 const MODEL = (import.meta.env.VITE_GEMINI_MODEL as string | undefined) ?? 'gemini-2.5-flash';
@@ -69,7 +70,38 @@ export function clearGeminiKey(): void { try { localStorage.removeItem(LS_KEY); 
 export function hasUserKey(): boolean { try { return !!localStorage.getItem(LS_KEY); } catch { return false; } }
 
 export interface ChatTurn { role: 'user' | 'mentor'; text: string }
-export interface ChatResult { text: string; usedEngine: boolean; source: 'gemini' | 'local' | 'support' }
+export interface ChatResult {
+  text: string;
+  usedEngine: boolean;
+  source: 'gemini' | 'local' | 'support';
+  /** Set when the richer LLM reply was unavailable, so the UI can say why rather than
+   *  silently serving a thinner answer and letting the user think the app got worse. */
+  degraded?: { reason: 'quota' | 'auth' | 'offline'; note: string };
+  /** Which chart tools produced this answer — shown to the user so replies are auditable. */
+  sources?: string[];
+  /** Suggested next questions, derived from what the answer actually covered. */
+  followUps?: string[];
+}
+
+/** Live progress while the mentor works: which tool is running, and text as it streams in. */
+export interface StreamHandlers {
+  onActivity?: (label: string) => void;
+  onDelta?: (chunk: string) => void;
+}
+
+/** Offer next questions that follow from the tools the answer actually used. */
+function followUpsFor(used: string[], message: string): string[] {
+  const out: string[] = [];
+  const has = (t: string) => used.includes(t);
+  if (has('score_life_area') || has('get_life_area')) out.push('When is the best window for this?');
+  if (has('get_timing')) out.push('What changes after that?');
+  if (!has('get_daily_reading')) out.push('What should I do about it this week?');
+  if (!has('get_personality_read')) out.push('Why am I like this?');
+  if (has('lookup_concept')) out.push('How does that show up in my chart?');
+  if (/\b(job|work|career|money)\b/i.test(message)) out.push('What are my chances in love right now?');
+  else out.push('What about my work right now?');
+  return [...new Set(out)].slice(0, 3);
+}
 
 const geminiTools = [{ functionDeclarations: MENTOR_TOOLS }];
 
@@ -128,9 +160,9 @@ const partsOf = (r: Record<string, unknown>): GeminiPart[] => {
  */
 export async function askMentor(
   message: string, aura: Aura, chart: Chart, now: Date, history: ChatTurn[] = [],
-  opts: { goalArea?: LifeArea; maxRounds?: number } = {},
+  opts: { goalArea?: LifeArea; maxRounds?: number; signal?: AbortSignal } & StreamHandlers = {},
 ): Promise<ChatResult> {
-  // 1) A crisis is never "read" (SPEC §11.3) — this check runs before anything else.
+  // 1) A crisis is never "read" (SPEC 11.3) — this check runs before anything else.
   if (detectCrisis(message)) {
     return { text: `${SUPPORT_MESSAGE} In the US, call or text 988; elsewhere, findahelpline.com.`, usedEngine: false, source: 'support' };
   }
@@ -138,12 +170,13 @@ export async function askMentor(
   const key = getKey();
   const ctx: ToolContext = { aura, chart, now, goalArea: opts.goalArea };
 
-  // 2) No key → deterministic, still grounded in the real chart.
+  // 2) No key -> deterministic, still grounded in the real chart.
   if (!key) {
     const intent = extractIntent(message);
     return { text: localReply(aura.mentorAnswer(chart, intent, now)), usedEngine: true, source: 'local' };
   }
 
+  const usedTools: string[] = [];
   try {
     const contents: Record<string, unknown>[] = [
       ...history.map((t) => ({ role: t.role === 'user' ? 'user' : 'model', parts: [{ text: t.text }] })),
@@ -151,29 +184,52 @@ export async function askMentor(
     ];
     const systemInstruction = { parts: [{ text: MENTOR_SYSTEM_PROMPT + MENTOR_BEHAVIOUR }] };
     const maxRounds = opts.maxRounds ?? 4;
-    let usedTools = false;
 
     for (let round = 0; round < maxRounds; round++) {
-      const res = await callGemini({
+      const body = {
         systemInstruction, tools: geminiTools,
         toolConfig: { functionCallingConfig: { mode: 'AUTO' } },
         contents,
-      }, key);
+      };
 
-      const parts = partsOf(res);
-      const calls = parts.filter((p) => p.functionCall).map((p) => p.functionCall!);
-
-      if (calls.length === 0) {
-        const text = parts.map((p) => p.text).filter(Boolean).join(' ').trim();
-        if (text) {
-          const safe = checkNoDoom(text).ok ? text : null;
-          if (safe) return { text: safe, usedEngine: usedTools, source: 'gemini' };
+      let answer = '';
+      const calls: { name: string; args?: Record<string, unknown> }[] = [];
+      // A short, server-specified rate-limit pause is worth waiting out once — it is usually
+      // a per-minute burst limit, and retrying beats degrading the answer.
+      const runStream = async function* () {
+        try {
+          yield* streamGemini(MODEL, key, body, opts.signal);
+        } catch (err) {
+          if (err instanceof MentorApiError && err.isQuota && err.retryAfterMs && err.retryAfterMs <= 8000) {
+            opts.onActivity?.('Busy for a moment — retrying');
+            await new Promise((r) => setTimeout(r, err.retryAfterMs! + 250));
+            yield* streamGemini(MODEL, key, body, opts.signal);
+          } else { throw err; }
         }
-        break; // empty or unsafe → fall through to the deterministic answer
+      };
+      // Stream: text is shown the moment it exists, which is what makes a 15s reply feel fast.
+      for await (const ev of runStream()) {
+        if (ev.toolCalls) {
+          calls.push(...ev.toolCalls);
+          for (const c of ev.toolCalls) opts.onActivity?.(TOOL_LABELS[c.name] ?? 'Checking your chart');
+        }
+        if (ev.delta) { answer += ev.delta; opts.onDelta?.(ev.delta); }
       }
 
-      // Run every tool it asked for this round, then feed all results back at once.
-      usedTools = true;
+      if (calls.length === 0) {
+        const text = answer.trim();
+        if (text && checkNoDoom(text).ok) {
+          return {
+            text, usedEngine: usedTools.length > 0, source: 'gemini',
+            sources: [...new Set(usedTools)].map((t) => TOOL_LABELS[t] ?? t),
+            followUps: followUpsFor(usedTools, message),
+          };
+        }
+        break; // empty or unsafe -> deterministic answer below
+      }
+
+      // Run everything it asked for this round, then hand all results back at once.
+      usedTools.push(...calls.map((c) => c.name));
       const results = await Promise.all(calls.map(async (c) => ({
         name: c.name,
         response: { result: await runMentorTool(c.name, c.args ?? {}, ctx).catch((e) => ({ error: String(e) })) },
@@ -182,12 +238,21 @@ export async function askMentor(
       contents.push({ role: 'user', parts: results.map((functionResponse) => ({ functionResponse })) });
     }
 
-    // Ran out of rounds, or the reply was unusable.
     const intent = extractIntent(message);
     return { text: localReply(aura.mentorAnswer(chart, intent, now)), usedEngine: true, source: 'local' };
-  } catch {
+  } catch (e) {
+    if ((e as Error)?.name === 'AbortError') throw e; // the user stopped it on purpose
     const intent = extractIntent(message);
-    return { text: localReply(aura.mentorAnswer(chart, intent, now)), usedEngine: true, source: 'local' };
+    const base = { text: localReply(aura.mentorAnswer(chart, intent, now)), usedEngine: true, source: 'local' as const };
+    if (e instanceof MentorApiError) {
+      if (e.isQuota) {
+        return { ...base, degraded: { reason: 'quota', note: 'The AI key has hit its daily limit, so this answer comes straight from your chart instead. It is still accurate — just less conversational.' } };
+      }
+      if (e.isAuth) {
+        return { ...base, degraded: { reason: 'auth', note: 'That AI key was rejected. Check it in Settings — until then answers come straight from your chart.' } };
+      }
+    }
+    return { ...base, degraded: { reason: 'offline', note: 'Could not reach the AI service, so this answer comes straight from your chart.' } };
   }
 }
 

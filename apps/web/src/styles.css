@@ -746,3 +746,34 @@ button:active:not(:disabled), .chip:active, .starter:active, .place-opt:active {
 .think-dots i:nth-child(2){animation-delay:.15s}
 .think-dots i:nth-child(3){animation-delay:.3s}
 @keyframes thinkpulse{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+
+/* ── Mentor: sources, follow-ups, streaming controls ─────────────────────────── */
+.chat-clear{background:none;border:1px solid var(--line-2);border-radius:var(--r-full);
+  padding:6px 12px;font-family:var(--grotesk);font-size:var(--fs-xs);color:var(--mist-3);
+  cursor:pointer;flex:none;}
+.chat-clear:hover{color:var(--mist);border-color:var(--smoke);}
+/* "How I worked this out" — the mentor's citations. Collapsed by default so it never
+   competes with the answer, but always there so a claim can be audited. */
+.msg-sources{margin:calc(-1 * var(--sp-2)) 0 var(--sp-3) var(--sp-2);max-width:74%;}
+.msg-sources summary{font-family:var(--grotesk);font-size:var(--fs-xs);color:var(--mist-3);
+  cursor:pointer;list-style:none;padding:var(--sp-1) 0;}
+.msg-sources summary::-webkit-details-marker{display:none;}
+.msg-sources summary::before{content:"⌄ ";display:inline-block;transition:transform var(--t-fast) var(--ease);}
+.msg-sources[open] summary::before{transform:rotate(180deg);}
+.msg-sources summary:hover{color:var(--mist-2);}
+.msg-sources ul{margin:var(--sp-1) 0 0 var(--sp-4);padding:0;}
+.msg-sources li{font-size:var(--fs-xs);color:var(--mist-3);line-height:1.7;}
+/* Follow-ups: the next question is usually the one they were about to type anyway. */
+.followups{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin:var(--sp-2) 0 var(--sp-4) var(--sp-2);}
+.followup{background:rgba(174,143,230,.10);border:1px solid rgba(174,143,230,.28);
+  border-radius:var(--r-full);padding:8px 14px;font-family:var(--sans);font-size:var(--fs-sm);
+  color:var(--mist-2);cursor:pointer;text-align:left;
+  transition:background-color var(--t-base) var(--ease),color var(--t-base) var(--ease),transform var(--t-fast) var(--ease);}
+.followup:hover{background:rgba(174,143,230,.18);color:var(--mist);}
+.followup:active{transform:translateY(1px);}
+.think{display:inline-flex;align-items:center;color:var(--mist-3);}
+/* When the LLM is unavailable, say so — a thinner answer with no explanation reads as a bug. */
+.msg-degraded{margin:calc(-1 * var(--sp-2)) 0 var(--sp-3) var(--sp-2);max-width:74%;
+  font-size:var(--fs-xs);line-height:1.6;color:var(--radiance);
+  background:rgba(255,208,112,.08);border:1px solid rgba(255,208,112,.22);
+  border-radius:var(--r-md);padding:8px 11px;}

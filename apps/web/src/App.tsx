@@ -89,7 +89,7 @@ export function App() {
   } else if (screen === 'forecast') {
     body = <Forecast aura={aura} chart={chart} now={now} goalArea={goalArea} major={daily.input.majorEnergy} passing={daily.input.passingEnergy} />;
   } else if (screen === 'chat') {
-    body = <Chat aura={aura} chart={chart} now={now} goalArea={goalArea} />;
+    body = <Chat aura={aura} chart={chart} now={now} goalArea={goalArea} userKey={s.user ? `u${s.user.id}` : 'guest'} />;
   } else {
     body = <Blueprint aura={aura} chart={chart} goalName={goalName} onDownload={onDownload} />;
   }
