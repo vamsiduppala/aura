@@ -4,6 +4,7 @@ import { energyColor, grahaColor, grahaLabel } from '../ui';
 import { buildHouses, dignityChip, type HouseCard as HouseCardData } from '../kundali';
 import { loadChartDashas, type DashaSnapshot } from '../services/liveData';
 import { computeYearAhead, type YearAhead } from '../services/yearAhead';
+import { buildPortrait, buildTechnicalFacts } from '../services/portrait';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
@@ -41,6 +42,9 @@ export function Blueprint({ aura, chart, onDownload }: { aura: Aura; chart: Char
           </span>
         ))}
       </div>
+
+      {/* Who this chart describes, in plain language, before the house-by-house detail. */}
+      <Portrait chart={chart} />
 
       {/* House cards — what each area of life is, and how your planets shape it. */}
       <div className="house-list">
@@ -98,8 +102,42 @@ export function Blueprint({ aura, chart, onDownload }: { aura: Aura; chart: Char
 
         <TimingSystems chart={chart} />
         <YearAhead aura={aura} chart={chart} />
+        <TechnicalFacts chart={chart} />
       </div>
     </div>
+  );
+}
+
+/** A plain-language read of the person — mind, decisions, lifestyle, environment, comfort. */
+function Portrait({ chart }: { chart: Chart }) {
+  const parts = useMemo(() => buildPortrait(chart), [chart]);
+  return (
+    <section className="portrait">
+      <div className="label" style={{ marginBottom: 12 }}>Who this chart describes</div>
+      {parts.map((s) => (
+        <article className="portrait-item" key={s.title}>
+          <h3>{s.title}</h3>
+          <p>{s.body}</p>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+/** The heavier classical machinery, for readers who want to see it. */
+function TechnicalFacts({ chart }: { chart: Chart }) {
+  const facts = useMemo(() => buildTechnicalFacts(chart), [chart]);
+  return (
+    <section style={{ marginTop: 26 }}>
+      <div className="label" style={{ marginBottom: 6 }}>Deeper in the chart</div>
+      <div className="bp-meta" style={{ marginBottom: 12 }}>the classical layers most readings never show you</div>
+      {facts.map((f) => (
+        <div className="techfact" key={f.label}>
+          <div className="techfact-l">{f.label}</div>
+          <p>{f.value}</p>
+        </div>
+      ))}
+    </section>
   );
 }
 

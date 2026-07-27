@@ -6,6 +6,7 @@ import type { Aura, BirthData, Chart } from '@aura/engine';
 import { buildHouses, dignityChip } from '../kundali';
 import { computeYearAhead } from './yearAhead';
 import { loadChartDashas } from './liveData';
+import { buildPortrait, buildTechnicalFacts } from './portrait';
 import { grahaLabel, grahaColor, fmtFull } from '../ui';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
@@ -32,6 +33,8 @@ export async function buildReportHtml({ aura, chart, birth, displayName, goalNam
   try { yearAhead = computeYearAhead(aura, chart, now); } catch { yearAhead = null; }
   const dashas = await loadChartDashas(chart).catch(() => null);
   const yogas = aura.yogas(chart);
+  const portrait = buildPortrait(chart);
+  const technical = buildTechnicalFacts(chart);
 
   const strengths = k.strengths.map((s) =>
     `<div class="chip"><span class="dot" style="background:${grahaColor(s.graha)}"></span>${esc(grahaLabel(s.graha))}<b>${s.pct}%</b></div>`).join('');
@@ -115,6 +118,12 @@ export async function buildReportHtml({ aura, chart, birth, displayName, goalNam
   .gift{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:9px}
   .gift b{display:block;margin-bottom:3px}
   .empty{font-size:13.5px;color:var(--faint);margin:0}
+  .por{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;break-inside:avoid}
+  .por h3{font-size:15px;margin:0 0 6px}
+  .por p{margin:0;font-size:13.5px;color:var(--soft)}
+  .kv-block{border-bottom:1px solid var(--line);padding:11px 0;break-inside:avoid}
+  .kv-block b{display:block;font-size:13px;margin-bottom:4px}
+  .kv-block p{margin:0;font-size:13px;color:var(--soft)}
   footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--faint)}
   @media print{body{padding:0;background:#fff}.house,.gift,.chip{break-inside:avoid}}
 </style></head>
@@ -145,8 +154,14 @@ export async function buildReportHtml({ aura, chart, birth, displayName, goalNam
   <h2>Planet strengths</h2>
   <div class="chips">${strengths}</div>
 
+  <h2>Who this chart describes</h2>
+  ${portrait.map((s) => `<section class="por"><h3>${esc(s.title)}</h3><p>${esc(s.body)}</p></section>`).join('')}
+
   <h2>Your life, house by house</h2>
   ${houses}
+
+  <h2>Deeper in the chart</h2>
+  ${technical.map((f) => `<div class="kv-block"><b>${esc(f.label)}</b><p>${esc(f.value)}</p></div>`).join('')}
 
   <h2>Born gifts</h2>
   ${giftRows}
