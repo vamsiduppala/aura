@@ -38,4 +38,24 @@ describe('creating an account keeps an existing (guest) profile', () => {
     expect(useAura.getState().screen).toBe('onboarding');
     expect(api.saveProfile as Mock).not.toHaveBeenCalled();
   });
+
+  // Regression: a profile left in localStorage by whoever used this browser last must NEVER be
+  // adopted into a newly created account. It once silently gave a new user a stranger's chart.
+  it('does NOT adopt a stale on-device profile the new user never entered', async () => {
+    // Simulate leftover storage from a previous person, then boot the store fresh from it.
+    localStorage.setItem('aura.v1', JSON.stringify({
+      birth: { date: '1993-06-15', time: '14:35', unknownTime: false, place: 'Someone Else', lat: 12.97, lng: 77.59, tzOffsetMinutes: 330 },
+      goalArea: 'career', goalName: 'their goal', displayName: 'Stranger',
+    }));
+    useAura.getState().reset();
+    expect(useAura.getState().birth?.place).toBe('Someone Else'); // guest mode shows it, fine
+
+    await useAura.getState().doRegister('newperson@x.com', 'password123');
+
+    const s = useAura.getState();
+    expect(s.screen).toBe('onboarding');   // they get asked for their OWN details
+    expect(s.birth).toBeNull();            // the stranger's chart is gone
+    expect(s.displayName).toBe('');
+    expect(api.saveProfile as Mock).not.toHaveBeenCalled(); // nothing uploaded to the new account
+  });
 });

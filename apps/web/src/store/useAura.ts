@@ -46,6 +46,10 @@ export interface AuraState {
   goalName: string;
   /** The person's own name, shown in the app chrome. Editable on the Account screen. */
   displayName: string;
+  /** True only when the birth profile was entered during this browser session. A profile merely
+   *  restored from localStorage does NOT count — it may belong to whoever used the browser last,
+   *  and must never be silently adopted into a newly created account. */
+  enteredThisSession: boolean;
   checkin?: Checkin;
   reads: ReadsState;
   chart: Chart | null;
@@ -98,6 +102,7 @@ export const useAura = create<AuraState>((set, get) => {
     goalArea,
     goalName: saved?.goalName ?? 'my goal',
     displayName: saved?.displayName ?? '',
+    enteredThisSession: false,
     checkin: undefined,
     reads: loadReads(),
     ...initial,
@@ -145,14 +150,21 @@ export const useAura = create<AuraState>((set, get) => {
       set({ authBusy: true, authError: null });
       try {
         const user = await apiRegister(email, password);
-        // If they'd already entered a profile as a guest, migrate it into the new account instead of
-        // making them re-enter it — "continue on this device" → "create an account" keeps their chart.
-        const { birth, goalArea, goalName } = get();
-        if (birth) {
+        // Carry over a profile ONLY if this person typed it during this session (guest -> account).
+        // A profile restored from localStorage belongs to whoever used this browser last, so a new
+        // account must start from onboarding rather than silently inherit a stranger's birth chart.
+        const { birth, goalArea, goalName, enteredThisSession } = get();
+        if (birth && enteredThisSession) {
           apiSaveProfile({ birth, goalArea, goalName, displayName: get().displayName }).catch(() => {});
           set({ user, authStatus: 'authed', authBusy: false, screen: 'today' });
         } else {
-          set({ user, authStatus: 'authed', authBusy: false, screen: 'onboarding' });
+          // Clear any leftover on-device profile so the new account starts from a blank form.
+          clearAll();
+          set({
+            user, authStatus: 'authed', authBusy: false, screen: 'onboarding',
+            birth: null, chart: null, daily: null, displayName: '', goalName: 'my goal',
+            checkin: undefined, error: null, reads: { count: 0, lastDay: '' },
+          });
         }
       } catch (e) { set({ authBusy: false, authError: (e as Error).message }); }
     },
@@ -179,7 +191,7 @@ export const useAura = create<AuraState>((set, get) => {
       const d = compute(birth, area, undefined, get().now);
       // Editing an existing profile skips the retrospective audit; a fresh chart runs it.
       const wasEditing = get().editing;
-      set({ birth, goalArea: area, goalName: name, displayName, checkin: undefined, ...d, editing: false, screen: wasEditing ? 'today' : 'audit' });
+      set({ birth, goalArea: area, goalName: name, displayName, enteredThisSession: true, checkin: undefined, ...d, editing: false, screen: wasEditing ? 'today' : 'audit' });
       // Persist to the server when signed in (fire-and-forget; local copy already saved).
       if (get().authStatus === 'authed') apiSaveProfile({ birth, goalArea: area, goalName: name, displayName }).catch(() => {});
     },
@@ -194,7 +206,7 @@ export const useAura = create<AuraState>((set, get) => {
       const displayName = patch.displayName ?? s.displayName;
       const d = compute(birth, goalArea, s.checkin, s.now);
       saveProfile({ birth, goalArea, goalName, displayName });
-      set({ birth, goalArea, goalName, displayName, ...d });
+      set({ birth, goalArea, goalName, displayName, enteredThisSession: true, ...d });
       if (s.authStatus === 'authed') apiSaveProfile({ birth, goalArea, goalName, displayName }).catch(() => {});
     },
 
@@ -227,7 +239,7 @@ export const useAura = create<AuraState>((set, get) => {
       const area = p?.goalArea ?? 'career';
       set({
         authStatus: getToken() ? 'loading' : (p ? 'guest' : 'anon'),
-        user: null, authError: null, authBusy: false, editing: false,
+        user: null, authError: null, authBusy: false, editing: false, enteredThisSession: false,
         screen: p ? 'today' : 'onboarding',
         birth: p?.birth ?? null, goalArea: area, goalName: p?.goalName ?? 'my goal',
         checkin: undefined, reads: loadReads(), ...compute(p?.birth ?? null, area, undefined, get().now),
