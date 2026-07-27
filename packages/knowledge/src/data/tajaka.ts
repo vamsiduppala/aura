@@ -109,3 +109,32 @@ export function haddaLord(sign: number, degreeInSign: number): Graha {
   for (const [upper, lord] of bounds) if (degreeInSign < upper) return lord;
   return bounds[bounds.length - 1]![1]!; // exactly 30° → the last term
 }
+
+// ── Pancha Vargeeya Bala — the full set (28.4) ────────────────────────────────
+// Units exactly as the book states them, per standing tier. The book enumerates own/friend/enemy
+// only (no neutral tier), so the tier classification is the caller's, per their school.
+export type TajakaTier = 'own' | 'friend' | 'enemy';
+
+export const KSHETRA_BALA: Record<TajakaTier, number> = { own: 30, friend: 15, enemy: 7.5 };   // rasi chart
+export const HADDA_BALA: Record<TajakaTier, number> = { own: 15, friend: 7.5, enemy: 3.75 };   // hadda lord
+export const DREKKANA_BALA: Record<TajakaTier, number> = { own: 10, friend: 5, enemy: 2.5 };   // D-3
+export const NAVAMSA_BALA: Record<TajakaTier, number> = { own: 5, friend: 2.5, enemy: 1.25 };  // D-9
+
+export type PanchaVerdict = 'weak' | 'ordinary' | 'strong' | 'very strong' | 'extraordinarily strong';
+
+/** The verdict bands of 28.4.6: <5 weak, 5–10 ordinary, 10–15 strong, 15–20 very strong, >20 extraordinary. */
+export function panchaVerdict(total: number): PanchaVerdict {
+  if (total < 5) return 'weak';
+  if (total <= 10) return 'ordinary';
+  if (total <= 15) return 'strong';
+  if (total <= 20) return 'very strong';
+  return 'extraordinarily strong';
+}
+
+export interface PanchaVargeeyaInput { kshetra: number; uchcha: number; hadda: number; drekkana: number; navamsa: number }
+
+/** Pancha Vargeeya Bala (28.4.6): (kshetra + uchcha + hadda + drekkana + navamsa) / 4, with verdict. */
+export function panchaVargeeyaBala(u: PanchaVargeeyaInput): { total: number; verdict: PanchaVerdict } {
+  const total = (u.kshetra + u.uchcha + u.hadda + u.drekkana + u.navamsa) / 4;
+  return { total, verdict: panchaVerdict(total) };
+}

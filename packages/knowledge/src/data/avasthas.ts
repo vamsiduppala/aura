@@ -63,8 +63,60 @@ export function deeptadiAvastha(dignity: Dignity): Deeptadi {
   return DEEPTADI_BY_DIGNITY[dignity];
 }
 
+// ── 15.4.3 (cont.) conjunction-based mood states — Vikala / Khala / Kopita ────
+export interface MoodFacts {
+  joinedByMalefic?: boolean;   // conjoined by natural malefics
+  inMaleficSign?: boolean;     // sits in a rasi owned by a natural malefic
+  closelyJoinedBySun?: boolean; // tight conjunction with the Sun
+}
+
+/** The conjunction-based Deeptadi moods a planet is in (it can hold several at once). */
+export function moodConjunctionAvasthas(f: MoodFacts): Deeptadi[] {
+  const out: Deeptadi[] = [];
+  if (f.joinedByMalefic) out.push({ name: 'Vikala', meaning: 'crippled, confused' });
+  if (f.inMaleficSign) out.push({ name: 'Khala', meaning: 'mischievous, scheming' });
+  if (f.closelyJoinedBySun) out.push({ name: 'Kopita', meaning: 'angry' });
+  return out;
+}
+
+// ── 15.4.3 (cont.) the six Lajjitadi mood states ──────────────────────────────
+export interface LajjitadiFacts {
+  inFifthWithCruel?: boolean;      // in the 5th house joined by Sun/Mars/Saturn/Rahu/Ketu
+  exaltedOrMoolatrikona?: boolean;
+  inEnemySign?: boolean;
+  joinedOrAspectedByEnemies?: boolean;
+  joinedBySaturn?: boolean;
+  inWaterySign?: boolean;
+  aspectedByEnemies?: boolean;
+  aspectedByBenefics?: boolean;
+  inFriendSign?: boolean;
+  joinedOrAspectedByFriends?: boolean;
+  joinedByJupiter?: boolean;
+  joinedBySun?: boolean;
+  aspectedByMalefics?: boolean;
+}
+
+export interface Lajjitadi { name: string; meaning: string }
+
+/** The Lajjitadi states a planet is in (15.4.3) — several can apply simultaneously. */
+export function lajjitadiAvasthas(f: LajjitadiFacts): Lajjitadi[] {
+  const out: Lajjitadi[] = [];
+  if (f.inFifthWithCruel) out.push({ name: 'Lajjita', meaning: 'ashamed' });
+  if (f.exaltedOrMoolatrikona) out.push({ name: 'Garvita', meaning: 'proud' });
+  if (f.inEnemySign || f.joinedOrAspectedByEnemies || f.joinedBySaturn) out.push({ name: 'Kshudhita', meaning: 'hungry' });
+  if (f.inWaterySign && f.aspectedByEnemies && !f.aspectedByBenefics) out.push({ name: 'Trishita', meaning: 'thirsty' });
+  if (f.inFriendSign && f.joinedOrAspectedByFriends && f.joinedByJupiter) out.push({ name: 'Mudita', meaning: 'delighted' });
+  if (f.joinedBySun && (f.aspectedByMalefics || f.joinedOrAspectedByEnemies)) out.push({ name: 'Kshobhita', meaning: 'shaken, agitated' });
+  return out;
+}
+
+export const LAJJITADI_NOTES: string[] = [
+  'Planets in Kshudhita or Kshobhita avastha weaken the significations of the house they occupy.',
+  'A Lajjita planet in the 5th house can bring losses related to progeny; a Kshobhita planet in the 7th can strain the marriage.',
+];
+
 export const AVASTHA_NOTES: string[] = [
   'Baladi (age) scales a planet\'s results — youth (Yuva) gives full, adolescence half, childhood a quarter, old age little, and "dead" (Mrita) none — but a planet can still shine regardless of age.',
   'Jagradi (alertness): awake (own/exalted) → full, dreaming (friend/neutral) → medium, asleep (enemy/debilitated) → negligible.',
-  'Deeptadi (mood) also has conjunction-based states not computed here: Mudita (in a great friend\'s sign), Vikala (with malefics), Khala (in a malefic\'s sign), Kopita (closely with the Sun), Lajjita (in the 5th with Sun/Mars/Saturn/nodes).',
+  'Deeptadi (mood) combines a dignity state (Deepta…Dukhita) with conjunction states (Vikala with malefics, Khala in a malefic\'s sign, Kopita closely with the Sun) — a planet can hold several at once.',
 ];

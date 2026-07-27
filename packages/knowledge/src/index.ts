@@ -50,7 +50,8 @@ export {
 } from './data/varga.js';
 export {
   bhavaLagna, horaLagna, ghatiLagna, sreeLagna, specialLagnas,
-  SPECIAL_LAGNA_USE, type SpecialLagnas,
+  SPECIAL_LAGNA_USE, HOUSE_REFERENCES, HOUSE_REFERENCE_EXAMPLE,
+  type SpecialLagnas, type HouseReference,
 } from './data/lagnas.js';
 export {
   sunUpagrahas, partLords, upagrahaFraction, UPAGRAHA_PART, UPAGRAHA_NOTES,
@@ -81,14 +82,16 @@ export {
 export {
   MARAKA_HOUSES, marakaLords, RUDRA_8TH_SIGN, rudra8thSign, signModality,
   pairLongevity, LONGEVITY_RANGES, combineThreePairs, LONGEVITY_NOTES, maheswara,
-  type LifeSpan, type Modality,
+  rudra, trishoolaRasis, maheswaraFull,
+  type LifeSpan, type Modality, type RudraCandidate, type MaheswaraOpts,
 } from './data/longevity.js';
 export {
   baladiAvastha, jagradiAvastha, deeptadiAvastha, AVASTHA_NOTES,
-  type Baladi, type Jagradi, type Deeptadi,
+  moodConjunctionAvasthas, lajjitadiAvasthas, LAJJITADI_NOTES,
+  type Baladi, type Jagradi, type Deeptadi, type MoodFacts, type LajjitadiFacts, type Lajjitadi,
 } from './data/avasthas.js';
 export {
-  narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
+  narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas, vargaSeedHouse,
   type RasiMotion, type DasaLengthOpts, type Antardasa,
 } from './data/narayana.js';
 export {
@@ -108,7 +111,8 @@ export {
 export {
   muntha, MUNTHA_IN_HOUSE, TAJAKA_ASPECTS, DEEPTAMSA, HARSHA_HOUSE, harshaBala,
   DEEP_EXALTATION, uchchaBala, HADDA_LORDS, haddaLord,
-  type TajakaAspect, type ClassicalGraha,
+  KSHETRA_BALA, HADDA_BALA, DREKKANA_BALA, NAVAMSA_BALA, panchaVerdict, panchaVargeeyaBala,
+  type TajakaAspect, type ClassicalGraha, type TajakaTier, type PanchaVerdict, type PanchaVargeeyaInput,
 } from './data/tajaka.js';
 export {
   saham, computeSahams, SAHAM_FORMULAS, computeBhavaSahams, BHAVA_SAHAM_FORMULAS,
@@ -133,6 +137,7 @@ export {
 } from './data/muhurta.js';
 export {
   ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES, BIRTHTIME_RECTIFICATION, MUNDANE_PRINCIPLES,
+  ANALYSIS_GUIDELINES,
 } from './data/reference.js';
 export { getGraha, getRasi, getBhava, getNakshatra, search, type SearchHit } from './query.js';
 export {

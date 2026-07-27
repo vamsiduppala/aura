@@ -77,3 +77,73 @@ export const LONGEVITY_NOTES: string[] = [
   'A malefic strongly conjoining or aspecting the 2nd/7th houses or their lords also acts as a maraka.',
   'The three-pairs method estimates only a broad range (short 0–36, middle 36–72, long 72–108 years); it is never used to predict a date of death.',
 ];
+
+// ── Rudra & Trishoola (14.3) ──────────────────────────────────────────────────
+
+/** The facts the Rudra selection weighs for one candidate (the 8th lord from lagna or from the 7th). */
+export interface RudraCandidate {
+  graha: Graha;
+  conjunctCount: number;      // planets conjoining it
+  exaltedOrOwn: boolean;
+  joinsExalted: boolean;      // conjoins at least one exalted planet
+  rasiAspectCount: number;    // planets aspecting it by rasi drishti
+  degreeInSign: number;       // 0..30 — more advanced = stronger
+  /** Weaker-planet override inputs: */
+  debilitatedOrInimical?: boolean;
+  maleficAssociation?: boolean; // conjoined/aspected by Mars, Saturn, Rahu or Ketu
+}
+
+/**
+ * Rudra (14.3): of the special-8th lords from (i) lagna and (ii) the 7th house, the STRONGER
+ * becomes Rudra — judged in order by: more conjunctions; exaltation/own rasi; conjoining exalted
+ * planets; more rasi aspects; more advanced degree. Exception: if the WEAKER one is debilitated or
+ * in an enemy sign AND joined/aspected by malefics, the weaker becomes Rudra instead.
+ */
+export function rudra(a: RudraCandidate, b: RudraCandidate): { rudra: Graha; overridden: boolean } {
+  const cmp = (x: RudraCandidate, y: RudraCandidate): number => {
+    if (x.conjunctCount !== y.conjunctCount) return x.conjunctCount - y.conjunctCount;
+    if (x.exaltedOrOwn !== y.exaltedOrOwn) return (x.exaltedOrOwn ? 1 : 0) - (y.exaltedOrOwn ? 1 : 0);
+    if (x.joinsExalted !== y.joinsExalted) return (x.joinsExalted ? 1 : 0) - (y.joinsExalted ? 1 : 0);
+    if (x.rasiAspectCount !== y.rasiAspectCount) return x.rasiAspectCount - y.rasiAspectCount;
+    return x.degreeInSign - y.degreeInSign;
+  };
+  const stronger = cmp(a, b) >= 0 ? a : b;
+  const weaker = stronger === a ? b : a;
+  if (weaker.debilitatedOrInimical && weaker.maleficAssociation) return { rudra: weaker.graha, overridden: true };
+  return { rudra: stronger.graha, overridden: false };
+}
+
+/** Trishoola rasis: the three trines from the rasi Rudra occupies — the trident's three spikes.
+ *  One of them (per the native's short/middle/long span) brings the end during its Shoola dasa. */
+export function trishoolaRasis(rudraSign: number): [number, number, number] {
+  const s = mod12(rudraSign);
+  return [s, mod12(s + 4), mod12(s + 8)];
+}
+
+// ── Maheswara with the book's exceptions (14.3) ───────────────────────────────
+export interface MaheswaraOpts {
+  /** Exception 2: Rahu or Ketu joins the AK or the 8th house from him → use the 6th lord instead. */
+  rahuKetuWithAKor8th?: boolean;
+  /** Exception 1: the 8th lord from AK sits in own/exaltation rasi. Supply the SIGN that 8th lord
+   *  occupies plus a picker for the stronger of the 8th/12th lords counted from that sign. */
+  eighthLordInOwnOrExaltation?: boolean;
+  eighthLordSign?: number;
+  strongerOf?: (a: Graha, b: Graha) => Graha;
+}
+
+/**
+ * Maheswara (14.3) with exceptions: normally the special-8th lord from the AK's sign; if Rahu/Ketu
+ * join the AK or his 8th, the 6th lord from the AK is taken instead (the anti-zodiacal 8th); if the
+ * 8th lord is in own/exaltation rasi, the stronger of the 8th and 12th lords FROM HIM is taken.
+ * (The book's rule 3 — Rahu→Mercury, Ketu→Jupiter — cannot arise here: sign lords are classical.)
+ */
+export function maheswaraFull(akSign: number, opts: MaheswaraOpts = {}): Graha {
+  if (opts.rahuKetuWithAKor8th) return RASI_BY_INDEX(mod12(akSign + 5)).lord; // 6th from AK
+  const base = maheswara(akSign);
+  if (opts.eighthLordInOwnOrExaltation && opts.eighthLordSign != null && opts.strongerOf) {
+    const eighth = RASI_BY_INDEX(mod12(opts.eighthLordSign + 7)).lord;
+    const twelfth = RASI_BY_INDEX(mod12(opts.eighthLordSign + 11)).lord;
+    return opts.strongerOf(eighth, twelfth);
+  }
+  return base;
+}

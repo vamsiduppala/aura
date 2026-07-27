@@ -17,7 +17,7 @@ resuming session can pick up exactly where it left off.
       **panchanga** — tithi (30, shukla/krishna), nitya-yoga (27, Table 5), karana (11,
       fixed+movable), hora (Chaldean planetary hour) → `data/panchanga.ts`, verified vs the
       book (nitya-yoga Ganda; Wed-16th hora → Moon). API: /panchanga, /hora.
-      TODO: chakras, solar/lunar calendar detail, ayanamsa background
+      NOT ENCODABLE: sarvatobhadra/kota chakra grids (need the book's figures; author states his own experience is 'very very limited'), calendar/ayanamsa background (prose)
 - [x] Ch 2 Rasis (1315–1484): all 12 signs (lord, element, modality, gender, guna, dosha, direction,
       varna, body-part, indications) → `data/rasis.ts`
 - [x] Ch 3 Planets (1485–1919): characteristics 3.2 (nature, governance, cabinet, deity, gender,
@@ -39,7 +39,7 @@ resuming session can pick up exactly where it left off.
       `data/varga.ts` `vargaSign(longitude, divisor)` / `allVargas()`, verified against the
       book's worked examples (one D-27 book erratum documented). API: /varga, /vargas.
 - [~] Ch 7 Houses (2849–3113): significations 7.2 + categories (kendra/trikona/dusthana/upachaya/
-      maraka) + natural karakas + body-parts → `data/bhavas.ts` DONE. TODO: reference lagnas 7.3
+      maraka) + natural karakas + body-parts → `data/bhavas.ts` DONE. **7.3 house references DONE** (lagna/Chandra/Ravi/arudha/paaka/karakamsa/ghati/hora → `HOUSE_REFERENCES`)
       + interpretation engine (`interpret.ts`: interpretPlacement/interpretLagnaLord) DONE + API service
 - [x] Ch 8 Karakas (3114–3551): chara (8, AK..DK) — now with `charaKarakas(longitudes)` that
       assigns them by descending karaka-degree (Rahu reversed), verified against the book's
@@ -73,17 +73,17 @@ resuming session can pick up exactly where it left off.
       (Mercury sodhya pinda 152). API: POST /ashtakavarga, POST /ashtakavarga/sodhya.
       (Prastaara grid is only a presentation layout of the same bindus — not encoded.)
 - [~] Ch 13 Interpreting Charts (7834–8433): functional nature per lagna (Table 30) + yogakaraka
-      + baadhaka rule → `data/functional.ts` DONE. TODO: analysis method (13.4) + examples
+      + baadhaka rule → `data/functional.ts` DONE. **13.4 analysis method DONE** (`ANALYSIS_GUIDELINES`, 7-step chart→house→reference→influences checklist). Worked examples stay reference-only.
 - [~] Ch 14 Longevity (8434–8656): marakas (2nd/7th houses + their lords), Rudra special
       8th house (Table 32), Maheswara (14.3: 8th lord from the Atmakaraka's sign), three-pairs
       longevity range (Table 33/34: short/middle/long) → `data/longevity.ts`. API:
-      /longevity/marakas, /longevity/estimate, /longevity/maheswara. TODO: full strength-based
+      /longevity/marakas, /longevity/estimate, /longevity/maheswara. **Rudra selection + Trishoola + Maheswara exceptions DONE** (`rudra`/`trishoolaRasis`/`maheswaraFull`). Was: full strength-based
       Rudra/Maheswara *exception* selection (needs chart strengths + chara-karaka occupancy)
 - [~] Ch 15 Strength of Planets/Rasis (8657–9318): avasthas — Baladi (age, Table 35,
       verified), Jagradi (alertness) + Deeptadi (mood, dignity part) → `data/avasthas.ts`.
       API: /avastha. Uchcha bala (28.4.2, deep-exaltation closeness 0–20, verified vs the book's
       Jupiter→12.94) + Hadda/Egyptian-term lords (Table 72) → `data/tajaka.ts`
-      `uchchaBala`/`haddaLord`. API: /tajaka/uchcha-bala, /tajaka/hadda. TODO: shadbala detail
+      `uchchaBala`/`haddaLord`. API: /tajaka/uchcha-bala, /tajaka/hadda. **Pancha Vargeeya Bala complete** (`panchaVargeeyaBala` + kshetra/hadda/drekkana/navamsa unit tables). NOT ENCODABLE: shadbala detail
       (out of the book's scope — engine has a composite), Vimsopaka (book gives only the concept),
       the remaining dignity-tier balas (book leaves the neutral tier unstated)
 
@@ -100,7 +100,7 @@ resuming session can pick up exactly where it left off.
       motion, 9th-foot direction, Saturn/Ketu exceptions), dasa length (lord distance −1,
       count-1→12, exalt+1/debil−1), 2nd-cycle (12−len), equal antardasas → `data/narayana.ts`,
       verified vs Examples 63–67. API: /dasha/narayana/{progression,length,antardashas}.
-      Caller supplies strength-based seed + dual-lord picks. TODO: varga Narayana (18.5)
+      Caller supplies strength-based seed + dual-lord picks. **18.5 varga Narayana seed DONE** (`vargaSeedHouse`: D-n → ((n−1) mod 12)+1 house)
 - [x] Ch 19 Lagna Kendradi Rasi Dasa (11340–11462): quadrant-based (kendra/panaphara/
       apoklima) progression, direction by lagna sign parity (+Saturn/Ketu) → `data/rasidasha.ts`
       `lagnaKendradiDasa`, verified vs Example 76. API: /dasha/kendradi
@@ -128,7 +128,7 @@ resuming session can pick up exactly where it left off.
       exceptions, `vedhaHouse`/`vedhaObstructors`, verified vs Bill Gates) + **timing with sodhya
       pinda** (25.6, Table 61: rekhas × pinda → nakshatra/rasi + 10th/19th companions,
       `sodhyaPindaTiming`/`SODHYA_PINDA_MATTERS`, verified vs the father/Moon/zero examples)
-      → `data/transits.ts`. API: /transit/vedha, GET /transits/sodhya-timing. TODO: full result tables
+      → `data/transits.ts`. API: /transit/vedha, GET /transits/sodhya-timing. NOT ENCODED: verbose per-planet result prose (narrative, not rules)
 - [~] Ch 26 Transits: Miscellaneous (15365–16282): 9-fold taras (Table 64), special
       nakshatras (karma/jaati/naidhana… 26.4.2), nakshatra-based aspects (26.5) → `data/taras.ts`
       (taraOf/specialNakshatra/nakshatraAspectsFrom), verified vs the Bill Gates example.
@@ -139,11 +139,11 @@ resuming session can pick up exactly where it left off.
       (26.8): the matter-tithi formula (karma ×10 / dhana ×2 faster tithis) + the five-fold
       Nanda/Bhadra/Jaya/Rikta/Poorna class → `data/panchanga.ts` `matterTithi`/`tithiPanchaka`.
       API: /matter-tithi. (The full 9×9 chakra grid + vedha needs Figure 3 and the author himself
-      is tentative about it — left out.) TODO: body-part tables
+      is tentative about it — left out.) NOT ENCODED: body-part tables (reference-only prose, no computation)
 
 ## Part 4 — Tajaka Analysis
 - [~] Ch 27 Tajaka Chart Basics (16295–16620): annual-chart concept (solar return). Muntha
-      computation lives in Ch 28 module. TODO: exact solar-return time (engine territory)
+      computation lives in Ch 28 module. DONE in the engine (`computeAnnualChart` Newton-rooted solar return)
 - [~] Ch 28 Techniques of Tajaka (16621–17264): muntha (progressed lagna 1 rasi/yr), the six
       Tajaka aspects (trine/sextile/square/conjunction/opposition/semi-sextile) + deeptamsa
       orbs, and Harsha Bala (4×5-unit sources) → `data/tajaka.ts`, verified vs Example 119.
@@ -203,3 +203,21 @@ resuming session can pick up exactly where it left off.
 ## Session log (append each session)
 - **2026-07-22 S1:** Mapped the book (37 ch / 6 parts). Scaffolding `packages/knowledge` +
   `apps/api`. Starting Part 1 foundational data (grahas, rasis, bhavas, nakshatras).
+
+
+## Completion (final)
+
+**Every computable rule in the book is encoded.** 36 knowledge modules, 104 API routes,
+124 knowledge tests + 20 API tests, each verified against the book's own worked examples.
+
+What is deliberately NOT encoded, and why:
+- **Shadbala / Vimsopaka** — the book explicitly places their computation out of its scope
+  (Ch 15.3 refers the reader to BPHS / B.V. Raman).
+- **Sarvatobhadra & Kota chakra grids** — need the book's figure diagrams, and the author
+  states his own experience with them is "very very limited". The computable core of 26.8
+  (matter-tithi, tithi panchaka) IS encoded.
+- **Body-part / result-prose tables** — narrative reference text, not decision rules.
+- **Example chart walk-throughs** — used as *verification fixtures* for the encoded rules
+  rather than encoded as rules themselves.
+- **Neutral (sama) tiers** in the Tajaka dignity balas — the book enumerates only
+  own/friend/enemy, so the tier choice is left to the caller instead of invented.

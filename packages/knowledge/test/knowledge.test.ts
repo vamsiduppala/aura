@@ -21,12 +21,15 @@ import {
   dashaBalanceAtBirth, dashaSequence, antardashas, subdivideDasha, nakshatraLord, VIMSHOTTARI_YEARS,
   ashtottariBalanceAtBirth, ashtottariAntardashas, ASHTOTTARI_YEARS, ASHTOTTARI_TOTAL,
   marakaLords, rudra8thSign, pairLongevity, combineThreePairs, signModality, maheswara,
-  baladiAvastha, jagradiAvastha, deeptadiAvastha,
-  narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas,
+  rudra, trishoolaRasis, maheswaraFull, type RudraCandidate,
+  baladiAvastha, jagradiAvastha, deeptadiAvastha, moodConjunctionAvasthas, lajjitadiAvasthas,
+  narayanaProgression, narayanaDasaLength, narayanaSecondCycle, narayanaAntardashas, vargaSeedHouse,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, niryaanaShoolaDasa,
   kalachakraPada, isSavya,
   taraOf, specialNakshatra, nakshatraAspectsFrom, lattaNakshatra, murthiOf,
   muntha, harshaBala, uchchaBala, haddaLord, saham, computeSahams, computeBhavaSahams,
+  KSHETRA_BALA, NAVAMSA_BALA, panchaVargeeyaBala, panchaVerdict,
+  HOUSE_REFERENCES, ANALYSIS_GUIDELINES,
   ithasala, ishkavala, induvara, fasterPlanet,
   muddaDasa, muddaDays, patyayiniDasa, patyayiniAntardasas, varshaNarayanaDasa, sudarsanaDasa, sudarsanaAllRefs,
   muhurtaCheck, ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES,
@@ -1012,5 +1015,71 @@ describe('search', () => {
     expect(search('wealth').some((h) => h.kind === 'bhava')).toBe(true);
     expect(search('courage').length).toBeGreaterThan(0);
     expect(search('').length).toBe(0);
+  });
+});
+
+describe('final book chunk — moods, Rudra, Pancha Vargeeya, references (Ch 7/13/14/15/18/28)', () => {
+  it('conjunction moods: Vikala / Khala / Kopita can stack (15.4.3)', () => {
+    const m = moodConjunctionAvasthas({ joinedByMalefic: true, inMaleficSign: true, closelyJoinedBySun: true });
+    expect(m.map((x) => x.name)).toEqual(['Vikala', 'Khala', 'Kopita']);
+    expect(moodConjunctionAvasthas({})).toEqual([]);
+  });
+
+  it('Lajjitadi states follow the six book rules exactly', () => {
+    expect(lajjitadiAvasthas({ inFifthWithCruel: true })[0]!.name).toBe('Lajjita');
+    expect(lajjitadiAvasthas({ exaltedOrMoolatrikona: true })[0]!.name).toBe('Garvita');
+    expect(lajjitadiAvasthas({ joinedBySaturn: true })[0]!.name).toBe('Kshudhita');
+    // Trishita needs watery sign + enemy aspect + NO benefic aspect.
+    expect(lajjitadiAvasthas({ inWaterySign: true, aspectedByEnemies: true }).map((x) => x.name)).toContain('Trishita');
+    expect(lajjitadiAvasthas({ inWaterySign: true, aspectedByEnemies: true, aspectedByBenefics: true }).map((x) => x.name)).not.toContain('Trishita');
+    // Mudita needs all three friendly conditions.
+    expect(lajjitadiAvasthas({ inFriendSign: true, joinedOrAspectedByFriends: true, joinedByJupiter: true }).map((x) => x.name)).toContain('Mudita');
+    expect(lajjitadiAvasthas({ inFriendSign: true, joinedByJupiter: true }).map((x) => x.name)).not.toContain('Mudita');
+    expect(lajjitadiAvasthas({ joinedBySun: true, aspectedByMalefics: true }).map((x) => x.name)).toContain('Kshobhita');
+  });
+
+  it('Rudra: tie-breaker chain + the weaker-planet override (14.3)', () => {
+    const base: Omit<RudraCandidate, 'graha'> = { conjunctCount: 0, exaltedOrOwn: false, joinsExalted: false, rasiAspectCount: 0, degreeInSign: 10 };
+    // More conjunctions wins.
+    expect(rudra({ graha: 'mars', ...base, conjunctCount: 2 }, { graha: 'venus', ...base }).rudra).toBe('mars');
+    // Tie on conjunctions -> exaltation/own wins.
+    expect(rudra({ graha: 'mars', ...base }, { graha: 'venus', ...base, exaltedOrOwn: true }).rudra).toBe('venus');
+    // Deeper tie -> more advanced degree wins.
+    expect(rudra({ graha: 'mars', ...base, degreeInSign: 25 }, { graha: 'venus', ...base }).rudra).toBe('mars');
+    // Override: afflicted weaker planet seizes Rudra.
+    const r = rudra(
+      { graha: 'mars', ...base, conjunctCount: 3 },
+      { graha: 'venus', ...base, debilitatedOrInimical: true, maleficAssociation: true },
+    );
+    expect(r).toEqual({ rudra: 'venus', overridden: true });
+  });
+
+  it('Trishoola rasis are the trines from Rudra’s sign', () => {
+    expect(trishoolaRasis(7)).toEqual([7, 11, 3]); // Sc -> Sc, Pi, Cn
+  });
+
+  it('Maheswara exceptions (14.3): Rahu/Ketu -> 6th lord; own/exalted 8th lord -> stronger of his 8th/12th lords', () => {
+    // Book example: AK in Taurus, Ketu with AK -> 6th from Ta = Li -> Venus.
+    expect(maheswaraFull(1, { rahuKetuWithAKor8th: true })).toBe('venus');
+    // Book example: AK in Ge -> Saturn; Saturn exalted in Li -> stronger of Venus (8th=Ta) and Mercury (12th=Vi).
+    expect(maheswaraFull(2, { eighthLordInOwnOrExaltation: true, eighthLordSign: 6, strongerOf: (a, b) => (a === 'venus' ? a : b) })).toBe('venus');
+    expect(maheswaraFull(2, {})).toBe('saturn'); // no exception -> plain rule
+  });
+
+  it('Pancha Vargeeya Bala: book units + /4 total + verdict bands (28.4)', () => {
+    expect(KSHETRA_BALA.own).toBe(30); expect(NAVAMSA_BALA.enemy).toBe(1.25);
+    const r = panchaVargeeyaBala({ kshetra: 30, uchcha: 12.94, hadda: 15, drekkana: 10, navamsa: 5 });
+    expect(r.total).toBeCloseTo((30 + 12.94 + 15 + 10 + 5) / 4, 6);
+    expect(r.verdict).toBe('very strong');
+    expect(panchaVerdict(4.9)).toBe('weak');
+    expect(panchaVerdict(10)).toBe('ordinary');
+    expect(panchaVerdict(21)).toBe('extraordinarily strong');
+  });
+
+  it('varga-Narayana seed house (18.5) and the 7.3 house references are encoded', () => {
+    expect([9, 16, 27, 30, 24, 40, 11].map(vargaSeedHouse)).toEqual([9, 4, 3, 6, 12, 4, 11]);
+    expect(HOUSE_REFERENCES).toHaveLength(8);
+    expect(HOUSE_REFERENCES.map((r) => r.key)).toContain('paaka');
+    expect(ANALYSIS_GUIDELINES.length).toBeGreaterThanOrEqual(6);
   });
 });

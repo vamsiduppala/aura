@@ -66,3 +66,14 @@ export function narayanaAntardashas(startRasi: number, dasaYears: number): Antar
   const dir = s % 2 === 0 ? 1 : -1; // odd sign (0-indexed even) → forward
   return Array.from({ length: 12 }, (_, k) => ({ rasi: mod12(s + dir * k), months: dasaYears }));
 }
+
+/**
+ * Narayana dasa of a divisional chart (18.5): the seed of D-n is the ((n−1) mod 12)+1-th house —
+ * D-9 → 9th, D-16 → 4th, D-27 → 3rd, D-30 → 6th, D-40 → 4th. Procedure: take that house in the
+ * RASI chart, take its lord (stronger co-lord for Sc/Aq), and the rasi that lord occupies in D-n
+ * becomes the lagna from which the ordinary Narayana dasa of that varga runs. The dasa rasi is
+ * never re-interpreted as a progressed lagna — that applies to the rasi chart only.
+ */
+export function vargaSeedHouse(n: number): number {
+  return ((Math.round(n) - 1) % 12 + 12) % 12 + 1;
+}

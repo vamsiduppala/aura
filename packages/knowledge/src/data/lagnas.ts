@@ -58,3 +58,22 @@ export function specialLagnas(
     SL: sreeLagna(moonLong, lagnaLong),
   };
 }
+
+// ── 7.3 Common references for houses ─────────────────────────────────────────
+// Houses can be counted from several reference points; each shows the matter from a
+// different angle of "self". Encoded from Ch 7.3 (our own concise phrasing).
+export interface HouseReference { key: string; name: string; shows: string }
+
+export const HOUSE_REFERENCES: HouseReference[] = [
+  { key: 'lagna', name: 'Lagna', shows: 'the true self — intentions, knowledge, persistence; the default reference' },
+  { key: 'chandra', name: 'Chandra lagna (Moon)', shows: 'the mind\u2019s view — happiness, ambition, how one experiences a matter' },
+  { key: 'ravi', name: 'Ravi lagna (Sun)', shows: 'the soul\u2019s view and physical vitality' },
+  { key: 'arudha', name: 'Arudha lagna', shows: 'the perceived self — status and how the world sees the native' },
+  { key: 'paaka', name: 'Paaka lagna (sign of the lagna lord)', shows: 'the physically-existing self — e.g. memory from its 5th; Saturn transiting it saps vitality' },
+  { key: 'karakamsa', name: 'Karakamsa (AK\u2019s navamsa sign)', shows: 'the inner self in D-9; the 12th from it shows the soul\u2019s liberation' },
+  { key: 'ghati', name: 'Ghati lagna', shows: 'self as power — authority, rank and fame' },
+  { key: 'hora', name: 'Hora lagna', shows: 'self as wealth — money matters' },
+];
+
+export const HOUSE_REFERENCE_EXAMPLE =
+  'In D-24 (learning): success in competition = 5th from arudha lagna (perception), scholarship = 5th from lagna (true self), memory = 5th from paaka lagna (physical self).';

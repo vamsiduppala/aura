@@ -39,3 +39,14 @@ export const MUNDANE_PRINCIPLES: string[] = [
   'Compressed dasas (e.g. Shoola dasa scaled to a term of office) time events for entities like governments.',
   'A leader’s own chart and the swearing-in muhurta both colour a government’s fortunes.',
 ];
+
+/** Ch 13.4.1 — the analysis method, as an ordered checklist (our own concise phrasing). */
+export const ANALYSIS_GUIDELINES: string[] = [
+  'Pick the correct divisional chart for the matter first (career D-10, learning D-24, marriage D-9, …).',
+  'Then pick the correct house within it (in D-24: education 4th, scholarship 5th, peers 7th).',
+  'Then pick the correct reference to count from: perceived matters from arudha lagna, true-self matters from lagna, mind matters from Moon; a strong karaka can serve as the reference (scholarship from the 5th from Mercury).',
+  'Sometimes an arudha pada beats a house: A5 for distinctions/awards (the world\u2019s image of intelligence), A7/darapada for the people one deals with.',
+  'Judge the influences on the chosen point: graha drishti, rasi drishti and argala, each with its own meaning.',
+  'Read houses *from* that point too: quadrants sustain it, trines make it prosper, upachayas grow it, dusthanas obstruct it, its baadhaka troubles it.',
+  'Weigh standard results with the planet\u2019s strength and avasthas, the house\u2019s ashtakavarga bindus, and any yogas present.',
+];

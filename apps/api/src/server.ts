@@ -27,10 +27,11 @@ import {
   dashaBalanceAtBirth, antardashas, VIMSHOTTARI_YEARS, subdivideDasha, DASHA_LEVELS,
   ashtottariBalanceAtBirth, ashtottariAntardashas,
   marakaLords, MARAKA_HOUSES, signModality, pairLongevity, combineThreePairs, LONGEVITY_RANGES,
-  maheswara, rudra8thSign,
+  maheswara, rudra8thSign, rudra, trishoolaRasis, maheswaraFull, type RudraCandidate,
   type LifeSpan,
   baladiAvastha, jagradiAvastha, deeptadiAvastha,
-  narayanaProgression, narayanaDasaLength, narayanaAntardashas,
+  moodConjunctionAvasthas, lajjitadiAvasthas, LAJJITADI_NOTES,
+  narayanaProgression, narayanaDasaLength, narayanaAntardashas, vargaSeedHouse,
   lagnaKendradiDasa, sudasa, drigdasa, shoolaDasa, shoolaAntardashas, niryaanaShoolaDasa,
   kalachakraPada,
   taraOf, specialNakshatra, nakshatraAspectsFrom, SPECIAL_NAKSHATRAS, lattaNakshatra, murthiOf,
@@ -38,12 +39,14 @@ import {
   charaKarakas,
   muntha, MUNTHA_IN_HOUSE, harshaBala, TAJAKA_ASPECTS, DEEPTAMSA,
   DEEP_EXALTATION, uchchaBala, haddaLord, type ClassicalGraha,
+  KSHETRA_BALA, HADDA_BALA, DREKKANA_BALA, NAVAMSA_BALA, panchaVargeeyaBala, type PanchaVargeeyaInput,
   saham, computeSahams, SAHAM_FORMULAS, computeBhavaSahams, BHAVA_SAHAM_FORMULAS,
   type SahamContext, type BhavaSahamContext,
   ithasala, ishkavala, induvara, TAJAKA_YOGAS,
   muddaDasa, patyayiniDasa, patyayiniAntardasas, varshaNarayanaDasa, type PatyayiniToken, sudarsanaDasa, sudarsanaAllRefs,
   muhurtaCheck, MUHURTA_GUIDELINES,
   ETHICS_PRINCIPLES, RATIONAL_PRINCIPLES, BIRTHTIME_RECTIFICATION, MUNDANE_PRINCIPLES,
+  ANALYSIS_GUIDELINES, HOUSE_REFERENCES, HOUSE_REFERENCE_EXAMPLE,
   type Graha, type Placement,
 } from '@aura/knowledge';
 
@@ -461,7 +464,69 @@ export function buildServer() {
   app.get('/reference', async () => ({
     ethics: ETHICS_PRINCIPLES, rational: RATIONAL_PRINCIPLES,
     birthtimeRectification: BIRTHTIME_RECTIFICATION, mundane: MUNDANE_PRINCIPLES,
+    analysisGuidelines: ANALYSIS_GUIDELINES,
+    houseReferences: HOUSE_REFERENCES, houseReferenceExample: HOUSE_REFERENCE_EXAMPLE,
   }));
+
+  // ── Final book chunk (Ch 14/15/18/28) ──────────────────────────────────────
+  // Deeptadi conjunction moods + the six Lajjitadi states (15.4.3). POST the boolean facts.
+  app.post('/avastha/mood', async (req) => {
+    const b = (req.body ?? {}) as Record<string, boolean>;
+    return {
+      conjunctionMoods: moodConjunctionAvasthas(b),
+      lajjitadi: lajjitadiAvasthas(b),
+      notes: LAJJITADI_NOTES,
+    };
+  });
+  // Rudra (14.3): the stronger of the two special-8th lords, with the afflicted-weaker override.
+  app.post('/longevity/rudra', async (req, reply) => {
+    const b = req.body as { fromLagna?: RudraCandidate; fromSeventh?: RudraCandidate; rudraSign?: number };
+    if (!b?.fromLagna?.graha || !b?.fromSeventh?.graha) {
+      return reply.code(400).send({ error: 'fromLagna and fromSeventh candidates required ({ graha, conjunctCount, exaltedOrOwn, joinsExalted, rasiAspectCount, degreeInSign, debilitatedOrInimical?, maleficAssociation? })' });
+    }
+    const r = rudra(b.fromLagna, b.fromSeventh);
+    return { ...r, trishoolaRasis: b.rudraSign == null ? null : trishoolaRasis(Number(b.rudraSign)) };
+  });
+  // Maheswara with the book's exceptions (14.3). Pass akSign + optional exception flags.
+  app.post('/longevity/maheswara-full', async (req, reply) => {
+    const b = req.body as { akSign?: number; rahuKetuWithAKor8th?: boolean; eighthLordInOwnOrExaltation?: boolean; eighthLordSign?: number; strongerGraha?: Graha };
+    if (b?.akSign == null) return reply.code(400).send({ error: 'akSign (0-11) is required' });
+    return {
+      maheswara: maheswaraFull(Number(b.akSign), {
+        rahuKetuWithAKor8th: b.rahuKetuWithAKor8th,
+        eighthLordInOwnOrExaltation: b.eighthLordInOwnOrExaltation,
+        eighthLordSign: b.eighthLordSign,
+        // The caller decides which of the 8th/12th lords is stronger; we honour their pick.
+        strongerOf: b.strongerGraha ? (x, y) => (b.strongerGraha === x ? x : y) : undefined,
+      }),
+    };
+  });
+  // Pancha Vargeeya Bala (28.4.6) — the five component units, /4, with the verdict band.
+  app.post('/tajaka/pancha-vargeeya', async (req, reply) => {
+    const b = req.body as Partial<PanchaVargeeyaInput>;
+    const need: (keyof PanchaVargeeyaInput)[] = ['kshetra', 'uchcha', 'hadda', 'drekkana', 'navamsa'];
+    if (!b || need.some((k) => typeof b[k] !== 'number')) {
+      return reply.code(400).send({
+        error: `all five component balas required: ${need.join(', ')}`,
+        units: { kshetra: KSHETRA_BALA, hadda: HADDA_BALA, drekkana: DREKKANA_BALA, navamsa: NAVAMSA_BALA, uchchaMax: 20 },
+      });
+    }
+    return panchaVargeeyaBala(b as PanchaVargeeyaInput);
+  });
+  app.get('/tajaka/bala-units', async () => ({
+    kshetra: KSHETRA_BALA, hadda: HADDA_BALA, drekkana: DREKKANA_BALA, navamsa: NAVAMSA_BALA,
+    uchchaMax: 20, note: 'Pancha Vargeeya Bala = (kshetra + uchcha + hadda + drekkana + navamsa) / 4.',
+  }));
+  // Narayana dasa of a varga (18.5): the seed house of D-n.
+  app.get('/dasha/narayana/varga-seed', async (req, reply) => {
+    const q = req.query as { divisor?: string };
+    const n = qNum(q.divisor);
+    if (n == null || n < 1) return reply.code(400).send({ error: 'divisor (D-n, e.g. 9) is required' });
+    return {
+      divisor: n, seedHouse: vargaSeedHouse(n),
+      procedure: 'Take the seed house in the rasi chart, take its lord (stronger co-lord for Sc/Aq), and the rasi that lord occupies in D-n becomes the lagna for that varga’s Narayana dasa.',
+    };
+  });
 
   // Sudarsana Chakra dasa (Ch 31) — one house per solar year, from lagna/Moon/Sun.
   app.get('/dasha/sudarsana', async (req, reply) => {

@@ -172,3 +172,52 @@ describe('blueprint kundali endpoint (full chart reading)', () => {
     expect((await app.inject({ method: 'POST', url: '/kundali', payload: { lagnaSign: 12, planets } })).statusCode).toBe(400);
   });
 });
+
+
+describe('final book-chunk routes (Ch 7/13/14/15/18/28)', () => {
+  it('POST /avastha/mood returns conjunction moods + Lajjitadi states', async () => {
+    const res = await app.inject({ method: 'POST', url: '/avastha/mood', payload: { joinedByMalefic: true, exaltedOrMoolatrikona: true } });
+    expect(res.statusCode).toBe(200);
+    const b = res.json();
+    expect(b.conjunctionMoods.map((m: { name: string }) => m.name)).toEqual(['Vikala']);
+    expect(b.lajjitadi.map((m: { name: string }) => m.name)).toEqual(['Garvita']);
+  });
+
+  it('POST /longevity/rudra picks the stronger candidate and returns Trishoola rasis', async () => {
+    const base = { conjunctCount: 0, exaltedOrOwn: false, joinsExalted: false, rasiAspectCount: 0, degreeInSign: 10 };
+    const res = await app.inject({
+      method: 'POST', url: '/longevity/rudra',
+      payload: { fromLagna: { graha: 'mars', ...base, conjunctCount: 2 }, fromSeventh: { graha: 'venus', ...base }, rudraSign: 7 },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({ rudra: 'mars', overridden: false, trishoolaRasis: [7, 11, 3] });
+    expect((await app.inject({ method: 'POST', url: '/longevity/rudra', payload: {} })).statusCode).toBe(400);
+  });
+
+  it('POST /longevity/maheswara-full honours the Rahu/Ketu exception', async () => {
+    const plain = await app.inject({ method: 'POST', url: '/longevity/maheswara-full', payload: { akSign: 2 } });
+    expect(plain.json().maheswara).toBe('saturn');
+    const exc = await app.inject({ method: 'POST', url: '/longevity/maheswara-full', payload: { akSign: 1, rahuKetuWithAKor8th: true } });
+    expect(exc.json().maheswara).toBe('venus');
+  });
+
+  it('POST /tajaka/pancha-vargeeya totals /4 with a verdict, and 400s with the unit table', async () => {
+    const ok = await app.inject({ method: 'POST', url: '/tajaka/pancha-vargeeya', payload: { kshetra: 30, uchcha: 20, hadda: 15, drekkana: 10, navamsa: 5 } });
+    expect(ok.json()).toMatchObject({ total: 20, verdict: 'very strong' });
+    const bad = await app.inject({ method: 'POST', url: '/tajaka/pancha-vargeeya', payload: { kshetra: 30 } });
+    expect(bad.statusCode).toBe(400);
+    expect(bad.json().units.kshetra.own).toBe(30);
+  });
+
+  it('GET /dasha/narayana/varga-seed maps D-n to its seed house', async () => {
+    expect((await app.inject({ method: 'GET', url: '/dasha/narayana/varga-seed?divisor=9' })).json().seedHouse).toBe(9);
+    expect((await app.inject({ method: 'GET', url: '/dasha/narayana/varga-seed?divisor=30' })).json().seedHouse).toBe(6);
+    expect((await app.inject({ method: 'GET', url: '/dasha/narayana/varga-seed' })).statusCode).toBe(400);
+  });
+
+  it('GET /reference now carries the analysis guidelines + house references', async () => {
+    const b = (await app.inject({ method: 'GET', url: '/reference' })).json();
+    expect(b.analysisGuidelines.length).toBeGreaterThanOrEqual(6);
+    expect(b.houseReferences.map((r: { key: string }) => r.key)).toContain('paaka');
+  });
+});
