@@ -9,7 +9,7 @@
 import type { Screen } from '../components/Chrome';
 
 /** Screens a user can legitimately deep-link to. Transient flows are deliberately excluded. */
-const ROUTABLE: Screen[] = ['today', 'forecast', 'chat', 'blueprint', 'settings', 'account'];
+const ROUTABLE: Screen[] = ['today', 'forecast', 'chat', 'blueprint', 'settings', 'account', 'history'];
 
 export const isRoutable = (s: Screen): boolean => ROUTABLE.includes(s);
 

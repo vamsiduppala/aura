@@ -1,4 +1,4 @@
-export type Screen = 'onboarding' | 'audit' | 'today' | 'reading' | 'checkin' | 'forecast' | 'blueprint' | 'settings' | 'support' | 'chat' | 'account';
+export type Screen = 'onboarding' | 'audit' | 'today' | 'reading' | 'checkin' | 'forecast' | 'blueprint' | 'settings' | 'support' | 'chat' | 'account' | 'history';
 
 const TABS: { key: Screen; label: string }[] = [
   { key: 'today', label: 'Today' },

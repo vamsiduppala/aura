@@ -12,11 +12,13 @@ import { Blueprint } from './screens/Blueprint';
 import { Settings } from './screens/Settings';
 import { Account } from './screens/Account';
 import { Support } from './screens/Support';
+import { History } from './screens/History';
 import { Sidebar, TopBar, BottomNav, type Screen } from './components/Chrome';
 import { downloadReport } from './services/report';
 import { TodaySkeleton, ErrorState } from './components/States';
 import { CommandPalette } from './components/CommandPalette';
 import { screenFromHash, writeHash, onRouteChange, isRoutable } from './services/routing';
+import { recordReading } from './services/history';
 
 const WIDE: Screen[] = ['today', 'forecast', 'chat', 'blueprint'];
 
@@ -27,6 +29,7 @@ export function App() {
   // What the app calls you: your own name, else the email local-part, else "Guest".
   const userName = displayName.trim() || s.user?.email.split('@')[0] || 'Guest';
   const account = s.user ? { email: s.user.email } : ('guest' as const);
+  const identity = s.user ? `u${s.user.id}` : 'guest';
   const onDownload = () => {
     if (!chart || !s.birth) return;
     void downloadReport({ aura, chart, birth: s.birth, displayName: userName, goalName, now });
@@ -34,6 +37,18 @@ export function App() {
 
   // Verify any stored session token with the local API once on mount.
   useEffect(() => { if (authStatus === 'loading') void s.initAuth(); }, [authStatus, s]);
+
+  // Keep a record of each day's reading so it can be looked back on and graded later.
+  useEffect(() => {
+    if (!daily) return;
+    recordReading(identity, {
+      day: now.toISOString().slice(0, 10),
+      headline: daily.todayLine,
+      majorEnergy: daily.input.majorEnergy,
+      passingEnergy: daily.input.passingEnergy,
+      remedy: daily.remedyShort,
+    });
+  }, [daily, identity, now]);
 
   // Routing is only meaningful once there's a chart to look at. Computed here (rather than reusing
   // `inApp` below) because hooks must run unconditionally, before this component's early returns.
@@ -88,6 +103,8 @@ export function App() {
       account={account} canEdit={!!chart}
       onDelete={s.deleteAll} onBack={() => s.go('today')} onLogout={s.logout} onSignIn={s.showLogin}
       onEdit={() => s.go('account')} onAccount={() => s.go('account')} />;
+  } else if (screen === 'history') {
+    body = <History identity={identity} onBack={() => s.go('today')} onToday={() => s.go('today')} />;
   } else if (screen === 'account' && s.birth) {
     body = <Account account={account} displayName={displayName} birth={s.birth}
       goalArea={goalArea} goalName={goalName} memberSince={s.user?.createdAt}
@@ -117,7 +134,7 @@ export function App() {
   } else if (screen === 'forecast') {
     body = <Forecast aura={aura} chart={chart} now={now} goalArea={goalArea} major={daily.input.majorEnergy} passing={daily.input.passingEnergy} />;
   } else if (screen === 'chat') {
-    body = <Chat aura={aura} chart={chart} now={now} goalArea={goalArea} userKey={s.user ? `u${s.user.id}` : "guest"} pendingQuestion={s.pendingQuestion} onConsumedQuestion={s.clearPendingQuestion} />;
+    body = <Chat aura={aura} chart={chart} now={now} goalArea={goalArea} userKey={identity} pendingQuestion={s.pendingQuestion} onConsumedQuestion={s.clearPendingQuestion} />;
   } else {
     body = <Blueprint aura={aura} chart={chart} goalName={goalName} onDownload={onDownload} />;
   }

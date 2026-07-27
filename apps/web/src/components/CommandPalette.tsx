@@ -79,6 +79,7 @@ export function CommandPalette({ open, onClose, go, chart, onAsk }: {
       ['forecast', 'Forecast', 'what is coming and how it will feel'],
       ['chat', 'Cosmic Mentor', 'ask anything about your chart'],
       ['blueprint', 'Blueprint', 'your whole chart, house by house'],
+      ['history', 'Your readings', 'past readings, and how accurate they were'],
       ['account', 'Account', 'name, birth details, password'],
       ['settings', 'Settings', 'server, privacy, AI key'],
     ];
