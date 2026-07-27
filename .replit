@@ -1,0 +1,19 @@
+run = "npm start"
+entrypoint = "README.md"
+modules = ["nodejs-24"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm start"]
+build = ["sh", "-c", "npm install && npm run build"]
+deploymentTarget = "cloudrun"
+
+# One public port: the API serves the built web app and the API itself.
+[[ports]]
+localPort = 8787
+externalPort = 80
+
+[env]
+NODE_ENV = "production"

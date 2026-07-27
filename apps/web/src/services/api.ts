@@ -9,7 +9,17 @@ const SERVER_KEY = 'aura.serverUrl';
 // Where the local aura server lives. Resolved at RUNTIME, not build time, because a phone can't
 // reach "localhost" — on Android/iOS the server is your computer's LAN address, which the user
 // sets in Settings. Order: user-set value -> build-time VITE_API_URL -> localhost default.
-const BUILD_DEFAULT = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'http://localhost:8787';
+function defaultBase(): string {
+  const configured = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/+$/, '');
+  if (configured) return configured;
+  // Served by the API itself (Replit, a LAN box, any single-port host)? Then the API is right
+  // here — use this origin. Only the Vite dev server on :5173 needs the separate :8787.
+  if (typeof location !== 'undefined' && location.origin && !/:5173$/.test(location.origin)) {
+    return location.origin.replace(/\/+$/, '');
+  }
+  return 'http://localhost:8787';
+}
+const BUILD_DEFAULT = defaultBase();
 
 const clean = (u: string): string => u.trim().replace(/\/+$/, '');
 

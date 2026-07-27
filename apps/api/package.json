@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@aura/knowledge": "*",
+    "@fastify/static": "^10.1.2",
     "fastify": "^5.1.0"
   },
   "devDependencies": {
