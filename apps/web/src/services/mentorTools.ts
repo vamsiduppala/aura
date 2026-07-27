@@ -7,12 +7,12 @@
 
 import type { Aura, Chart, LifeArea, Graha } from '@aura/engine';
 import { AREA_TO_HOUSE, AREA_META, SIGN_LORD } from '@aura/engine';
-import { getRasi, getBhava, search, classifyDignity } from '@aura/knowledge';
+import { getRasi, getBhava, search, classifyDignity, ashtakavarga } from '@aura/knowledge';
 import { buildKundali, dignityChip } from '../kundali';
 import { buildPortrait, buildTechnicalFacts } from './portrait';
 import { loadChartDashas } from './liveData';
 import { computeYearAhead } from './yearAhead';
-import { grahaLabel } from '../ui';
+import { grahaLabel, grahaOfEnergy } from '../ui';
 import { apiBase } from './api';
 
 const AREAS: LifeArea[] = ['self', 'money', 'communication', 'home', 'creativity', 'health',
@@ -62,6 +62,16 @@ export const MENTOR_TOOLS = [
       type: 'OBJECT',
       properties: { term: { type: 'STRING', description: 'The concept to look up.' } },
       required: ['term'],
+    },
+  },
+  {
+    name: 'score_life_area',
+    description:
+      "Score how favourable ONE life area is for the user right now, 0-100, with the reasons: the ruling planet's strength, the ashtakavarga bindus on that house (the classical support score, out of 8), whether the current period ruler helps it, and whether it is empty. Use whenever the user asks 'will this work', 'what are my chances', 'is now a good time', or compares options.",
+    parameters: {
+      type: 'OBJECT',
+      properties: { area: { type: 'STRING', enum: AREAS, description: 'The life area to score.' } },
+      required: ['area'],
     },
   },
   {
@@ -170,6 +180,55 @@ export async function runMentorTool(
         }
       } catch { /* server down — bundled knowledge is identical */ }
       return { term, definitions: search(term).slice(0, 5).map((h) => ({ label: h.label, summary: h.summary })), source: 'on-device' };
+    }
+
+    case 'score_life_area': {
+      const area = (AREAS.includes(args.area as LifeArea) ? args.area : goalArea ?? 'self') as LifeArea;
+      const house = AREA_TO_HOUSE[area];
+      const sign = (chart.lagnaSign + house - 1) % 12;
+      const ruler = SIGN_LORD[sign]!;
+      const rulerPct = pct(chart, ruler);
+
+      // Ashtakavarga: how much support the 12 signs carry, from the classical bindu tables.
+      const refs = {
+        sun: chart.planets.sun.sign, moon: chart.planets.moon.sign, mars: chart.planets.mars.sign,
+        mercury: chart.planets.mercury.sign, jupiter: chart.planets.jupiter.sign,
+        venus: chart.planets.venus.sign, saturn: chart.planets.saturn.sign, asc: chart.lagnaSign,
+      };
+      const sav = ashtakavarga(refs).sav;
+      const bindus = sav[sign] ?? 0;                 // 0..56 across all seven planets
+      const avg = sav.reduce((a, b) => a + b, 0) / 12;
+
+      // Is the planet currently running its period one that helps this area?
+      const fc = aura.forecast(chart, now);
+      const nowRuler = grahaOfEnergy(fc.majorSeason.energy);
+      const periodHelps = nowRuler === ruler || chart.planets[nowRuler].house === house;
+
+      const occupants = ALL.filter((g) => chart.planets[g].house === house);
+      // Blend: ruler strength (45%), classical support vs. the chart's own average (35%),
+      // current period alignment (20%). Kept explicit so the model can explain the score.
+      const supportPct = Math.max(0, Math.min(100, 50 + ((bindus - avg) / Math.max(avg, 1)) * 100));
+      const score = Math.round(rulerPct * 0.45 + supportPct * 0.35 + (periodHelps ? 100 : 45) * 0.20);
+
+      return {
+        area: AREA_META[area].label,
+        scoreOutOf100: score,
+        verdict: score >= 66 ? 'strongly favoured' : score >= 50 ? 'workable — effort pays' : 'uphill right now, better later',
+        why: {
+          rulingPlanet: grahaLabel(ruler),
+          rulingPlanetStrengthPct: rulerPct,
+          classicalSupportBindus: bindus,
+          chartAverageBindus: Math.round(avg * 10) / 10,
+          supportReading: bindus > avg ? 'above your own average — this area carries more support than most of your chart'
+            : bindus < avg ? 'below your own average — this area carries less built-in support' : 'right on your chart average',
+          currentPeriodPlanet: grahaLabel(nowRuler),
+          currentPeriodHelpsThisArea: periodHelps,
+          planetsSittingHere: occupants.map(grahaLabel),
+        },
+        nextBetterWindow: fc.monthly.find((m) => !m.isNow)
+          ? { from: fc.monthly.find((m) => !m.isNow)!.start, energy: fc.monthly.find((m) => !m.isNow)!.energy }
+          : null,
+      };
     }
 
     case 'get_daily_reading': {

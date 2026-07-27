@@ -7,6 +7,7 @@ import { buildHouses, dignityChip } from '../kundali';
 import { computeYearAhead } from './yearAhead';
 import { loadChartDashas } from './liveData';
 import { buildPortrait, buildTechnicalFacts } from './portrait';
+import { readEmptyHouse } from './emptyHouse';
 import { grahaLabel, grahaColor, fmtFull } from '../ui';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
@@ -40,8 +41,10 @@ export async function buildReportHtml({ aura, chart, birth, displayName, goalNam
     `<div class="chip"><span class="dot" style="background:${grahaColor(s.graha)}"></span>${esc(grahaLabel(s.graha))}<b>${s.pct}%</b></div>`).join('');
 
   const houses = k.houses.map((h) => {
-    const occ = h.occupants.length === 0
-      ? `<p class="empty">No planet sits here. This area takes its cue from its ruler, <b>${esc(grahaLabel(h.lord))}</b>, placed in your ${ORD[h.lordHouse]} house.</p>`
+    const eh = h.occupants.length === 0 ? readEmptyHouse(chart, h.house) : null;
+    const occ = eh
+      ? `<p class="empty">${esc(eh.headline)}</p><p class="empty">${esc(eh.playsOut)}</p>
+         <div class="dep"><b>What it depends on</b><p>${esc(eh.dependsOn)}</p></div>`
       : h.occupants.map((o) => {
         const chip = dignityChip(o.dignity);
         const flags = [
@@ -117,7 +120,10 @@ export async function buildReportHtml({ aura, chart, birth, displayName, goalNam
   .occ p,.gift p{margin:0;font-size:13.5px;color:var(--soft)}
   .gift{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:9px}
   .gift b{display:block;margin-bottom:3px}
-  .empty{font-size:13.5px;color:var(--faint);margin:0}
+  .empty{font-size:13.5px;color:var(--soft);margin:0 0 8px}
+  .dep{border-left:3px solid var(--accent);padding:2px 0 2px 11px;margin-top:8px}
+  .dep b{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .dep p{margin:3px 0 0;font-size:13px;color:var(--soft)}
   .por{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;break-inside:avoid}
   .por h3{font-size:15px;margin:0 0 6px}
   .por p{margin:0;font-size:13.5px;color:var(--soft)}

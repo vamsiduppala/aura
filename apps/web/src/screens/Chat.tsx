@@ -1,16 +1,38 @@
 import { useEffect, useRef, useState } from 'react';
-import type { Aura, Chart } from '@aura/engine';
+import type { Aura, Chart, LifeArea } from '@aura/engine';
 import { askMentor, isChatLive, type ChatTurn } from '../services/chat';
 import { OrbChip } from '../components/AuraOrb';
 import { Button } from '@/components/ui/button';
 
+/** Renders the mentor's light markdown: **bold** inline, and a **heading** alone on a line. */
+function RichText({ text }: { text: string }) {
+  const blocks = text.split(/\n{2,}/).map((b) => b.trim()).filter(Boolean);
+  return (
+    <>
+      {blocks.map((block, i) => {
+        const heading = /^\*\*(.+?)\*\*:?$/.exec(block.trim());
+        if (heading) return <div className="msg-h" key={i}>{heading[1]}</div>;
+        const parts = block.split(/(\*\*[^*]+\*\*)/g).filter(Boolean);
+        return (
+          <p className="msg-p" key={i}>
+            {parts.map((p, j) => (p.startsWith('**') && p.endsWith('**')
+              ? <b key={j}>{p.slice(2, -2)}</b>
+              : <span key={j}>{p}</span>))}
+          </p>
+        );
+      })}
+    </>
+  );
+}
+
 const STARTERS = [
-  'Why is my relationship so hard right now?',
-  'What should I focus on at work this month?',
+  'Should I change jobs this year?',
+  'What are my chances in love right now?',
+  'What should I focus on this month?',
   'Why do I feel so stuck lately?',
 ];
 
-export function Chat({ aura, chart, now }: { aura: Aura; chart: Chart; now: Date }) {
+export function Chat({ aura, chart, now, goalArea }: { aura: Aura; chart: Chart; now: Date; goalArea?: LifeArea }) {
   const [messages, setMessages] = useState<ChatTurn[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
@@ -25,7 +47,7 @@ export function Chat({ aura, chart, now }: { aura: Aura; chart: Chart; now: Date
     setMessages((m) => [...m, { role: 'user', text: msg }]);
     setBusy(true);
     try {
-      const res = await askMentor(msg, aura, chart, now, history);
+      const res = await askMentor(msg, aura, chart, now, history, { goalArea });
       setMessages((m) => [...m, { role: 'mentor', text: res.text }]);
     } catch {
       setMessages((m) => [...m, { role: 'mentor', text: 'Something glitched on my end. Try that again in a moment.' }]);
@@ -53,7 +75,11 @@ export function Chat({ aura, chart, now }: { aura: Aura; chart: Chart; now: Date
             ))}
           </div>
         ) : (
-          messages.map((m, i) => <div key={i} className={`bubble ${m.role}`}>{m.text}</div>)
+          messages.map((m, i) => (
+            <div key={i} className={`bubble ${m.role}`}>
+              {m.role === 'mentor' ? <RichText text={m.text} /> : m.text}
+            </div>
+          ))
         )}
         {busy ? <div className="bubble mentor typing">reading your timing…</div> : null}
         <div ref={endRef} />

@@ -5,6 +5,7 @@ import { buildHouses, dignityChip, type HouseCard as HouseCardData } from '../ku
 import { loadChartDashas, type DashaSnapshot } from '../services/liveData';
 import { computeYearAhead, type YearAhead } from '../services/yearAhead';
 import { buildPortrait, buildTechnicalFacts } from '../services/portrait';
+import { readEmptyHouse } from '../services/emptyHouse';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
@@ -48,7 +49,7 @@ export function Blueprint({ aura, chart, onDownload }: { aura: Aura; chart: Char
 
       {/* House cards — what each area of life is, and how your planets shape it. */}
       <div className="house-list">
-        {k.houses.map((h) => <HouseCard key={h.house} h={h} />)}
+        {k.houses.map((h) => <HouseCard key={h.house} h={h} chart={chart} />)}
       </div>
 
       {/* The rest of the chart, below. */}
@@ -214,7 +215,7 @@ function TimingSystems({ chart }: { chart: Chart }) {
   );
 }
 
-function HouseCard({ h }: { h: HouseCardData }) {
+function HouseCard({ h, chart }: { h: HouseCardData; chart: Chart }) {
   const empty = h.occupants.length === 0;
   return (
     <div className={`hcard${empty ? ' empty' : ''}`}>
@@ -231,8 +232,7 @@ function HouseCard({ h }: { h: HouseCardData }) {
       <div className="hcard-governs">Shapes your {h.governs}.</div>
 
       {empty ? (
-        <p className="chart-text hcard-empty">No energy sits here directly — this area takes its cue from its ruler,{' '}
-          <span style={{ color: grahaColor(h.lord) }}>{grahaLabel(h.lord)}</span>, placed in your {ORD[h.lordHouse]} house.</p>
+        <EmptyHouse h={h} chart={chart} />
       ) : (
         h.occupants.map((o) => {
           const c = grahaColor(o.graha);
@@ -255,6 +255,22 @@ function HouseCard({ h }: { h: HouseCardData }) {
           );
         })
       )}
+    </div>
+  );
+}
+
+/** A house with no planets is read from its ruler — where it sits, how strong, and what it depends on. */
+function EmptyHouse({ h, chart }: { h: HouseCardData; chart: Chart }) {
+  const r = useMemo(() => readEmptyHouse(chart, h.house), [chart, h.house]);
+  const c = grahaColor(h.lord);
+  return (
+    <div className="emptyh">
+      <p className="chart-text">{r.headline}</p>
+      <p className="chart-text emptyh-plays">{r.playsOut}</p>
+      <div className="emptyh-dep" style={{ borderLeftColor: c }}>
+        <span className="emptyh-tag">What it depends on</span>
+        <p className="chart-text">{r.dependsOn}</p>
+      </div>
     </div>
   );
 }
