@@ -4,6 +4,7 @@ import { DISCLAIMER } from '@aura/engine';
 import { Button } from '@/components/ui/button';
 import { Pressable } from '../components/Pressable';
 import { PlacePicker, type ResolvedPlace } from '../components/PlacePicker';
+import { DateField, TimeField } from '../components/DateTimeFields';
 
 const GOALS: { label: string; area: LifeArea }[] = [
   { label: 'Career', area: 'career' },
@@ -62,15 +63,13 @@ export function Onboarding({ onComplete, initial, editing }: {
         <input value={who} onChange={(e) => setWho(e.target.value)} placeholder="what should we call you?"
           maxLength={60} aria-label="Your name" />
       </div>
-      <div className="field">
+      <div className="field-stack">
         <span className="k">Born on</span>
-        <input type="date" value={date} min="1900-01-01" max={TODAY}
-          onChange={(e) => setDate(e.target.value)} aria-label="Birth date" />
+        <DateField value={date} onChange={setDate} />
       </div>
-      <div className="field">
+      <div className="field-stack">
         <span className="k">Born at</span>
-        <input type="time" value={time} disabled={unknownTime}
-          onChange={(e) => setTime(e.target.value)} aria-label="Birth time" />
+        <TimeField value={time} onChange={setTime} disabled={unknownTime} />
       </div>
       <Pressable className="unknown" active={unknownTime} onPress={() => setUnknownTime((v) => !v)}>
         <span className={`box${unknownTime ? ' on' : ''}`} /> I don’t know my time — read me by day

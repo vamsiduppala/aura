@@ -615,3 +615,19 @@ html{-webkit-text-size-adjust:100%;overscroll-behavior-y:none;}
 .techfact{padding:12px 0;border-top:1px solid var(--line);}
 .techfact-l{font-family:var(--grotesk);font-size:11.5px;letter-spacing:.04em;color:var(--mist);margin-bottom:4px;}
 .techfact p{font-size:13px;line-height:1.65;color:var(--mist-2);}
+
+/* ── Date / time selects (replaces the poor native pickers) ──────────────────── */
+.dtf{display:flex;gap:8px;width:100%;}
+.dtf.off{opacity:.45;}
+.dtf-sel{flex:1 1 0;min-width:0;background:var(--card);border:1px solid var(--line-2);border-radius:12px;
+  padding:11px 10px;color:var(--mist);font-family:var(--sans);font-size:14px;outline:none;cursor:pointer;
+  appearance:none;-webkit-appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--mist-3) 50%),linear-gradient(135deg,var(--mist-3) 50%,transparent 50%);
+  background-position:calc(100% - 15px) 50%,calc(100% - 10px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+  padding-right:28px;}
+.dtf-sel:focus{border-color:var(--smoke);}
+.dtf-sel:disabled{cursor:not-allowed;}
+.dtf-sel option{background:#15121f;color:var(--mist);}
+.dtf-day,.dtf-hour,.dtf-min,.dtf-ampm{flex:0 1 30%;}
+.dtf-month{flex:1 1 42%;}
+.dtf-year{flex:0 1 32%;}

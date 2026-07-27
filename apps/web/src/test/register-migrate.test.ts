@@ -14,11 +14,17 @@ vi.mock('../services/api', () => ({
 
 import * as api from '../services/api';
 import { useAura } from '../store/useAura';
+import { setStorageIdentity } from '../services/storage';
 
 const birth: BirthData = { date: '1990-05-15', time: '08:30', unknownTime: false, place: 'Delhi', lat: 28.61, lng: 77.21, tzOffsetMinutes: 330 };
 
 describe('creating an account keeps an existing (guest) profile', () => {
-  beforeEach(() => { localStorage.clear(); useAura.getState().reset(); (api.saveProfile as Mock).mockClear(); });
+  beforeEach(() => {
+    localStorage.clear();
+    setStorageIdentity(null); // each test starts on the device-only slot
+    useAura.getState().reset();
+    (api.saveProfile as Mock).mockClear();
+  });
 
   it('migrates the guest chart into the new account and lands on today', async () => {
     useAura.getState().onboard(birth, 'career', 'Kai'); // entered as a guest
@@ -43,10 +49,11 @@ describe('creating an account keeps an existing (guest) profile', () => {
   // adopted into a newly created account. It once silently gave a new user a stranger's chart.
   it('does NOT adopt a stale on-device profile the new user never entered', async () => {
     // Simulate leftover storage from a previous person, then boot the store fresh from it.
-    localStorage.setItem('aura.v1', JSON.stringify({
+    localStorage.setItem('aura.v1.guest.profile', JSON.stringify({
       birth: { date: '1993-06-15', time: '14:35', unknownTime: false, place: 'Someone Else', lat: 12.97, lng: 77.59, tzOffsetMinutes: 330 },
       goalArea: 'career', goalName: 'their goal', displayName: 'Stranger',
     }));
+    setStorageIdentity(null);
     useAura.getState().reset();
     expect(useAura.getState().birth?.place).toBe('Someone Else'); // guest mode shows it, fine
 

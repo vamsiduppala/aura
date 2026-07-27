@@ -20,8 +20,12 @@ beforeEach(() => { localStorage.clear(); useAura.getState().reset(); });
 
 /** Onboarding no longer pre-fills anything, so fill the required birth fields. */
 async function fillBirth(user: ReturnType<typeof userEvent.setup>) {
-  await user.type(screen.getByLabelText('Birth date'), '1993-06-15');
-  await user.type(screen.getByLabelText('Birth time'), '14:35');
+  await user.selectOptions(screen.getByLabelText('Day'), '15');
+  await user.selectOptions(screen.getByLabelText('Month'), '6');
+  await user.selectOptions(screen.getByLabelText('Year'), '1993');
+  await user.selectOptions(screen.getByLabelText('Hour'), '2');
+  await user.selectOptions(screen.getByLabelText('Minute'), '35');
+  await user.selectOptions(screen.getByLabelText('AM or PM'), 'PM');
   await user.type(screen.getByLabelText('Birthplace'), 'Hyderabad');
   const opt = await screen.findByRole('button', { name: /Hyderabad/i }, { timeout: 3000 });
   await user.click(opt);

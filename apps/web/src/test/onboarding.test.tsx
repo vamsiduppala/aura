@@ -17,6 +17,16 @@ beforeEach(() => {
 });
 afterEach(() => vi.restoreAllMocks());
 
+/** Pick 15 June 1993, 2:35 PM through the day/month/year and hour/min/ampm selects. */
+async function fillDateTime(user: ReturnType<typeof userEvent.setup>) {
+  await user.selectOptions(screen.getByLabelText('Day'), '15');
+  await user.selectOptions(screen.getByLabelText('Month'), '6');
+  await user.selectOptions(screen.getByLabelText('Year'), '1993');
+  await user.selectOptions(screen.getByLabelText('Hour'), '2');
+  await user.selectOptions(screen.getByLabelText('Minute'), '35');
+  await user.selectOptions(screen.getByLabelText('AM or PM'), 'PM');
+}
+
 /** Type a city and choose the first suggestion. */
 async function pickPlace(user: ReturnType<typeof userEvent.setup>) {
   await user.type(screen.getByLabelText('Birthplace'), 'Hyderabad');
@@ -30,8 +40,7 @@ describe('Onboarding — birthplace lookup', () => {
     render(<Onboarding onComplete={onComplete} />);
     const user = userEvent.setup();
 
-    await user.type(screen.getByLabelText('Birth date'), '1993-06-15');
-    await user.type(screen.getByLabelText('Birth time'), '14:35');
+    await fillDateTime(user);
     await pickPlace(user);
 
     await waitFor(() => expect(screen.getByRole('button', { name: /Read my energy/i })).toBeEnabled());
@@ -48,8 +57,7 @@ describe('Onboarding — birthplace lookup', () => {
   it('cannot submit until a real place has been chosen', async () => {
     render(<Onboarding onComplete={vi.fn()} />);
     const user = userEvent.setup();
-    await user.type(screen.getByLabelText('Birth date'), '1993-06-15');
-    await user.type(screen.getByLabelText('Birth time'), '14:35');
+    await fillDateTime(user);
     // Free text alone is not a place — the button stays disabled until a suggestion is picked.
     await user.type(screen.getByLabelText('Birthplace'), 'Hyderabad');
     expect(screen.getByRole('button', { name: /Read my energy/i })).toBeDisabled();
@@ -57,16 +65,13 @@ describe('Onboarding — birthplace lookup', () => {
     await waitFor(() => expect(screen.getByRole('button', { name: /Read my energy/i })).toBeEnabled());
   });
 
-  it('rejects a future birth date', async () => {
-    const onComplete = vi.fn();
-    render(<Onboarding onComplete={onComplete} />);
-    const user = userEvent.setup();
-    const future = new Date(Date.now() + 366 * 86_400_000).toISOString().slice(0, 10);
-    await user.type(screen.getByLabelText('Birth time'), '14:35');
-    await user.type(screen.getByLabelText('Birth date'), future);
-    await pickPlace(user);
-    expect(screen.getByRole('button', { name: /Read my energy/i })).toBeDisabled();
-    await user.click(screen.getByRole('button', { name: /Read my energy/i }));
-    expect(onComplete).not.toHaveBeenCalled();
+  it('makes a future birth date impossible to enter at all', async () => {
+    render(<Onboarding onComplete={vi.fn()} />);
+    const years = [...screen.getByLabelText('Year').querySelectorAll('option')]
+      .map((o) => o.value).filter(Boolean).map(Number);
+    const thisYear = new Date().getFullYear();
+    expect(Math.max(...years)).toBe(thisYear);   // nothing beyond today is offered
+    expect(Math.min(...years)).toBe(1900);
   });
+
 });

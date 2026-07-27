@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { BirthData, LifeArea } from '@aura/engine';
 import { Button } from '@/components/ui/button';
 import { Pressable } from '../components/Pressable';
 import { changePassword } from '../services/api';
 import { PlacePicker, type ResolvedPlace } from '../components/PlacePicker';
+import { DateField, TimeField } from '../components/DateTimeFields';
 
 const GOALS: { label: string; area: LifeArea }[] = [
   { label: 'Career', area: 'career' },
@@ -63,12 +64,17 @@ export function Account({
 
   // ── Birth details ──
   const [date, setDate] = useState(birth.date);
-  const [time, setTime] = useState(birth.time ?? '12:00');
+  const [time, setTime] = useState(birth.time ?? '');
   const [unknownTime, setUnknownTime] = useState(!!birth.unknownTime);
   const [place, setPlace] = useState<ResolvedPlace | null>({
     place: birth.place, lat: birth.lat, lng: birth.lng,
     tzOffsetMinutes: birth.tzOffsetMinutes, timezone: '',
   });
+
+  // If the underlying profile changes (different user signs in, or a save lands), resync the form
+  // rather than keep showing the previous person's values.
+  useEffect(() => { setName(displayName); }, [displayName]);
+  useEffect(() => { setDate(birth.date); setTime(birth.time ?? ''); setUnknownTime(!!birth.unknownTime); }, [birth]);
 
   const [savedMsg, setSavedMsg] = useState('');
   const flash = (m: string) => { setSavedMsg(m); window.setTimeout(() => setSavedMsg(''), 2600); };
@@ -144,10 +150,10 @@ export function Account({
       <Section title="Birth details" note="Your whole chart is computed from these. Changing them recomputes every reading.">
         <div className="acct-grid">
           <Row label="Date of birth">
-            <input type="date" value={date} min="1900-01-01" max={TODAY} onChange={(e) => setDate(e.target.value)} aria-label="Date of birth" style={fieldStyle} />
+            <DateField value={date} onChange={setDate} ariaLabel="Date of birth" />
           </Row>
           <Row label="Time of birth" hint={unknownTime ? 'Reading by day — no exact ascendant.' : 'Local clock time at your birthplace.'}>
-            <input type="time" value={time} disabled={unknownTime} onChange={(e) => setTime(e.target.value)} aria-label="Time of birth" style={{ ...fieldStyle, opacity: unknownTime ? 0.5 : 1 }} />
+            <TimeField value={time} onChange={setTime} disabled={unknownTime} ariaLabel="Time of birth" />
           </Row>
         </div>
         <Pressable className="unknown" active={unknownTime} onPress={() => setUnknownTime((v) => !v)}>

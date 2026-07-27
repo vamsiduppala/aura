@@ -9,7 +9,9 @@ import {
   type BirthData, type Chart, type Checkin, type DailyBundle, type LifeArea,
 } from '@aura/engine';
 import type { Screen } from '../components/Chrome';
-import { loadProfile, saveProfile, loadReads, bumpReads, clearAll, type ReadsState } from '../services/storage';
+import {
+  loadProfile, saveProfile, loadReads, bumpReads, clearAll, setStorageIdentity, type ReadsState,
+} from '../services/storage';
 import {
   me, login as apiLogin, register as apiRegister, logout as apiLogout,
   saveProfile as apiSaveProfile, deleteAccount as apiDeleteAccount, apiReachable, getToken, type AuthUser,
@@ -74,6 +76,15 @@ export interface AuraState {
   saveAccount: (patch: { displayName?: string; goalArea?: LifeArea; goalName?: string; birth?: BirthData }) => void;
 }
 
+/** Every per-person field, reset. Used whenever the identity changes so nothing leaks across users. */
+function blankPerson() {
+  return {
+    birth: null, chart: null, daily: null, error: null,
+    goalArea: 'career' as LifeArea, goalName: 'my goal', displayName: '',
+    checkin: undefined, enteredThisSession: false, reads: { count: 0, lastDay: '' },
+  };
+}
+
 /** Apply a loaded profile (from server or local) to the derived state. */
 function applyProfile(get: () => AuraState, p: { birth: BirthData; goalArea: LifeArea; goalName: string; displayName?: string }) {
   const d = compute(p.birth, p.goalArea, undefined, get().now);
@@ -115,17 +126,24 @@ export const useAura = create<AuraState>((set, get) => {
       try {
         const res = await me();
         if (res) {
+          // Switch to THIS account's storage slot before reading or writing anything local.
+          setStorageIdentity(res.user.id);
           if (res.profile) {
-            saveProfile(res.profile); // cache locally
-            set({ authStatus: 'authed', user: res.user, ...applyProfile(get, res.profile), screen: 'today' });
+            saveProfile(res.profile); // cached under their own slot
+            set({
+              ...blankPerson(), authStatus: 'authed', user: res.user,
+              ...applyProfile(get, res.profile), reads: loadReads(), screen: 'today',
+            });
           } else {
-            set({ authStatus: 'authed', user: res.user, screen: 'onboarding' });
+            // Signed in but no chart yet — start clean, never inheriting the last person's.
+            set({ ...blankPerson(), authStatus: 'authed', user: res.user, screen: 'onboarding' });
           }
           return;
         }
+        setStorageIdentity(null); // no valid session -> device-only slot
       } catch { /* token invalid or API unreachable → fall back */ }
       const local = loadProfile();
-      if (local) { set({ authStatus: 'guest', screen: 'today' }); return; }
+      if (local) { set({ authStatus: 'guest', ...applyProfile(get, local), reads: loadReads(), screen: 'today' }); return; }
       // No token and no local profile. Only force the sign-in screen if the server is actually
       // reachable — otherwise register/login can't work, so send them straight to guest onboarding.
       const online = await apiReachable();
@@ -136,12 +154,21 @@ export const useAura = create<AuraState>((set, get) => {
       set({ authBusy: true, authError: null });
       try {
         const user = await apiLogin(email, password);
+        setStorageIdentity(user.id); // their own slot, before any local read/write
         const res = await me();
         if (res?.profile) {
           saveProfile(res.profile);
-          set({ user, authStatus: 'authed', authBusy: false, ...applyProfile(get, res.profile), screen: 'today' });
+          set({
+            ...blankPerson(), user, authStatus: 'authed', authBusy: false,
+            ...applyProfile(get, res.profile), reads: loadReads(), screen: 'today',
+          });
         } else {
-          set({ user, authStatus: 'authed', authBusy: false, screen: 'onboarding' });
+          // No chart on the server yet. Fall back only to what is saved under THEIR slot —
+          // never whatever the previous person left behind.
+          const own = loadProfile();
+          set(own
+            ? { ...blankPerson(), user, authStatus: 'authed', authBusy: false, ...applyProfile(get, own), reads: loadReads(), screen: 'today' }
+            : { ...blankPerson(), user, authStatus: 'authed', authBusy: false, screen: 'onboarding' });
         }
       } catch (e) { set({ authBusy: false, authError: (e as Error).message }); }
     },
@@ -153,26 +180,25 @@ export const useAura = create<AuraState>((set, get) => {
         // Carry over a profile ONLY if this person typed it during this session (guest -> account).
         // A profile restored from localStorage belongs to whoever used this browser last, so a new
         // account must start from onboarding rather than silently inherit a stranger's birth chart.
-        const { birth, goalArea, goalName, enteredThisSession } = get();
-        if (birth && enteredThisSession) {
-          apiSaveProfile({ birth, goalArea, goalName, displayName: get().displayName }).catch(() => {});
+        const { birth, goalArea, goalName, displayName, enteredThisSession } = get();
+        const carry = birth && enteredThisSession;
+        setStorageIdentity(user.id); // the new account gets its own slot
+        if (carry) {
+          saveProfile({ birth, goalArea, goalName, displayName });
+          apiSaveProfile({ birth, goalArea, goalName, displayName }).catch(() => {});
           set({ user, authStatus: 'authed', authBusy: false, screen: 'today' });
         } else {
-          // Clear any leftover on-device profile so the new account starts from a blank form.
-          clearAll();
-          set({
-            user, authStatus: 'authed', authBusy: false, screen: 'onboarding',
-            birth: null, chart: null, daily: null, displayName: '', goalName: 'my goal',
-            checkin: undefined, error: null, reads: { count: 0, lastDay: '' },
-          });
+          set({ ...blankPerson(), user, authStatus: 'authed', authBusy: false, screen: 'onboarding' });
         }
       } catch (e) { set({ authBusy: false, authError: (e as Error).message }); }
     },
 
     continueAsGuest: () => {
+      setStorageIdentity(null); // device-only slot
       const local = loadProfile();
-      if (local) set({ authStatus: 'guest', ...applyProfile(get, local), screen: 'today' });
-      else set({ authStatus: 'guest', screen: 'onboarding' });
+      set(local
+        ? { ...blankPerson(), authStatus: 'guest', ...applyProfile(get, local), reads: loadReads(), screen: 'today' }
+        : { ...blankPerson(), authStatus: 'guest', screen: 'onboarding' });
     },
 
     // Send a guest to the sign-in screen without clearing their on-device profile.
@@ -180,7 +206,10 @@ export const useAura = create<AuraState>((set, get) => {
 
     logout: () => {
       apiLogout();
-      set({ authStatus: 'anon', user: null, authError: null, birth: null, chart: null, daily: null, checkin: undefined, screen: 'onboarding' });
+      // Drop the signed-in identity AND wipe every per-person field, so the next person to use
+      // this browser sees nothing of the last one. Their data stays safe in their own slot.
+      setStorageIdentity(null);
+      set({ ...blankPerson(), authStatus: 'anon', user: null, authError: null, screen: 'onboarding' });
     },
 
     onboard: (birth, area, name, who) => {
