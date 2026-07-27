@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAura } from './store/useAura';
 import { Login } from './screens/Login';
 import { Onboarding } from './screens/Onboarding';
@@ -15,6 +15,8 @@ import { Support } from './screens/Support';
 import { Sidebar, TopBar, BottomNav, type Screen } from './components/Chrome';
 import { downloadReport } from './services/report';
 import { TodaySkeleton, ErrorState } from './components/States';
+import { CommandPalette } from './components/CommandPalette';
+import { screenFromHash, writeHash, onRouteChange, isRoutable } from './services/routing';
 
 const WIDE: Screen[] = ['today', 'forecast', 'chat', 'blueprint'];
 
@@ -32,6 +34,32 @@ export function App() {
 
   // Verify any stored session token with the local API once on mount.
   useEffect(() => { if (authStatus === 'loading') void s.initAuth(); }, [authStatus, s]);
+
+  // Routing is only meaningful once there's a chart to look at. Computed here (rather than reusing
+  // `inApp` below) because hooks must run unconditionally, before this component's early returns.
+  const routable = !!chart && screen !== 'onboarding' && screen !== 'support' && screen !== 'audit';
+
+  // Keep the URL and the current screen in step, so Back/Forward, refresh and bookmarks all work.
+  useEffect(() => {
+    if (!routable) return;
+    const initial = screenFromHash();
+    if (initial && initial !== screen) s.go(initial);
+    else writeHash(screen, true);
+    // Only on first entry into the app shell.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routable]);
+  useEffect(() => { if (routable && isRoutable(screen)) writeHash(screen); }, [screen, routable]);
+  useEffect(() => onRouteChange((next) => { if (next !== screen) s.go(next); }), [screen, s]);
+
+  // Cmd/Ctrl-K opens the palette from anywhere — the convention every tool-shaped app now shares.
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setPaletteOpen((v) => !v); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   if (authStatus === 'loading') {
     return (
@@ -89,7 +117,7 @@ export function App() {
   } else if (screen === 'forecast') {
     body = <Forecast aura={aura} chart={chart} now={now} goalArea={goalArea} major={daily.input.majorEnergy} passing={daily.input.passingEnergy} />;
   } else if (screen === 'chat') {
-    body = <Chat aura={aura} chart={chart} now={now} goalArea={goalArea} userKey={s.user ? `u${s.user.id}` : 'guest'} />;
+    body = <Chat aura={aura} chart={chart} now={now} goalArea={goalArea} userKey={s.user ? `u${s.user.id}` : "guest"} pendingQuestion={s.pendingQuestion} onConsumedQuestion={s.clearPendingQuestion} />;
   } else {
     body = <Blueprint aura={aura} chart={chart} goalName={goalName} onDownload={onDownload} />;
   }
@@ -97,12 +125,18 @@ export function App() {
   return (
     <div className="app">
       {inApp ? <Sidebar screen={screen} go={s.go} totalReads={reads.count} onSettings={() => s.go('settings')}
-        userName={userName} signedIn={!!s.user} onAccount={() => s.go('account')} onLogout={s.logout} onSignIn={s.showLogin} /> : null}
+        userName={userName} signedIn={!!s.user} onAccount={() => s.go('account')} onLogout={s.logout} onSignIn={s.showLogin} onSearch={() => setPaletteOpen(true)} /> : null}
       <main className="main">
         {inApp ? <TopBar totalReads={reads.count} onSettings={() => s.go('settings')} userName={userName} onAccount={() => s.go('account')} /> : null}
         <div className={`content${narrow ? ' narrow' : ''}${screen === 'blueprint' ? ' bp-content' : ''}`}>{body}</div>
         {showBottomNav ? <BottomNav screen={screen} go={s.go} /> : null}
       </main>
+      {inApp ? (
+        <CommandPalette
+          open={paletteOpen} onClose={() => setPaletteOpen(false)}
+          go={s.go} chart={chart} onAsk={s.askMentorAbout}
+        />
+      ) : null}
     </div>
   );
 }

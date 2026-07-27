@@ -43,8 +43,9 @@ interface Turn extends ChatTurn {
 
 const HISTORY_KEY = 'aura.chat';
 
-export function Chat({ aura, chart, now, goalArea, userKey }: {
+export function Chat({ aura, chart, now, goalArea, userKey, pendingQuestion, onConsumedQuestion }: {
   aura: Aura; chart: Chart; now: Date; goalArea?: LifeArea; userKey: string;
+  pendingQuestion?: string | null; onConsumedQuestion?: () => void;
 }) {
   // Conversation is kept per identity, so switching users never shows someone else's chat.
   const storeKey = `${HISTORY_KEY}.${userKey}`;
@@ -67,6 +68,14 @@ export function Chat({ aura, chart, now, goalArea, userKey }: {
   useEffect(() => {
     try { setMessages(JSON.parse(localStorage.getItem(storeKey) ?? '[]') as Turn[]); } catch { setMessages([]); }
   }, [storeKey]);
+
+  // A question asked from the command palette arrives here; run it once, then clear it.
+  const sendRef = useRef<(t: string) => void>(() => {});
+  useEffect(() => {
+    if (pendingQuestion) { sendRef.current(pendingQuestion); onConsumedQuestion?.(); }
+    // Only react to a NEW pending question.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingQuestion]);
 
   const send = async (text: string) => {
     const msg = text.trim();
@@ -96,6 +105,8 @@ export function Chat({ aura, chart, now, goalArea, userKey }: {
       setBusy(false); setActivity(''); setStreaming(''); abortRef.current = null;
     }
   };
+
+  sendRef.current = (t: string) => { void send(t); };
 
   const stop = () => abortRef.current?.abort();
   const clear = () => { setMessages([]); try { localStorage.removeItem(storeKey); } catch { /* ignore */ } };

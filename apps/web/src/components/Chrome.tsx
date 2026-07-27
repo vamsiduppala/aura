@@ -10,13 +10,19 @@ const TABS: { key: Screen; label: string }[] = [
 function readsLabel(n: number): string { return `${n} ${n === 1 ? 'reading' : 'readings'}`; }
 
 /** Desktop left navigation. The account block sits at the very bottom: who you are, then sign-out. */
-export function Sidebar({ screen, go, totalReads, onSettings, userName, signedIn, onAccount, onLogout, onSignIn }: {
+export function Sidebar({ screen, go, totalReads, onSettings, userName, signedIn, onAccount, onLogout, onSignIn, onSearch }: {
   screen: Screen; go: (s: Screen) => void; totalReads: number; onSettings: () => void;
   userName: string; signedIn: boolean; onAccount: () => void; onLogout: () => void; onSignIn: () => void;
+  onSearch?: () => void;
 }) {
   return (
     <aside className="sidebar">
       <div className="brand"><span className="glyph" /> aura</div>
+      {onSearch ? (
+        <button className="cmdk-trigger" onClick={onSearch} title="Search everything">
+          <span>Search…</span><kbd>⌘K</kbd>
+        </button>
+      ) : null}
       {TABS.map((t) => (
         <button key={t.key} className={`navlink${screen === t.key ? ' on' : ''}`} onClick={() => go(t.key)}
           aria-current={screen === t.key ? 'page' : undefined}>

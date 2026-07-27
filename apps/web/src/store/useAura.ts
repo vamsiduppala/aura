@@ -72,6 +72,10 @@ export interface AuraState {
   openReading: () => void;
   deleteAll: () => void;
   reset: () => void;
+  /** A question queued from the command palette for the mentor to pick up on arrival. */
+  pendingQuestion: string | null;
+  askMentorAbout: (question: string) => void;
+  clearPendingQuestion: () => void;
   /** Save edited account/profile fields (name, focus, birth details) locally + to the server. */
   saveAccount: (patch: { displayName?: string; goalArea?: LifeArea; goalName?: string; birth?: BirthData }) => void;
 }
@@ -114,11 +118,16 @@ export const useAura = create<AuraState>((set, get) => {
     goalName: saved?.goalName ?? 'my goal',
     displayName: saved?.displayName ?? '',
     enteredThisSession: false,
+    pendingQuestion: null,
     checkin: undefined,
     reads: loadReads(),
     ...initial,
 
     go: (screen) => set({ screen }),
+
+    // The palette can ask a question from anywhere; the chat screen picks it up on mount.
+    askMentorAbout: (question) => set({ pendingQuestion: question, screen: 'chat' }),
+    clearPendingQuestion: () => set({ pendingQuestion: null }),
 
     // Verify the stored token with the API; load the server profile if present.
     initAuth: async () => {
