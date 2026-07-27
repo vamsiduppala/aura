@@ -8,7 +8,7 @@ import {
   VIMSHOTTARI_ORDER, VIMSHOTTARI_YEARS, ASHTOTTARI_ORDER, ASHTOTTARI_YEARS,
   type DashaBalance, type AshtottariBalance,
 } from '@aura/knowledge';
-import { API_BASE } from './api';
+import { apiBase } from './api';
 
 const YEAR_MS = 365.25 * 86_400_000;
 
@@ -71,10 +71,10 @@ function local(chart: Chart): DashaSnapshot {
 export async function loadChartDashas(chart: Chart): Promise<DashaSnapshot> {
   const moonLong = chart.planets.moon.siderealLong;
   try {
-    const opts = { signal: AbortSignal.timeout(1500) };
+    const opts = { signal: AbortSignal.timeout(5000) };
     const [v, a] = await Promise.all([
-      fetch(`${API_BASE}/dasha/vimshottari?moonLong=${moonLong}`, opts).then((r) => r.json()),
-      fetch(`${API_BASE}/dasha/ashtottari?moonLong=${moonLong}`, opts).then((r) => r.json()),
+      fetch(`${apiBase()}/dasha/vimshottari?moonLong=${moonLong}`, opts).then((r) => r.json()),
+      fetch(`${apiBase()}/dasha/ashtottari?moonLong=${moonLong}`, opts).then((r) => r.json()),
     ]);
     if (!v?.balance?.lord || !a?.balance?.lord) throw new Error('bad response');
     return withCurrent(chart,

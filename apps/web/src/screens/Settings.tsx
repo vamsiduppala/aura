@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DISCLAIMER } from '@aura/engine';
 import { hasUserKey, setGeminiKey, clearGeminiKey } from '../services/chat';
-import { apiReachable, API_BASE } from '../services/api';
+import { apiReachable, apiBase, setApiBase, clearApiBase, DEFAULT_API_BASE } from '../services/api';
 import { Button } from '@/components/ui/button';
 
 /** About / privacy / delete + Cosmic Mentor key (SPEC §11.1, §11.6). */
@@ -15,7 +15,14 @@ export function Settings({ place, account, canEdit, onDelete, onBack, onLogout, 
   const [keyInput, setKeyInput] = useState('');
   const [saved, setSaved] = useState(hasUserKey());
   const [backend, setBackend] = useState<'checking' | 'up' | 'down'>('checking');
+  const [server, setServer] = useState(apiBase());
+  const recheck = () => {
+    setBackend('checking');
+    apiReachable().then((ok) => setBackend(ok ? 'up' : 'down'));
+  };
   useEffect(() => { let a = true; apiReachable().then((ok) => { if (a) setBackend(ok ? 'up' : 'down'); }); return () => { a = false; }; }, []);
+  const saveServer = () => { setApiBase(server); setServer(apiBase()); recheck(); };
+  const resetServer = () => { clearApiBase(); setServer(DEFAULT_API_BASE); recheck(); };
 
   const save = () => {
     if (!keyInput.trim()) return;
@@ -56,7 +63,20 @@ export function Settings({ place, account, canEdit, onDelete, onBack, onLogout, 
             ? 'Connected — your chart, timing systems and mentor run against the local backend.'
             : 'Not running — aura works on-device. Start it with: npm --workspace @aura/api run start'}
         </p>
-        <p className="disclaimer" style={{ textAlign: 'left', padding: 0, marginBottom: 26 }}>{API_BASE}</p>
+        <div style={{ display: 'flex', gap: 8, margin: '10px 0 6px', flexWrap: 'wrap' }}>
+          <input
+            value={server} onChange={(e) => setServer(e.target.value)}
+            placeholder="http://localhost:8787" aria-label="Server address"
+            spellCheck={false} autoCapitalize="none" autoCorrect="off" inputMode="url"
+            style={{ flex: '1 1 220px', minWidth: 0, background: 'var(--card)', border: '1px solid var(--line-2)', borderRadius: 12, padding: '11px 13px', color: 'var(--mist)', fontFamily: 'var(--sans)', fontSize: 14, outline: 'none' }}
+          />
+          <Button size="sm" onClick={saveServer} className="!w-auto shrink-0 px-5">Save</Button>
+          <Button size="sm" variant="ghost" onClick={resetServer} className="!w-auto shrink-0 px-4">Reset</Button>
+        </div>
+        <p className="disclaimer" style={{ textAlign: 'left', padding: 0, marginBottom: 26 }}>
+          On a phone, “localhost” is the phone itself — point this at your computer’s address on the
+          same Wi-Fi, e.g. <b>http://192.168.1.65:8787</b>. On this computer, leave it as {DEFAULT_API_BASE}.
+        </p>
 
         <div className="qh" style={{ marginBottom: 10 }}>What aura is</div>
         <p className="body" style={{ marginBottom: 26 }}>{DISCLAIMER}</p>

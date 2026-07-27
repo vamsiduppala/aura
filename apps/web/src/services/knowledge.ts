@@ -7,7 +7,7 @@ import { AREA_TO_HOUSE, AREA_META, SIGN_LORD } from '@aura/engine';
 import { search, getRasi, rajaYogas, vipareetaYoga, type PlanetSigns } from '@aura/knowledge';
 import { buildKundali, dignityChip } from '../kundali';
 import { grahaLabel } from '../ui';
-import { API_BASE } from './api';
+import { apiBase } from './api';
 
 const ALL_GRAHAS: Graha[] = ['sun', 'moon', 'mars', 'mercury', 'jupiter', 'venus', 'saturn', 'rahu', 'ketu'];
 
@@ -105,7 +105,7 @@ export function lookupAstrology(query: string, chart: Chart, area?: LifeArea): A
 export async function lookupAstrologyLive(query: string, chart: Chart, area?: LifeArea): Promise<AstroLookup> {
   const base = lookupAstrology(query, chart, area);
   try {
-    const res = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}`, { signal: AbortSignal.timeout(1500) });
+    const res = await fetch(`${apiBase()}/search?q=${encodeURIComponent(query)}`, { signal: AbortSignal.timeout(5000) });
     if (res.ok) {
       const data = await res.json() as { hits?: { label: string; summary: string }[] };
       const concepts = (data.hits ?? []).slice(0, 5).map((h) => ({ label: h.label, summary: h.summary }));

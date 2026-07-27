@@ -3,8 +3,38 @@
 // isn't running — the app still works on-device (guest mode) via services/storage.
 import type { BirthData, LifeArea } from '@aura/engine';
 
-export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'http://localhost:8787';
 const TOKEN_KEY = 'aura.token';
+const SERVER_KEY = 'aura.serverUrl';
+
+// Where the local aura server lives. Resolved at RUNTIME, not build time, because a phone can't
+// reach "localhost" — on Android/iOS the server is your computer's LAN address, which the user
+// sets in Settings. Order: user-set value -> build-time VITE_API_URL -> localhost default.
+const BUILD_DEFAULT = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'http://localhost:8787';
+
+const clean = (u: string): string => u.trim().replace(/\/+$/, '');
+
+/** The server address in use right now. */
+export function apiBase(): string {
+  try {
+    const saved = localStorage.getItem(SERVER_KEY);
+    if (saved && saved.trim()) return clean(saved);
+  } catch { /* storage blocked -> fall through */ }
+  return BUILD_DEFAULT;
+}
+
+/** Point the app at a different aura server (e.g. http://192.168.1.65:8787 from a phone). */
+export function setApiBase(url: string): void {
+  try {
+    const v = clean(url);
+    if (v) localStorage.setItem(SERVER_KEY, v); else localStorage.removeItem(SERVER_KEY);
+  } catch { /* ignore */ }
+}
+export function clearApiBase(): void { try { localStorage.removeItem(SERVER_KEY); } catch { /* ignore */ } }
+/** The compiled-in default, shown in Settings so the user knows what "reset" restores. */
+export const DEFAULT_API_BASE = BUILD_DEFAULT;
+
+/** @deprecated read-only snapshot for display; call apiBase() when making a request. */
+export const API_BASE = BUILD_DEFAULT;
 
 export interface AuthUser { id: number; email: string; createdAt?: string }
 export interface ServerProfile { birth: BirthData; goalArea: LifeArea; goalName: string; displayName?: string }
@@ -17,7 +47,7 @@ export function clearToken(): void { try { localStorage.removeItem(TOKEN_KEY); }
 
 async function req(path: string, opts: RequestInit = {}): Promise<Response> {
   const token = getToken();
-  return fetch(`${API_BASE}${path}`, {
+  return fetch(`${apiBase()}${path}`, {
     ...opts,
     headers: {
       'Content-Type': 'application/json',
@@ -30,20 +60,20 @@ async function req(path: string, opts: RequestInit = {}): Promise<Response> {
 /** Is the local API reachable? Used to decide whether to require login. */
 export async function apiReachable(): Promise<boolean> {
   try {
-    const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(1500) });
+    const res = await fetch(`${apiBase()}/health`, { signal: AbortSignal.timeout(4000) });
     return res.ok;
   } catch { return false; }
 }
 
 /** A friendly, actionable message when the local API can't be reached at all. */
-const UNREACHABLE = `Can’t reach your local aura server at ${API_BASE}. Make sure it’s running (npm run dev), or use “continue on this device only”.`;
+const unreachableMsg = (): string => `Can’t reach your local aura server at ${apiBase()}. Make sure it’s running (npm run dev), or use “continue on this device only”.`;
 
 async function authCall(path: string, email: string, password: string): Promise<AuthUser> {
   let res: Response;
   try {
     res = await req(path, { method: 'POST', body: JSON.stringify({ email, password }) });
   } catch {
-    throw new Error(UNREACHABLE); // network failure → the server isn't running
+    throw new Error(unreachableMsg()); // network failure → the server isn't running
   }
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(body.error ?? 'Something went wrong.');
@@ -70,7 +100,7 @@ export async function changePassword(currentPassword: string, newPassword: strin
   try {
     res = await req('/auth/password', { method: 'POST', body: JSON.stringify({ currentPassword, newPassword }) });
   } catch {
-    throw new Error(UNREACHABLE);
+    throw new Error(unreachableMsg());
   }
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(body.error ?? 'Could not change your password.');
@@ -91,7 +121,7 @@ export async function saveProfile(p: ServerProfile): Promise<void> {
   try {
     res = await req('/profile', { method: 'PUT', body: JSON.stringify(p) });
   } catch {
-    throw new Error(UNREACHABLE);
+    throw new Error(unreachableMsg());
   }
   if (!res.ok) throw new Error('Could not save your profile.');
 }
