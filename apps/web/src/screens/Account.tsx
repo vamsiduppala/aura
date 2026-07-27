@@ -3,6 +3,7 @@ import type { BirthData, LifeArea } from '@aura/engine';
 import { Button } from '@/components/ui/button';
 import { Pressable } from '../components/Pressable';
 import { changePassword } from '../services/api';
+import { PlacePicker, type ResolvedPlace } from '../components/PlacePicker';
 
 const GOALS: { label: string; area: LifeArea }[] = [
   { label: 'Career', area: 'career' },
@@ -37,7 +38,6 @@ function Section({ title, note, children }: { title: string; note?: string; chil
   );
 }
 
-const num = (s: string) => (s.trim() === '' ? NaN : Number(s));
 const TODAY = new Date().toISOString().slice(0, 10);
 
 export function Account({
@@ -65,21 +65,15 @@ export function Account({
   const [date, setDate] = useState(birth.date);
   const [time, setTime] = useState(birth.time ?? '12:00');
   const [unknownTime, setUnknownTime] = useState(!!birth.unknownTime);
-  const [place, setPlace] = useState(birth.place);
-  const [lat, setLat] = useState(String(birth.lat));
-  const [lng, setLng] = useState(String(birth.lng));
-  const [tz, setTz] = useState(String(birth.tzOffsetMinutes / 60));
+  const [place, setPlace] = useState<ResolvedPlace | null>({
+    place: birth.place, lat: birth.lat, lng: birth.lng,
+    tzOffsetMinutes: birth.tzOffsetMinutes, timezone: '',
+  });
 
   const [savedMsg, setSavedMsg] = useState('');
   const flash = (m: string) => { setSavedMsg(m); window.setTimeout(() => setSavedMsg(''), 2600); };
 
-  const latN = num(lat), lngN = num(lng), tzN = num(tz);
-  const birthValid =
-    date >= '1900-01-01' && date <= TODAY &&
-    place.trim().length > 0 &&
-    Number.isFinite(latN) && Math.abs(latN) <= 90 &&
-    Number.isFinite(lngN) && Math.abs(lngN) <= 180 &&
-    Number.isFinite(tzN) && Math.abs(tzN) <= 14;
+  const birthValid = date >= '1900-01-01' && date <= TODAY && !!place;
 
   const saveIdentity = () => { onSave({ displayName: name.trim(), goalArea: area, goalName: goal.trim() || 'my goal' }); flash('Profile saved.'); };
   const saveBirth = () => {
@@ -87,7 +81,7 @@ export function Account({
     onSave({
       birth: {
         date, time: unknownTime ? undefined : time, unknownTime,
-        place: place.trim(), lat: latN, lng: lngN, tzOffsetMinutes: Math.round(tzN * 60),
+        place: place!.place, lat: place!.lat, lng: place!.lng, tzOffsetMinutes: place!.tzOffsetMinutes,
       },
     });
     flash('Birth details saved — your chart has been recomputed.');
@@ -159,21 +153,12 @@ export function Account({
         <Pressable className="unknown" active={unknownTime} onPress={() => setUnknownTime((v) => !v)}>
           <span className={`box${unknownTime ? ' on' : ''}`} /> I don’t know my birth time
         </Pressable>
-        <Row label="Birthplace">
-          <input value={place} onChange={(e) => setPlace(e.target.value)} placeholder="e.g. Chennai, IN" aria-label="Birthplace" style={fieldStyle} />
-        </Row>
-        <div className="acct-grid3">
-          <Row label="Latitude">
-            <input type="number" step="0.01" value={lat} onChange={(e) => setLat(e.target.value)} aria-label="Latitude" style={fieldStyle} />
-          </Row>
-          <Row label="Longitude">
-            <input type="number" step="0.01" value={lng} onChange={(e) => setLng(e.target.value)} aria-label="Longitude" style={fieldStyle} />
-          </Row>
-          <Row label="UTC offset (hrs)">
-            <input type="number" step="0.25" value={tz} onChange={(e) => setTz(e.target.value)} aria-label="UTC offset in hours" style={fieldStyle} />
-          </Row>
+        <div className="acct-row">
+          <span className="acct-label">Birthplace</span>
+          <PlacePicker value={place?.place ?? ''} birthDate={date} birthTime={unknownTime ? undefined : time}
+            onResolved={setPlace} ariaLabel="Birthplace" />
+          <span className="acct-hint">Pick your city and we work out the coordinates and the exact time-zone offset that applied on your birth date.</span>
         </div>
-        <p className="acct-hint" style={{ marginTop: 2 }}>Use the offset that applied at your birth (include daylight saving if it was in effect).</p>
         <Button size="sm" onClick={saveBirth} disabled={!birthValid} className="!w-auto px-5" style={{ marginTop: 14 }}>Save birth details</Button>
       </Section>
 

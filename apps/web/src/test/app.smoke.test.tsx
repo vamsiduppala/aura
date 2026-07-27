@@ -3,6 +3,16 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from '../App';
 import { useAura } from '../store/useAura';
+import { vi, beforeAll, afterAll } from 'vitest';
+
+// The birthplace field calls a free geocoder; stub it so the smoke test stays offline.
+const GEO = { results: [{ id: 1, name: 'Hyderabad', latitude: 17.38405, longitude: 78.45636, timezone: 'Asia/Kolkata', country: 'India', admin1: 'Telangana' }] };
+const realFetch = globalThis.fetch;
+beforeAll(() => { vi.stubGlobal('fetch', vi.fn(async (u: RequestInfo | URL) => (
+  String(u).includes('geocoding-api') ? new Response(JSON.stringify(GEO), { status: 200 })
+    : new Response('{}', { status: 500 })
+))); });
+afterAll(() => { globalThis.fetch = realFetch; });
 
 // Integration smoke test: mounts the real app (real engine, real chart math) and drives
 // the whole flow, catching runtime crashes in any screen that a build won't surface.
@@ -12,6 +22,10 @@ beforeEach(() => { localStorage.clear(); useAura.getState().reset(); });
 async function fillBirth(user: ReturnType<typeof userEvent.setup>) {
   await user.type(screen.getByLabelText('Birth date'), '1993-06-15');
   await user.type(screen.getByLabelText('Birth time'), '14:35');
+  await user.type(screen.getByLabelText('Birthplace'), 'Hyderabad');
+  const opt = await screen.findByRole('button', { name: /Hyderabad/i }, { timeout: 3000 });
+  await user.click(opt);
+  await waitFor(() => expect(screen.getByRole('button', { name: /Read my energy/i })).toBeEnabled());
 }
 
 describe('App smoke — the full flow renders without crashing', () => {
