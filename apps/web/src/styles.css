@@ -845,3 +845,14 @@ button:active:not(:disabled), .chip:active, .starter:active, .place-opt:active {
 .hist-btn:hover{color:var(--mist);border-color:var(--smoke);}
 .hist-btn.on.right{background:rgba(126,214,155,.14);border-color:rgba(126,214,155,.45);color:var(--bloom);}
 .hist-btn.on.off{background:rgba(255,110,88,.12);border-color:rgba(255,110,88,.4);color:var(--forge);}
+
+/* ── Accessibility ───────────────────────────────────────────────────────────
+   A keyboard user shouldn't have to tab through the whole sidebar on every screen. */
+.skip-link{position:absolute;left:var(--sp-4);top:-60px;z-index:200;padding:10px 16px;
+  border-radius:var(--r-md);background:var(--mist);color:#0B0912;font-family:var(--grotesk);
+  font-size:var(--fs-base);font-weight:600;text-decoration:none;
+  transition:top var(--t-base) var(--ease);}
+.skip-link:focus{top:var(--sp-4);}
+/* Slate ran at 4.26:1 on small text — just under the 4.5:1 floor. Lifted for body-sized use;
+   the original stays for large text and decorative dots, which have a lower requirement. */
+:root{ --slate:#9AA0D4; }

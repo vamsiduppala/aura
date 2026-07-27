@@ -7,6 +7,7 @@ import { computeYearAhead, type YearAhead } from '../services/yearAhead';
 import { buildPortrait, buildTechnicalFacts } from '../services/portrait';
 import { readEmptyHouse } from '../services/emptyHouse';
 import { SectionSkeleton } from '../components/States';
+import { useAfterPaint } from '../hooks/useAfterPaint';
 
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th'];
 
@@ -112,7 +113,16 @@ export function Blueprint({ aura, chart, onDownload }: { aura: Aura; chart: Char
 
 /** A plain-language read of the person — mind, decisions, lifestyle, environment, comfort. */
 function Portrait({ chart }: { chart: Chart }) {
-  const parts = useMemo(() => buildPortrait(chart), [chart]);
+  const ready = useAfterPaint();
+  const parts = useMemo(() => (ready ? buildPortrait(chart) : []), [chart, ready]);
+  if (!ready) {
+    return (
+      <section className="portrait">
+        <div className="label" style={{ marginBottom: 12 }}>Who this chart describes</div>
+        <SectionSkeleton lines={4} label="Reading your temperament" />
+      </section>
+    );
+  }
   return (
     <section className="portrait">
       <div className="label" style={{ marginBottom: 12 }}>Who this chart describes</div>
@@ -128,7 +138,9 @@ function Portrait({ chart }: { chart: Chart }) {
 
 /** The heavier classical machinery, for readers who want to see it. */
 function TechnicalFacts({ chart }: { chart: Chart }) {
-  const facts = useMemo(() => buildTechnicalFacts(chart), [chart]);
+  const ready = useAfterPaint();
+  const facts = useMemo(() => (ready ? buildTechnicalFacts(chart) : []), [chart, ready]);
+  if (!ready) return <SectionSkeleton lines={3} label="Loading the deeper layers" />;
   return (
     <section style={{ marginTop: 26 }}>
       <div className="label" style={{ marginBottom: 6 }}>Deeper in the chart</div>

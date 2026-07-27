@@ -58,11 +58,11 @@ describe('App smoke — the full flow renders without crashing', () => {
 
     // Cosmic Mentor chat
     await user.click(screen.getAllByRole('button', { name: /^Mentor$/i })[0]!);
-    await waitFor(() => expect(screen.getByText(/Cosmic Mentor/i)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole('heading', { level: 2, name: /Cosmic Mentor/i })).toBeInTheDocument());
 
     // Blueprint (+ born gifts)
     await user.click(screen.getAllByRole('button', { name: /^Blueprint$/i })[0]!);
-    await waitFor(() => expect(screen.getByRole('heading', { name: /Your chart/i })).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole('heading', { level: 2, name: /Your chart/i })).toBeInTheDocument());
   }, 20000);
 
   it('a crisis in the goal field routes to support, not a reading', async () => {

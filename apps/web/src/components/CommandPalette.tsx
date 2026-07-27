@@ -69,8 +69,31 @@ export function CommandPalette({ open, onClose, go, chart, onAsk }: {
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { if (open) { setQ(''); setActive(0); setTimeout(() => inputRef.current?.focus(), 30); } }, [open]);
+  // Remember where focus came from so it can be handed back on close, and keep Tab inside the
+  // dialog while it is open — otherwise focus wanders behind the overlay and is effectively lost.
+  const restoreRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!open) { restoreRef.current?.focus?.(); return; }
+    restoreRef.current = document.activeElement as HTMLElement;
+    setQ(''); setActive(0);
+    const t = setTimeout(() => inputRef.current?.focus(), 30);
+    const trap = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'input, button, [href], select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (!focusables?.length) return;
+      const first = focusables[0]!, last = focusables[focusables.length - 1]!;
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', trap);
+    // The page behind must not scroll under an open dialog.
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { clearTimeout(t); document.removeEventListener('keydown', trap); document.body.style.overflow = prevOverflow; };
+  }, [open]);
 
   const commands = useMemo<Command[]>(() => {
     const out: Command[] = [];
@@ -165,7 +188,7 @@ export function CommandPalette({ open, onClose, go, chart, onAsk }: {
   let lastGroup = '';
   return (
     <div className="cmdk-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
+      <div className="cmdk" role="dialog" aria-modal="true" aria-label="Command palette" ref={dialogRef}>
         <input
           ref={inputRef} value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={onKey}
           className="cmdk-input" placeholder="Search your chart, jump anywhere, or ask a question…"

@@ -139,11 +139,22 @@ export function App() {
     body = <Blueprint aura={aura} chart={chart} goalName={goalName} onDownload={onDownload} />;
   }
 
+  // The page's own name, announced to assistive tech. Visible headings vary per screen (and
+  // Today deliberately leads with the orb, not a title), so this is the reliable anchor.
+  const PAGE_TITLES: Partial<Record<Screen, string>> = {
+    today: 'Today’s reading', forecast: 'Your forecast', chat: 'Cosmic Mentor',
+    blueprint: 'Your chart', history: 'Your saved readings',
+    account: 'Your account', settings: 'Settings', support: 'Support',
+    onboarding: 'Your birth details', audit: 'Your past, read back',
+  };
+
   return (
     <div className="app">
+      <a className="skip-link" href="#main-content">Skip to content</a>
       {inApp ? <Sidebar screen={screen} go={s.go} totalReads={reads.count} onSettings={() => s.go('settings')}
         userName={userName} signedIn={!!s.user} onAccount={() => s.go('account')} onLogout={s.logout} onSignIn={s.showLogin} onSearch={() => setPaletteOpen(true)} /> : null}
-      <main className="main">
+      <main className="main" id="main-content">
+        <h1 className="sr-only">{PAGE_TITLES[screen] ?? 'aura'}</h1>
         {inApp ? <TopBar totalReads={reads.count} onSettings={() => s.go('settings')} userName={userName} onAccount={() => s.go('account')} /> : null}
         <div className={`content${narrow ? ' narrow' : ''}${screen === 'blueprint' ? ' bp-content' : ''}`}>{body}</div>
         {showBottomNav ? <BottomNav screen={screen} go={s.go} /> : null}

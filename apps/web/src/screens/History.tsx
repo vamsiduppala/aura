@@ -25,7 +25,7 @@ export function History({ identity, onBack, onToday }: {
       <div className="view hist">
         <div className="s3-top" style={{ padding: 0, marginBottom: 18 }}>
           <button className="back" onClick={onBack}>‹</button>
-          <span className="ttl">Your readings</span><span style={{ width: 22 }} />
+          <h2 className="ttl">Your readings</h2><span style={{ width: 22 }} />
         </div>
         <EmptyState
           title="Nothing saved yet"
@@ -41,7 +41,7 @@ export function History({ identity, onBack, onToday }: {
     <div className="view hist">
       <div className="s3-top" style={{ padding: 0, marginBottom: 18 }}>
         <button className="back" onClick={onBack}>‹</button>
-        <span className="ttl">Your readings</span><span style={{ width: 22 }} />
+        <h2 className="ttl">Your readings</h2><span style={{ width: 22 }} />
       </div>
 
       <div className="hist-stats">
