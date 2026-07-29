@@ -11,11 +11,10 @@
 //  · Hit-testing resolves by NEAREST RING-CENTRE DISTANCE, not by exact hit. At these
 //    strokes with these gaps, exact testing loses about a fifth of taps.
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import type { CourtSeat } from '../core/court';
 import { humanRemaining, timeLeft } from '../core/time';
 import { MOTION, PLANET, WHEEL, WHEEL_TIMELINE, type RingSpec } from '../theme/tokens';
-import { useReducedMotion } from '../hooks/useReducedMotion';
 
 interface WheelProps {
   seats: CourtSeat[];
@@ -44,16 +43,6 @@ interface Ring {
 export function Wheel({
   seats, now, rings = WHEEL_TIMELINE, size = WHEEL.wellTimeline, onSelectLevel, centre,
 }: WheelProps) {
-  const reduced = useReducedMotion();
-  // Rings load from zero on every appear, not just first mount. Start at 0 and flip
-  // after the first paint so the transition has something to travel from.
-  const [loaded, setLoaded] = useState(reduced);
-  useEffect(() => {
-    if (reduced) { setLoaded(true); return; }
-    const id = requestAnimationFrame(() => setLoaded(true));
-    return () => cancelAnimationFrame(id);
-  }, [reduced]);
-
   const box = size;
   const c = box / 2;
 
@@ -133,17 +122,20 @@ export function Wheel({
         <g transform={`rotate(${WHEEL.startAngleDeg} ${c} ${c})`}>
           {drawn.map((ring) => {
             const p = PLANET[ring.seat.lord];
-            const shown = loaded ? ring.progress : 0;
-            const offset = ring.circumference * (1 - shown);
-            // Messenger first, King last — the load reads outward-in.
-            const delay = reduced ? 0 : (5 - ring.spec.level) * MOTION.ringStaggerMs;
+            // The arc's RESTING value is always the true one. The entrance sweep is a CSS
+            // animation whose only keyframe is `from: empty`, so the element returns to the
+            // real value the moment the animation ends — and shows it even if the animation
+            // never runs at all. An earlier version flipped a React state in
+            // requestAnimationFrame, which meant a ring rendered in a background tab (where
+            // rAF is throttled to zero) sat at 0% indefinitely. Animation may be skipped;
+            // the value may not.
             const arc = {
-              transition: reduced
-                ? 'none'
-                : `stroke-dashoffset ${MOTION.ringLoadMs}ms ${MOTION.ringEase} ${delay}ms`,
               strokeDasharray: ring.circumference,
-              strokeDashoffset: offset,
-            } as const;
+              strokeDashoffset: ring.circumference * (1 - ring.progress),
+              // Messenger first, King last — the load reads outward-in.
+              ['--ring-c' as string]: `${ring.circumference}`,
+              ['--ring-delay' as string]: `${(5 - ring.spec.level) * MOTION.ringStaggerMs}ms`,
+            } as React.CSSProperties;
             return (
               <g key={ring.spec.level} opacity={ring.opacity}>
                 {/* Unfilled track */}
@@ -158,6 +150,7 @@ export function Wheel({
                     Moon, Jupiter). Drawn wider and underneath. */}
                 {p.rim && (
                   <circle
+                    className="ring-arc"
                     cx={c} cy={c} r={ring.radius}
                     fill="none" stroke={p.rim} strokeWidth={ring.stroke + 1.6}
                     strokeLinecap="round" style={arc}
@@ -165,6 +158,7 @@ export function Wheel({
                 )}
                 {/* Glow, then the arc itself. */}
                 <circle
+                  className="ring-arc"
                   cx={c} cy={c} r={ring.radius}
                   fill="none" stroke={p.ring} strokeWidth={ring.stroke}
                   strokeLinecap="round"
@@ -173,6 +167,8 @@ export function Wheel({
                   style={arc}
                 />
                 <circle
+                  className="ring-arc"
+                  data-arc={ring.spec.level}
                   cx={c} cy={c} r={ring.radius}
                   fill="none" stroke={p.ring} strokeWidth={ring.stroke}
                   strokeLinecap="round"

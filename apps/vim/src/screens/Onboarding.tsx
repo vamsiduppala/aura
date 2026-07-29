@@ -7,6 +7,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Check, Loader2, MapPin, Search } from 'lucide-react';
+import { AstronomiaEphemeris, computeChart } from '@aura/engine';
 import type { BirthData } from '@aura/engine';
 import { Inset, Pressable } from '../components/neu';
 import { Wheel, WheelCentreKing } from '../components/Wheel';
@@ -20,6 +21,9 @@ import { useNow } from '../hooks/useNow';
 
 type Step = 'name' | 'date' | 'time' | 'place' | 'reveal';
 const ORDER: Step[] = ['name', 'date', 'time', 'place', 'reveal'];
+
+/** One ephemeris for the whole flow — constructing it per render would rebuild its tables. */
+const EPHEMERIS = new AstronomiaEphemeris();
 
 const CONFIDENCES: BirthTimeConfidence[] = ['exact', 'within15min', 'within1hour', 'unknown'];
 
@@ -393,47 +397,27 @@ function Reveal({
   birth, confidence, onDone,
 }: { birth: BirthData; confidence: BirthTimeConfidence; onDone: () => void }) {
   const now = useNow(1000);
-  const [state, setState] = useState<'building' | 'ready' | 'failed'>('building');
-  const [chart, setChart] = useState<import('@aura/engine').Chart | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Yield a frame so the "building" state actually paints, then do the real work.
-    // The duration is whatever the ephemeris takes — nothing here is padded.
-    let alive = true;
-    const id = requestAnimationFrame(async () => {
-      try {
-        const { computeChart, AstronomiaEphemeris } = await import('@aura/engine');
-        const built = computeChart(birth, new AstronomiaEphemeris());
-        if (!alive) return;
-        setChart(built);
-        setState('ready');
-      } catch (e) {
-        if (!alive) return;
-        setError((e as Error).message);
-        setState('failed');
-      }
-    });
-    return () => { alive = false; cancelAnimationFrame(id); };
+  // Computed synchronously. The ephemeris takes a couple of hundred milliseconds, which is
+  // not worth a loading screen — and an earlier version that deferred it behind a frame and
+  // a dynamic import could sit on "building…" forever if either step never resolved. One
+  // fewer moving part is worth more here than a spinner nobody asked for.
+  const { chart, error } = useMemo(() => {
+    try {
+      return { chart: computeChart(birth, EPHEMERIS), error: null as string | null };
+    } catch (e) {
+      return { chart: null, error: (e as Error).message };
+    }
   }, [birth]);
 
-  if (state === 'failed') {
+  if (!chart) {
     return (
       <section className="onboard-step">
         <h1 className="t-page-title">We couldn't build your chart.</h1>
-        <p className="t-sub onboard-hint">Your details are saved. {error}</p>
-        <Pressable variant="primary" onClick={() => location.reload()}>Try again</Pressable>
-      </section>
-    );
-  }
-
-  if (state === 'building' || !chart) {
-    return (
-      <section className="onboard-step onboard-centre">
-        <Loader2 size={26} className="spin" aria-hidden />
-        <p className="t-sub" style={{ marginTop: 14 }} role="status">
-          Placing the planets, finding your Moon's nakṣatra, building your court…
+        <p className="t-sub onboard-hint">
+          Your details are kept — nothing you typed is lost. {error}
         </p>
+        <Pressable variant="primary" onClick={() => location.reload()}>Try again</Pressable>
       </section>
     );
   }

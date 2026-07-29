@@ -233,8 +233,22 @@ keep building. Do not stop with nothing delivered to ask a question you could ha
   ```
   Find layout bugs by **measuring**: `scrollWidth > clientWidth` (clipped text), rects against
   `innerWidth` (overflow), and scan text for `undefined|NaN|null`.
+- **`requestAnimationFrame` does not fire in a background tab.** This cost real time twice in
+  one session: an onboarding screen that deferred its work behind a rAF hung on "building…"
+  forever, and the Wheel's arcs — whose "animate from empty" start state was flipped by a rAF
+  — rendered at **0% for every ring**. Both looked like logic bugs and were neither.
+  → **Rule: never let a value that carries meaning depend on a frame callback.** Make the true
+  value the resting state and let animation be decoration on top. For an enter-from-empty
+  sweep, use a CSS `@keyframes` with only a `from` block plus `animation-fill-mode: backwards`
+  — the implicit `to` is the element's own declared value, so the arc is correct even if the
+  animation never runs. See `.ring-arc` in `theme/components.css`.
 - **Ring hit-testing** must resolve by *nearest ring-centre distance*, not exact hit. At 10–14px
   strokes with 5px gaps, exact testing loses about a fifth of taps.
+- **`useNow` deliberately stops while `document.hidden`.** A measured "the value didn't change
+  over 4 seconds" in a background tab is the power saving working, not a dead clock. Check
+  `document.hidden` before chasing it.
+- **The `.sr-only` node always reports `scrollWidth > clientWidth`.** That is how the clipping
+  technique works — it is a false positive of the layout-measuring sweep, not a bug.
 - **Adjacent rings sharing a planet** blur into one fat band: give the outer one a 2px gap and
   85% opacity.
 
@@ -308,3 +322,90 @@ the four tab screens, Capacitor config, PWA manifest, tests.
 
 **Next step:** add the `birth_time_confidence` column + migration to `apps/api/src/db.ts` and
 plumb it through `PUT /profile` and `rowToProfile` in `apps/api/src/server.ts`.
+
+---
+
+### 2026-07-29 · Claude Opus 5 · M1 + M2 shipped — commit `754d207`
+
+**Did:**
+- `apps/api`: `birth_time_confidence` column with the `PRAGMA table_info` migration pattern,
+  defaulting to `'unknown'`; server clamps any unrecognised value to `'unknown'` so a bad
+  client can't talk it into claiming precision. Plumbed through `PUT /profile` + `rowToProfile`.
+- `apps/vim` complete for M1 + M2: Welcome → Onboarding (name → date → time+confidence →
+  place → reveal) → Timeline (Wheel, Your Court, Biggest Change Ahead) → daśā detail → You.
+  Sign-in/register/continue-on-device with honest degradation.
+- `content/court.ts` — authored per-planet blocks (kingdom image, 4 advantage + 4 obstacle
+  sections) × per-office timescale framing.
+- Website + PWA + Android + iOS from one build: `capacitor.config.ts`, manifest, VitePWA
+  precache, and `scripts/make-icons.mjs` generating a real icon set from the Wheel.
+- `docs/ACCOUNT_AND_COMMERCE.md` — the enterprise gap analysis the product spec never
+  covered. `docs/VIM_ROADMAP.md` — the single work queue for both of us.
+- **306 tests green** (engine 100, knowledge 124, vim 33, web 29, api 20); `npm run typecheck`
+  clean across all five workspaces; production build + PWA generate cleanly.
+
+**Learned / decided:**
+- **`apps/vim/tsconfig.json` must extend `tsconfig.base.json`.** My first version turned on
+  `noUnusedLocals` + `exactOptionalPropertyTypes`, which dragged `packages/engine` and
+  `packages/knowledge` (resolved as source TS through the workspace) into failure on
+  pre-existing code this app doesn't own. Extend the base; don't hold shared packages to
+  stricter rules than the repo applies. **Gemini: do not "fix" those by editing the packages.**
+- `test:` in `vite.config.ts` needs `defineConfig` from **`vitest/config`**, not `vite`.
+- Engine exports `SIGN_NAMES` (a string array), not `RASIS`.
+- jsdom has no `matchMedia`; `src/test/setup.ts` provides a real non-matching one rather than
+  letting `useReducedMotion` swallow a throw and silently disable motion in tests too.
+- The **no-mock-data guard is now a test** (`src/test/no-mock-data.test.tsx`): it greps every
+  `src/**/*.ts(x)` outside `test/` for hardcoded ISO dates, `SAMPLE_*`-style fixtures, banned
+  interpretive words, and superseded vocabulary. It strips comments first, because the engine's
+  own API names (`isBenefic`, `functionalPolarity`) are legitimately discussed in prose.
+- Planner and Mentor ship as **honest empty states**, not stubs that pretend to work. Mentor
+  shows the real locally-computed state block it will hand the model, plus the deepest level it
+  will answer at — useful on its own, and true.
+
+**Broke or left undone:** nothing broken. Outstanding in M2: the Turn colour bleed on a
+boundary crossing, the Saturn starfield / Rāhu counter-drift motion signatures (R16 —
+identity is currently hue + name only), ring long-press chip, first-run tooltip, scrubber.
+Planner (M4) and Mentor (M5) are not built. No browser verification yet.
+
+**Next step:** verify in a real browser at `:5174` — drive onboarding with the native-setter
+JS from §3, then **measure** for clipping (`scrollWidth > clientWidth`), overflow against
+`innerWidth`, and scan for `undefined|NaN|null` in rendered text. Then M4 Planner.
+
+---
+
+### 2026-07-29 · Claude Opus 5 · Browser verification — found and fixed the rAF class of bug
+
+**Did:**
+- Drove the whole real flow at `:5174` with JS (no screenshots): Welcome → name → date →
+  time+confidence → place → reveal → Timeline. Confirmed inputs start empty, the 13+ gate
+  fires, date bounds are 1906–2026, the real Open-Meteo geocoder returns 8 hits for
+  "Hyderabad", and the historical offset resolves to **+5:30 on the birth date**.
+- **Found two bugs by measuring, both the same root cause:** `requestAnimationFrame` never
+  fires in a background tab. The reveal screen hung on "building…", and every wheel arc
+  rendered at **0% filled**. See the new §3 entry — this is now a standing rule.
+- Fixed the reveal by computing the chart synchronously in a `useMemo` (it takes ~200ms; that
+  never warranted a loading screen, let alone a hangable one).
+- Fixed the wheel by inverting the animation: the arc's inline `strokeDashoffset` is now
+  always the true value, and the entrance sweep is a CSS `@keyframes` with only a `from`
+  block. Removed the `loaded` state and the `useReducedMotion` dependency from `Wheel`
+  entirely — the reduced-motion media query already handles it in CSS.
+- Added `src/test/wheel.test.tsx` (5 tests) that would have caught it: arcs are non-zero and
+  non-identical, each matches its seat's `progress` to 4dp, all rings advance when the clock
+  does with the fastest moving most, hidden rings aren't drawn, and every ring carries a
+  screen-reader label.
+- **Verified live:** four independent fills against one real chart — Mars Magistrate 9.99%,
+  Saturn Governor 66.4%, Jupiter PM 23.85%, Venus King 54.0%. No `undefined|NaN|null` in
+  rendered text, no horizontal page scroll, no element overflowing `innerWidth`, no tap
+  target under 44px.
+- Cleared `localStorage` afterwards so the user's first run starts genuinely empty.
+
+**Learned / decided:**
+- The launcher icon is a static PNG **only because every platform requires one**. The in-app
+  Wheel is a live graph and must never be treated as artwork — that distinction is the point
+  of the product. `scripts/make-icons.mjs` derives the icon from the same geometry so they
+  stay consistent.
+
+**Broke or left undone:** M2 leftovers unchanged (Turn colour bleed, Saturn/Rāhu motion
+signatures, long-press chip, first-run tooltip, scrubber).
+
+**Next step:** M4 Planner — plan model stored as inputs only, the questionnaire, stage
+cutting via `chooseCutLevel`, and the pipeline. Details in `docs/VIM_ROADMAP.md`.

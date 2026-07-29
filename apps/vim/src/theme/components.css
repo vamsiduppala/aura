@@ -387,6 +387,25 @@ body {
   height: 100%;
   overflow: visible;
 }
+/* The entrance sweep. Only a `from` keyframe, so the implicit `to` is whatever the element
+   itself declares — the real, live value. `backwards` holds the empty state through the
+   stagger delay; when the animation finishes the arc is back under the element's own
+   inline value and keeps tracking it. Nothing about the fill depends on this running. */
+@keyframes ring-sweep {
+  from {
+    stroke-dashoffset: var(--ring-c);
+  }
+}
+.ring-arc {
+  animation: ring-sweep 1400ms var(--ring-ease) var(--ring-delay, 0ms) backwards;
+}
+/* A ring that bounced past its value would be a lie, so the easing never overshoots. */
+@media (prefers-reduced-motion: reduce) {
+  .ring-arc {
+    animation-delay: 0ms !important;
+  }
+}
+
 .wheel-centre {
   position: absolute;
   inset: 50% auto auto 50%;
