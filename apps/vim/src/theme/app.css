@@ -1,0 +1,424 @@
+/* ===========================================================================
+   Vimshottari — dark neumorphic design system.
+
+   Two rules carry the whole visual language:
+     1. Anything the user TAPS is raised.  Anything things are PUT INTO is inset.
+     2. The white component of every shadow is 5–5.5%. Any more and it reads
+        as a light theme wearing dark paint.
+
+   The base is mid-dark (#1B1D24), never black: a light shadow needs something
+   to lift off. Surfaces, ink and shadow recipes are declared once here and
+   consumed everywhere as custom properties.
+   =========================================================================== */
+
+:root {
+  /* --- Surfaces ---------------------------------------------------------- */
+  --surf-base: #1b1d24;        /* app background */
+  --surf-raised: #1e2129;      /* cards, tab bar, pills */
+  --surf-raised-hi: #232830;   /* selected / active card */
+  --surf-row-hi: #252a34;      /* highlighted list row */
+  --surf-inset: #17191f;       /* carved wells, inputs, progress backgrounds */
+  --surf-well: #181a20;        /* the wheel's well */
+  --surf-track-deep: #101217;  /* deepest track fill */
+  --surf-ring-track: #24272f;  /* unfilled ring */
+  --surf-divider: #282c36;
+  --surf-hairline: #24272f;
+  --surf-outline-dim: #454b57; /* hollow pipeline node */
+  --surf-connector-dim: #3a3f4a;
+
+  /* --- Ink -------------------------------------------------------------- */
+  --ink-primary: #edeff5;
+  --ink-on-accent: #ffffff;
+  --ink-secondary: #9ba1ae;
+  --ink-muted: #8a90a0;
+  --ink-tertiary: #7a8090;
+  --ink-faint: #6e7482;
+  --ink-label: #5c6270;
+  --ink-chevron: #4e5462;
+  --ink-placeholder: #565c6a;
+  --ink-body: #a8aebc;
+  --ink-body-strong: #c4c9d4;
+
+  /* --- Brass: the app's colour for TIME ---------------------------------
+     Used for the accent, the time-left pills and the countdown — so "brass
+     means a clock is running" is learned once. Never use it for anything
+     that isn't temporal or a primary action. */
+  --brass: #d4b678;
+  --brass-bright: #e8c889;
+  --brass-dim: #8a6f3a;
+  --brass-well: #221e16;
+  --brass-border: #3d3320;
+  --brass-label: #6b5b36;
+
+  --danger: #e2342b;
+
+  /* --- Radii ------------------------------------------------------------ */
+  --r-screen: 44px;
+  --r-card: 26px;
+  --r-card-sm: 22px;
+  --r-stage-tab: 16px;
+  --r-panel: 32px;
+  --r-pill: 999px;
+  --r-icon: 7px;
+
+  /* --- Neumorphic shadow recipes ---------------------------------------- */
+  --neu-raised:
+    6px 8px 16px rgb(0 0 0 / 0.6),
+    -5px -6px 12px rgb(255 255 255 / 0.051);
+  --neu-raised-soft:
+    4px 6px 12px rgb(0 0 0 / 0.549),
+    -3px -4px 9px rgb(255 255 255 / 0.051);
+  --neu-raised-press:
+    2px 3px 7px rgb(0 0 0 / 0.5),
+    -1px -2px 5px rgb(255 255 255 / 0.04);
+  /* Floating panels sit much higher off the surface. */
+  --neu-overlay:
+    0 16px 40px rgb(0 0 0 / 0.722),
+    -4px -5px 12px rgb(255 255 255 / 0.059);
+  /* CSS gives real inner shadows for free — this is the half of the language
+     the Flutter build had to hand-paint. */
+  --neu-inset:
+    inset 5px 6px 13px rgb(0 0 0 / 0.78),
+    inset -5px -6px 13px rgb(255 255 255 / 0.055);
+  --neu-inset-soft:
+    inset 3px 4px 9px rgb(0 0 0 / 0.66),
+    inset -3px -4px 9px rgb(255 255 255 / 0.045);
+
+  /* --- Layout ----------------------------------------------------------- */
+  --gutter: 20px;
+  --tabbar-h: 66px;
+  --tabbar-inset: 24px;
+
+  /* Motion. Mirrors src/theme/tokens.ts; kept here so CSS keyframes can use it. */
+  --ring-ease: cubic-bezier(0.33, 1, 0.68, 1);
+
+  color-scheme: dark;
+}
+
+/* ===========================================================================
+   Reset + shell
+   =========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--surf-base);
+  /* Inter first: it carries the Sanskrit diacritics (ā ś ṣ ṁ ṛ) that many
+     display faces drop. Verify any substitute against "Śani Antardaśā". */
+  font-family: Inter, 'Inter Variable', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, system-ui, sans-serif;
+  font-size: 16px;
+  color: var(--ink-primary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Stops the whole page rubber-banding on iOS while inner lists scroll. */
+  overscroll-behavior-y: none;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Every interactive control keeps a visible keyboard ring. */
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ===========================================================================
+   Neumorphic primitives
+   =========================================================================== */
+
+.neu-raised {
+  background: var(--surf-raised);
+  border-radius: var(--r-card);
+  box-shadow: var(--neu-raised);
+}
+
+.neu-raised-soft {
+  background: var(--surf-raised);
+  border-radius: var(--r-card-sm);
+  box-shadow: var(--neu-raised-soft);
+}
+
+.neu-inset {
+  background: var(--surf-inset);
+  border-radius: var(--r-card-sm);
+  box-shadow: var(--neu-inset);
+}
+
+.neu-inset-soft {
+  background: var(--surf-inset);
+  border-radius: var(--r-card-sm);
+  box-shadow: var(--neu-inset-soft);
+}
+
+.neu-overlay {
+  background: var(--surf-raised);
+  border-radius: var(--r-panel);
+  box-shadow: var(--neu-overlay);
+}
+
+/* A raised surface that is also a button: pressing it sinks toward the base.
+   Scale alone reads as a web hover; shrinking the shadow reads as pressure. */
+.neu-press {
+  transition:
+    box-shadow 120ms ease-out,
+    transform 120ms ease-out;
+}
+.neu-press:active {
+  box-shadow: var(--neu-raised-press);
+  transform: translateY(1px) scale(0.985);
+}
+
+/* Every tap target clears 44px, using invisible padding when the visual is smaller. */
+.tap {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===========================================================================
+   Type scale
+   =========================================================================== */
+
+.t-page-title {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--ink-primary);
+  margin: 0;
+}
+.t-screen-title {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--ink-primary);
+  margin: 0;
+}
+.t-plan-title {
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin: 0;
+}
+/* The "In the Kingdom" block — biggest text after the heading. */
+.t-kingdom {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.41;
+  color: var(--ink-primary);
+  margin: 0;
+}
+.t-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+.t-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--ink-label);
+}
+.t-office {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+.t-lord-line {
+  font-size: 11px;
+  font-weight: 500;
+}
+.t-duration-note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-tertiary);
+}
+.t-body {
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--ink-body);
+}
+.t-sub {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-secondary);
+}
+
+/* The one highlighted value in the court table: brass on a carved brass well. */
+.time-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  background: var(--brass-well);
+  border: 1px solid var(--brass-border);
+  color: var(--brass-bright);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.time-pill[data-urgent='true'] {
+  color: #ffb3ac;
+  border-color: #47201d;
+  background: #2a1512;
+}
+
+/* ===========================================================================
+   Screen scaffolding
+   =========================================================================== */
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* The scrolling body of a tab. Bottom padding clears the floating tab bar so
+   the last card is never trapped underneath it. */
+.screen-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  padding-inline: var(--gutter);
+  padding-top: max(env(safe-area-inset-top), 12px);
+  padding-bottom: calc(
+    var(--tabbar-h) + var(--tabbar-inset) + env(safe-area-inset-bottom) + 28px
+  );
+  scrollbar-width: none;
+}
+.screen-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sections far down a long scroll don't need to be laid out until they're near. */
+.deferred {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===========================================================================
+   Floating tab bar
+   =========================================================================== */
+
+.tabbar {
+  position: fixed;
+  left: var(--tabbar-inset);
+  right: var(--tabbar-inset);
+  bottom: calc(env(safe-area-inset-bottom) + var(--tabbar-inset));
+  height: var(--tabbar-h);
+  z-index: 20;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  align-items: center;
+  background: var(--surf-raised);
+  border-radius: var(--r-card);
+  box-shadow: var(--neu-raised);
+  /* Never wider than the content column on a tablet or desktop window. */
+  max-width: calc(393px - 2 * var(--tabbar-inset));
+  margin-inline: auto;
+}
+
+.tabbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  color: var(--ink-faint);
+  font-size: 11px;
+  font-weight: 600;
+  transition: color 160ms ease-out;
+}
+.tabbar-item[aria-current='page'] {
+  color: var(--brass);
+}
+
+/* ===========================================================================
+   Accessibility + performance overrides
+   =========================================================================== */
+
+/* Under reduced motion: kill the halo, the crawl and the star drift; snap rings
+   to their final values; keep strokes and glows. Nothing here is load-bearing
+   for comprehension — every animated value is also rendered as text. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Neumorphism is entirely shadow-based, so forced-colors mode erases it.
+   Fall back to explicit borders, which is the only thing that survives. */
+@media (forced-colors: active) {
+  .neu-raised,
+  .neu-raised-soft,
+  .neu-inset,
+  .neu-inset-soft,
+  .neu-overlay,
+  .tabbar {
+    box-shadow: none;
+    border: 1px solid CanvasText;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --ink-body: #ccd2de;
+    --ink-secondary: #b6bcc9;
+    --ink-tertiary: #a0a6b4;
+    --ink-label: #8d93a1;
+  }
+}

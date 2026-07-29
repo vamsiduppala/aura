@@ -33,7 +33,13 @@ export interface UserRow { id: number; email: string; password_hash: string; sal
 export interface ProfileRow {
   user_id: number; birth_date: string; birth_time: string | null; unknown_time: number;
   place: string; lat: number; lng: number; tz_offset: number;
-  goal_area: string; goal_name: string; display_name: string; updated_at: string;
+  goal_area: string; goal_name: string; display_name: string;
+  /** How well the birth time is known: exact | within15min | within1hour | unknown.
+   *  Load-bearing, not a preference — it decides which dasha levels the app is allowed
+   *  to state as fact, because one minute of error offsets every boundary in the tree
+   *  by up to five days and that error never shrinks. */
+  birth_time_confidence: string;
+  updated_at: string;
 }
 
 let db: DatabaseSync;
@@ -71,11 +77,19 @@ export function openDb(path = process.env.AURA_DB_PATH ?? DEFAULT_PATH): Databas
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `);
-  // Migration: profiles.display_name (the person's own name, shown in the app chrome). SQLite has
-  // no "ADD COLUMN IF NOT EXISTS", so check the table info first — keeps older DBs working.
+  // Migrations. SQLite has no "ADD COLUMN IF NOT EXISTS", so check the table info first —
+  // keeps older DBs working across upgrades.
   const cols = db.prepare('PRAGMA table_info(profiles)').all() as unknown as { name: string }[];
-  if (!cols.some((c) => c.name === 'display_name')) {
+  const has = (name: string) => cols.some((c) => c.name === name);
+  // display_name: the person's own name, shown in the app chrome.
+  if (!has('display_name')) {
     db.exec("ALTER TABLE profiles ADD COLUMN display_name TEXT NOT NULL DEFAULT ''");
+  }
+  // birth_time_confidence: gates which dasha levels may be stated as fact. Existing rows
+  // default to 'unknown' — the most conservative value, so an un-migrated profile can never
+  // silently claim precision it was never asked about.
+  if (!has('birth_time_confidence')) {
+    db.exec("ALTER TABLE profiles ADD COLUMN birth_time_confidence TEXT NOT NULL DEFAULT 'unknown'");
   }
   return db;
 }
@@ -115,12 +129,13 @@ export function upsertProfile(p: ProfileRow): void {
   const { updated_at: _ignored, ...params } = p; // updated_at is set by datetime('now'), not bound
   void _ignored;
   getDb().prepare(`
-    INSERT INTO profiles (user_id, birth_date, birth_time, unknown_time, place, lat, lng, tz_offset, goal_area, goal_name, display_name, updated_at)
-    VALUES (@user_id, @birth_date, @birth_time, @unknown_time, @place, @lat, @lng, @tz_offset, @goal_area, @goal_name, @display_name, datetime('now'))
+    INSERT INTO profiles (user_id, birth_date, birth_time, unknown_time, place, lat, lng, tz_offset, goal_area, goal_name, display_name, birth_time_confidence, updated_at)
+    VALUES (@user_id, @birth_date, @birth_time, @unknown_time, @place, @lat, @lng, @tz_offset, @goal_area, @goal_name, @display_name, @birth_time_confidence, datetime('now'))
     ON CONFLICT(user_id) DO UPDATE SET
       birth_date=@birth_date, birth_time=@birth_time, unknown_time=@unknown_time, place=@place,
       lat=@lat, lng=@lng, tz_offset=@tz_offset, goal_area=@goal_area, goal_name=@goal_name,
-      display_name=@display_name, updated_at=datetime('now')
+      display_name=@display_name, birth_time_confidence=@birth_time_confidence,
+      updated_at=datetime('now')
   `).run(params as unknown as Record<string, string | number | null>);
 }
 

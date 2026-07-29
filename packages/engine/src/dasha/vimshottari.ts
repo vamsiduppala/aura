@@ -139,6 +139,58 @@ export function getStackAt(
 }
 
 /**
+ * The five nested periods active at `at` — maha…prana — each with its own real
+ * start and end. `getStackAt` answers *who* rules; this answers *for how long*,
+ * which is what a progress ring needs (fill = elapsed ÷ that period's own length).
+ *
+ * Five arithmetic descents, no full-tree build. Returns [] outside the computed
+ * cycles, or a short array if a level can't be resolved.
+ */
+export function getCourtAt(
+  moonLong: number,
+  birth: Date,
+  at: Date,
+  opts: DashaOptions = DEFAULT_OPTS,
+): DashaPeriod[] {
+  const ms = at.getTime();
+  let spans = mahaSpans(moonLong, birth.getTime(), opts);
+  let span = spanContaining(spans, ms);
+  if (!span) return [];
+  const toPeriod = (s: Span, level: DashaLevel): DashaPeriod => ({
+    lord: s.lord, level, start: new Date(s.startMs), end: new Date(s.endMs),
+  });
+  const out: DashaPeriod[] = [toPeriod(span, 'maha')];
+  for (let i = 1; i < LEVELS.length; i++) {
+    spans = subSpans(span, opts);
+    const next = spanContaining(spans, ms);
+    if (!next) return out;
+    span = next;
+    out.push(toPeriod(span, LEVELS[i]!));
+  }
+  return out;
+}
+
+/**
+ * The period at `level` that takes over once the one running at `after` ends —
+ * i.e. the next handover at that level. Powers "biggest change ahead" countdowns.
+ */
+export function nextPeriodAt(
+  moonLong: number,
+  birth: Date,
+  level: DashaLevel,
+  after: Date,
+  opts: DashaOptions = DEFAULT_OPTS,
+): DashaPeriod | null {
+  const depth = LEVELS.indexOf(level);
+  const now = getCourtAt(moonLong, birth, after, opts);
+  const current = now[depth];
+  if (!current) return null;
+  // +1ms lands strictly inside the following period; boundaries are half-open.
+  const nextCourt = getCourtAt(moonLong, birth, new Date(current.end.getTime() + 1), opts);
+  return nextCourt[depth] ?? null;
+}
+
+/**
  * All periods at `level` overlapping [from,to], as DashaPeriod list (ordered).
  * Used to build forecasts.
  */

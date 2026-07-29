@@ -36,6 +36,7 @@ export {
 export {
   nakshatraOf, padaOf, startingMahaLord, nakshatraElapsedFraction,
   getStackAt, getPeriodsAt, buildDashaTree, currentMaha,
+  getCourtAt, nextPeriodAt,
   type DashaOptions,
 } from './dasha/vimshottari.js';
 

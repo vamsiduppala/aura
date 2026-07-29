@@ -11,19 +11,23 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "concurrently -n api,web -c blue,magenta \"npm run dev:api\" \"npm run dev:web\"",
+    "dev": "concurrently -n api,vim -c blue,yellow \"npm run dev:api\" \"npm run dev:vim\"",
     "dev:api": "npm run dev --workspace apps/api",
+    "dev:vim": "npm run dev --workspace apps/vim",
     "dev:web": "npm run dev --workspace apps/web",
-    "test": "npm run test --workspace packages/engine && npm run test --workspace packages/knowledge && npm run test --workspace apps/web && npm run test --workspace apps/api",
+    "dev:all": "concurrently -n api,vim,web -c blue,yellow,magenta \"npm run dev:api\" \"npm run dev:vim\" \"npm run dev:web\"",
+    "test": "npm run test --workspace packages/engine && npm run test --workspace packages/knowledge && npm run test --workspace apps/vim && npm run test --workspace apps/web && npm run test --workspace apps/api",
     "test:engine": "npm run test --workspace packages/engine",
     "test:knowledge": "npm run test --workspace packages/knowledge",
+    "test:vim": "npm run test --workspace apps/vim",
     "test:web": "npm run test --workspace apps/web",
     "test:api": "npm run test --workspace apps/api",
-    "typecheck": "npm run typecheck --workspace packages/engine && npm run typecheck --workspace packages/knowledge && npm run typecheck --workspace apps/web && npm run typecheck --workspace apps/api",
+    "typecheck": "npm run typecheck --workspace packages/engine && npm run typecheck --workspace packages/knowledge && npm run typecheck --workspace apps/vim && npm run typecheck --workspace apps/web && npm run typecheck --workspace apps/api",
     "api": "npm run start --workspace apps/api",
     "engine:test": "npm run test --workspace packages/engine",
     "engine:build": "npm run build --workspace packages/engine",
-    "build": "npm run build --workspace apps/web",
+    "build": "npm run build --workspace apps/vim",
+    "build:web": "npm run build --workspace apps/web",
     "start": "npm run build && npm run start --workspace apps/api"
   },
   "devDependencies": {

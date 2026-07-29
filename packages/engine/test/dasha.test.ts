@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   nakshatraOf, padaOf, startingMahaLord, nakshatraElapsedFraction,
   getStackAt, getPeriodsAt, buildDashaTree, currentMaha,
+  getCourtAt, nextPeriodAt,
 } from '../src/dasha/vimshottari.js';
 import {
   NAKSHATRAS, NAKSHATRA_ARC, VIMSHOTTARI_YEARS, VIMSHOTTARI_ORDER,
@@ -132,6 +133,75 @@ describe('Vimshottari period tree (SPEC §4.4)', () => {
     for (const lord of Object.values(stack)) {
       expect(VIMSHOTTARI_ORDER).toContain(lord);
     }
+  });
+});
+
+describe('getCourtAt — the five nested periods with real boundaries', () => {
+  // Same crafted golden as above: Moon mid-Ashwini → Ketu maha, 3.5y balance.
+  const birth = new Date('2000-01-01T00:00:00.000Z');
+  const moonLong = NAKSHATRA_ARC * 0.5;
+
+  it('returns five levels whose lords match getStackAt', () => {
+    const at = new Date('2005-07-04T08:15:00Z');
+    const court = getCourtAt(moonLong, birth, at);
+    const stack = getStackAt(moonLong, birth, at)!;
+    expect(court.map((p) => p.level)).toEqual(['maha', 'antar', 'pratyantar', 'sookshma', 'prana']);
+    expect(court.map((p) => p.lord))
+      .toEqual([stack.maha, stack.antar, stack.pratyantar, stack.sookshma, stack.prana]);
+  });
+
+  it('each period contains the instant, and nests strictly inside its parent', () => {
+    const at = new Date('2011-11-11T11:11:11Z');
+    const court = getCourtAt(moonLong, birth, at);
+    for (const p of court) {
+      expect(p.start.getTime()).toBeLessThanOrEqual(at.getTime());
+      expect(p.end.getTime()).toBeGreaterThan(at.getTime());
+    }
+    for (let i = 1; i < court.length; i++) {
+      expect(court[i]!.start.getTime()).toBeGreaterThanOrEqual(court[i - 1]!.start.getTime());
+      expect(court[i]!.end.getTime()).toBeLessThanOrEqual(court[i - 1]!.end.getTime());
+    }
+  });
+
+  it('level lengths shrink by 120 per step, so the maha is 120^4 the prana', () => {
+    // duration(child) = duration(parent) x childYears/120, so summing a level
+    // gives exactly the parent. A prana is therefore ~120^4 shorter than its maha.
+    const court = getCourtAt(moonLong, birth, birth);
+    const len = (i: number) => court[i]!.end.getTime() - court[i]!.start.getTime();
+    expect(len(0)).toBeCloseTo(VIMSHOTTARI_YEARS.ketu * YEAR_MS, -3);
+    for (let i = 1; i < 5; i++) {
+      const ratio = len(i - 1) / len(i);
+      // each step divides by 120/childYears, i.e. between 120/20=6 and 120/6=20
+      expect(ratio).toBeGreaterThanOrEqual(120 / 20 - 1e-9);
+      expect(ratio).toBeLessThanOrEqual(120 / 6 + 1e-9);
+    }
+  });
+
+  it('at birth, the maha is Ketu with 3.5y left (book balance formula)', () => {
+    const court = getCourtAt(moonLong, birth, birth);
+    expect(court[0]!.lord).toBe('ketu');
+    expect(yearsBetween(birth.toISOString(), court[0]!.end.toISOString())).toBeCloseTo(3.5, 6);
+  });
+
+  it('is empty outside the computed cycles', () => {
+    expect(getCourtAt(moonLong, birth, new Date('1900-01-01T00:00:00Z'))).toEqual([]);
+  });
+
+  it('nextPeriodAt hands over exactly where the current period ends', () => {
+    const at = new Date('2005-07-04T08:15:00Z');
+    const court = getCourtAt(moonLong, birth, at);
+    for (let i = 0; i < 5; i++) {
+      const level = court[i]!.level;
+      const next = nextPeriodAt(moonLong, birth, level, at)!;
+      expect(next).not.toBeNull();
+      expect(next.start.getTime()).toBe(court[i]!.end.getTime());
+      expect(next.lord).not.toBe(court[i]!.lord); // adjacent periods never repeat a lord
+    }
+  });
+
+  it('nextPeriodAt at maha level follows the Vimshottari order', () => {
+    const next = nextPeriodAt(moonLong, birth, 'maha', birth)!;
+    expect(next.lord).toBe('venus'); // Ketu -> Venus
   });
 });
 

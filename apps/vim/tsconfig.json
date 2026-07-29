@@ -1,0 +1,18 @@
+{
+  // Extends the repo baseline, like apps/web does, so `npm run typecheck` applies one
+  // consistent standard everywhere. Turning extra strictness on here instead would hold
+  // the shared workspace packages to rules the rest of the repo doesn't apply, and the
+  // failures would all be in code this app doesn't own.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "noEmit": true,
+    "declaration": false,
+    "sourceMap": false,
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] }
+  },
+  "include": ["src", "vite.config.ts"]
+}

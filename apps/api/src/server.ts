@@ -153,8 +153,14 @@ export function buildServer() {
       place: r.place, lat: r.lat, lng: r.lng, tzOffsetMinutes: r.tz_offset,
     },
     goalArea: r.goal_area, goalName: r.goal_name, displayName: r.display_name || '',
+    birthTimeConfidence: r.birth_time_confidence || 'unknown',
     updatedAt: r.updated_at,
   });
+  // How well the birth time is known. Anything unrecognised becomes 'unknown' — the most
+  // conservative value — so a bad client can never talk the server into claiming precision.
+  const CONFIDENCES = ['exact', 'within15min', 'within1hour', 'unknown'] as const;
+  const cleanConfidence = (v: unknown): string =>
+    typeof v === 'string' && (CONFIDENCES as readonly string[]).includes(v) ? v : 'unknown';
 
   app.post('/auth/register', async (req, reply) => {
     const b = req.body as { email?: string; password?: string };
@@ -181,7 +187,10 @@ export function buildServer() {
   app.put('/profile', async (req, reply) => {
     const user = userForToken(bearer(req));
     if (!user) return reply.code(401).send({ error: 'not authenticated' });
-    const b = req.body as { birth?: Record<string, unknown>; goalArea?: string; goalName?: string; displayName?: string };
+    const b = req.body as {
+      birth?: Record<string, unknown>; goalArea?: string; goalName?: string;
+      displayName?: string; birthTimeConfidence?: string;
+    };
     const birth = b?.birth;
     if (!birth || !birth.date || birth.lat == null || birth.lng == null || birth.tzOffsetMinutes == null || !birth.place) {
       return reply.code(400).send({ error: 'birth { date, place, lat, lng, tzOffsetMinutes } required' });
@@ -192,7 +201,9 @@ export function buildServer() {
       unknown_time: birth.unknownTime ? 1 : 0, place: String(birth.place),
       lat: Number(birth.lat), lng: Number(birth.lng), tz_offset: Number(birth.tzOffsetMinutes),
       goal_area: b.goalArea ?? 'career', goal_name: b.goalName ?? '',
-      display_name: (b.displayName ?? '').slice(0, 60), updated_at: '',
+      display_name: (b.displayName ?? '').slice(0, 60),
+      birth_time_confidence: cleanConfidence(b.birthTimeConfidence),
+      updated_at: '',
     });
     return { ok: true };
   });

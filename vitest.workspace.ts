@@ -8,4 +8,6 @@ export default [
   'packages/knowledge/vitest.config.ts',
   'apps/web/vitest.config.ts',
   'apps/api/vitest.config.ts',
+  // The new Vimshottari app keeps its test config inside vite.config.ts.
+  'apps/vim/vite.config.ts',
 ];

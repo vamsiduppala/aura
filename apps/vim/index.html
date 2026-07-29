@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover so env(safe-area-inset-*) is non-zero on notched phones;
+         interactive-widget=resizes-content so the keyboard shrinks the layout instead
+         of scrolling the whole page under a floating input bar. -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#1B1D24" />
+    <meta
+      name="description"
+      content="Five rulers hold your chart at once, at five different speeds. See who is in office right now, and for how long."
+    />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <title>Vimshottari — Vedic timing, in plain English</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
