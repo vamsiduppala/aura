@@ -51,7 +51,8 @@ Legend: **[x]** done · **[~]** partially done, see note · **[ ]** not started
 - [ ] First-run Wheel tooltip, once only.
 - [ ] Scrubber (`◀1y ◀1m NOW 1m▶ 1y▶` + Jump to date) with the persistent
       "Viewing 12 Mar 2029 — Return to now" pill. Spec defers this to v1.1.
-- [ ] Verify in a real browser: measure for clipping/overflow, drive the flow with JS.
+- [x] Verify in a real browser: measure for clipping/overflow, drive the flow with JS.
+      Done against a real profile; found and fixed the rAF bug and a 46x28 tap target.
 
 ## M3 · Content depth
 
@@ -63,16 +64,16 @@ Legend: **[x]** done · **[~]** partially done, see note · **[ ]** not started
 
 ## M4 · Planner
 
-- [ ] Plan model stored as **inputs only** (category, situation, horizon) — never computed
+- [x] Plan model stored as **inputs only** (category, situation, horizon) — never computed
       dates, so an engine fix can't leave stale rows.
-- [ ] New-plan questionnaire: category chips → situation chips + free text → horizon
+- [x] New-plan questionnaire: category chips → situation chips + free text → horizon
       (with the "that's a fast one" push-back) → reminders.
-- [ ] Stage cutting via `chooseCutLevel` + `periodsBetween`. **2–9 stages, never padded.**
+- [x] Stage cutting via `chooseCutLevel` + `periodsBetween`. **2–9 stages, never padded.**
       Exactly 1 period → a single card, no pipeline.
-- [ ] Stage headings from per-planet verb families × category. Never "Phase 1".
-- [ ] The pipeline: nodes, connectors, three stage states, breathing halo on the current
+- [x] Stage headings from per-planet verb families × category. Never "Phase 1".
+- [x] The pipeline: nodes, connectors, three stage states, breathing halo on the current
       stage, crawling dashed connector, checkmark draw-in.
-- [ ] Plan detail wheel + task detail with Advantage/Obstacle and a real checklist.
+- [x] Plan detail wheel + task detail with Advantage/Obstacle and a real checklist.
 - [ ] Course Correct + **the diff view** — never rewrite a plan silently.
 - [ ] Archive / delete with named confirms.
 
@@ -133,7 +134,7 @@ Full detail in **`docs/ACCOUNT_AND_COMMERCE.md`**. Ordered by severity, not by e
 Every chunk, before commit:
 
 - [ ] `npm run typecheck` clean across all five workspaces.
-- [ ] `npm test` green (currently 306 tests: engine 100, knowledge 124, vim 33, web 29,
+- [ ] `npm test` green (currently 325 tests: engine 100, knowledge 124, vim 52, web 29,
       api 20).
 - [ ] No mock/static/demo data on any user-facing path — the guard test enforces it.
 - [ ] New calculations verified against a worked example, cited in the test name.

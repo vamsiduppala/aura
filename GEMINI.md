@@ -247,6 +247,13 @@ keep building. Do not stop with nothing delivered to ask a question you could ha
 - **`useNow` deliberately stops while `document.hidden`.** A measured "the value didn't change
   over 4 seconds" in a background tab is the power saving working, not a dead clock. Check
   `document.hidden` before chasing it.
+- **PowerShell `Get-Content` / `Set-Content` round-trips corrupt UTF-8 here.** A
+  `(Get-Content x) -replace ... | Set-Content -Encoding utf8 x` turned every em-dash in
+  `useVim.ts` into mojibake. Recovered with `git checkout --`. **Do batch edits with a Python
+  heredoc using `io.open(..., encoding='utf-8')` and `assert` on each replacement count.**
+- **`content-visibility: auto` makes `innerText` return `''` for off-screen subtrees.** The
+  `.deferred` class uses it, so a measurement sweep must read `textContent` there, not
+  `innerText`. It is not a rendering bug.
 - **The `.sr-only` node always reports `scrollWidth > clientWidth`.** That is how the clipping
   technique works — it is a false positive of the layout-measuring sweep, not a bug.
 - **Adjacent rings sharing a planet** blur into one fat band: give the outer one a 2px gap and
@@ -409,3 +416,48 @@ signatures, long-press chip, first-run tooltip, scrubber).
 
 **Next step:** M4 Planner — plan model stored as inputs only, the questionnaire, stage
 cutting via `chooseCutLevel`, and the pipeline. Details in `docs/VIM_ROADMAP.md`.
+
+---
+
+### 2026-07-29 · Claude Opus 5 · M4 Planner + full end-to-end verification — commit `c72cc2c`
+
+**Did:**
+- Built M4: `content/plans.ts` (9 categories, situation chips, **81 stage headings** = 9
+  categories x 9 planets, per-planet checklists), `core/plan.ts` (`derivePlan`, `stageMode`,
+  horizon helpers), `services/plans.ts` (per-identity local storage), and the three screens —
+  `Planner` (list + real empty state), `NewPlan` (4-step questionnaire), `PlanDetail` (plan
+  wheel + The Path pipeline), `StageDetail` (task detail + checklist).
+- Store: `plans` state, `addPlan`/`updatePlan`/`toggleCheck`/`removePlan`, and `useIdentity()`
+  so the profile slot and the plans slot **always switch together** — a half-switched identity
+  would put one person's plans against another person's chart.
+- **Verified the whole app end to end against one real profile** (born 11 Apr 1997, 20:55,
+  Visakhapatnam) with a real account on the local API. Everything in the commit message.
+  Notably: the location block derives lat/lng/zone/offset from the place name alone, and the
+  chart's Lahiri ayanāṁśa (23.8150° for 1997) is right to the arcminute.
+- Hand-checked one suspicious-looking result and it was correct: the Governor and Magistrate
+  showed the same "7d 8h left" because the Venus sūkṣma is the **last child** of the Sun
+  pratyantar (46.3 x 20/120 = 7.7 days), so they genuinely share an end instant.
+- Fixed the Sanskrit toggle's hit area (46x28 → 46x46 via invisible padding).
+- 52 vim tests (up from 38). 325 across five workspaces. Typecheck clean.
+
+**Learned / decided:**
+- **Stage state is derived, never stored.** The only persisted per-stage value is the user's
+  own checklist ticks, keyed `"<ordinal>:<itemIndex>"`. Confirmed in the browser: the stored
+  plan object has exactly nine keys and none of them is `stages`.
+- **Push/Pause comes from the ruling planet**, not from the category: Mars/Sun/Jupiter/
+  Mercury/Rāhu push, Saturn/Venus/Moon/Ketu pause. It is a claim about which *kind of effort*
+  gets traction, never about the outcome.
+- A test that asserts "the running stage has progress > 0" is **wrong**: a plan created this
+  instant has a running stage legitimately at 0%. Test the real property, and add a separate
+  case with a past `createdAt` for genuine elapsed progress.
+- Two new §3 traps: PowerShell UTF-8 corruption, and `content-visibility: auto` emptying
+  `innerText`.
+
+**Broke or left undone:** M2 leftovers still open (Turn colour bleed on a boundary crossing,
+Saturn starfield / Rāhu counter-drift, ring long-press chip, first-run tooltip, scrubber).
+Planner has no Course Correct / diff view and no archive action yet. Mentor (M5) is still the
+honest state block only. None of M6 (account/commerce) has started.
+
+**Next step:** M5 Mentor — threads, streaming, tool-calling over the engine, source
+disclosure, safety pre-check. Or M6-1 session hardening if security should come first; that
+one is a genuine S1 (tokens are stored in plaintext and never expire).
