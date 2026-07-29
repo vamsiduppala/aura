@@ -1,19 +1,22 @@
-// Planner — plans, timed against the chart and cut into stages by real daśā boundaries.
+// Planner — the plans list. Home tab.
 //
-// Plans are stored as their INPUTS only (category, situation, horizon), never as computed
-// dates. Stages are re-derived from the tree on every render, so an engine fix can never
-// leave behind stale rows that look indistinguishable from good ones.
+// Every number on a card is derived at render time: which stage is running, how far through
+// the window you are, how many days are left. Nothing about a stage is stored except the
+// checklist ticks, so a plan can never drift out of sync with the chart it was cut from.
 
 import { useMemo } from 'react';
-import { Plus } from 'lucide-react';
-import { Pressable } from '../components/neu';
+import { ChevronRight, Plus } from 'lucide-react';
+import { Pressable, ProgressTrack } from '../components/neu';
+import { categoryDef } from '../content/plans';
 import { courtAt } from '../core/court';
+import { derivePlan, stageMode, type Plan } from '../core/plan';
+import { humanRemaining, shortDate } from '../core/time';
 import { useNow } from '../hooks/useNow';
 import { PLANET } from '../theme/tokens';
 import { useVim } from '../store/useVim';
 
 export function Planner() {
-  const { chart, confidence, setTab } = useVim();
+  const { chart, confidence, plans, go } = useVim();
   const now = useNow(60_000);
   const seats = useMemo(
     () => (chart ? courtAt(chart, now, confidence) : []),
@@ -21,6 +24,9 @@ export function Planner() {
   );
   const king = seats[0];
   const pm = seats[1];
+
+  const active = plans.filter((p) => !p.archived);
+  const archived = plans.filter((p) => p.archived);
 
   return (
     <div className="screen-scroll">
@@ -39,25 +45,121 @@ export function Planner() {
             </p>
           )}
         </div>
-        <Pressable aria-label="New plan" className="head-add" disabled>
+        <Pressable
+          aria-label="New plan"
+          className="head-add"
+          onClick={() => go({ kind: 'newPlan' })}
+        >
           <Plus size={20} aria-hidden />
         </Pressable>
       </header>
 
-      <div className="empty-state neu-raised">
-        <h2 className="t-plan-title">Nothing planned yet.</h2>
-        <p className="t-body">
-          A plan takes something you want to move on and cuts it into stages along your own
-          daśā boundaries — so you know which stretch rewards pushing and which one doesn't.
-        </p>
-        <p className="t-duration-note">
-          Plan creation is the next thing being built. Until then, the Timeline is complete
-          and works offline.
-        </p>
-        <Pressable variant="primary" onClick={() => setTab('timeline')}>
-          See my timeline
-        </Pressable>
+      {active.length === 0 && (
+        <div className="empty-state neu-raised">
+          <h2 className="t-plan-title">Nothing planned yet.</h2>
+          <p className="t-body">
+            Pick something you actually want to move on. We'll time it against your chart and
+            cut it into stages along your own daśā boundaries — so you know which stretch
+            rewards pushing and which one doesn't.
+          </p>
+          <Pressable variant="primary" onClick={() => go({ kind: 'newPlan' })}>
+            Start a plan
+          </Pressable>
+        </div>
+      )}
+
+      <div className="stack" style={{ gap: 14, marginTop: 4 }}>
+        {active.map((plan) => <PlanCard key={plan.id} plan={plan} now={now} />)}
       </div>
+
+      {archived.length > 0 && (
+        <>
+          <h2 className="t-section-label" style={{ margin: '28px 0 10px 4px' }}>Archived</h2>
+          <div className="stack" style={{ gap: 14 }}>
+            {archived.map((plan) => <PlanCard key={plan.id} plan={plan} now={now} archived />)}
+          </div>
+        </>
+      )}
     </div>
+  );
+}
+
+function PlanCard({ plan, now, archived }: { plan: Plan; now: Date; archived?: boolean }) {
+  const { chart, confidence, go } = useVim();
+  const derived = useMemo(
+    () => (chart ? derivePlan(plan, chart, confidence, now) : null),
+    [plan, chart, confidence, now],
+  );
+  if (!derived) return null;
+
+  const stage = derived.current ?? derived.stages[derived.stages.length - 1];
+  const p = stage ? PLANET[stage.lord] : null;
+  const mode = stage ? stageMode(stage.lord) : null;
+
+  return (
+    <button
+      type="button"
+      className="plan-card neu-raised neu-press"
+      data-archived={archived}
+      onClick={() => go({ kind: 'plan', id: plan.id })}
+    >
+      {/* The mini wheel: one ring, this stage's own progress. Same rule as the big
+          wheel — elapsed over THIS period, never absolute time. */}
+      <span className="mini-ring" aria-hidden>
+        <svg viewBox="0 0 64 64" width="64" height="64">
+          <circle cx="32" cy="32" r="27" fill="none" stroke="var(--surf-ring-track)" strokeWidth="5" />
+          {p && stage && (
+            <circle
+              className="ring-arc"
+              cx="32" cy="32" r="27" fill="none" stroke={p.ring} strokeWidth="5"
+              strokeLinecap="round"
+              transform="rotate(-90 32 32)"
+              style={{
+                strokeDasharray: 2 * Math.PI * 27,
+                strokeDashoffset: 2 * Math.PI * 27 * (1 - stage.progress),
+                ['--ring-c' as string]: `${2 * Math.PI * 27}`,
+              }}
+            />
+          )}
+        </svg>
+        {stage && (
+          <span className="mini-ring-label">
+            <b>{stage.ordinal}</b>
+            <em>of {derived.stages.length}</em>
+          </span>
+        )}
+      </span>
+
+      <span className="plan-body">
+        <span className="t-plan-title plan-title">{plan.title}</span>
+        <span className="t-duration-note">
+          {categoryDef(plan.category).label} · cut by {derived.cutOffice.label} terms
+        </span>
+        {stage && p && mode && (
+          <span className="plan-meta">
+            <span className="mode-pill" data-mode={mode} style={{ color: p.tabInk, background: p.tabFill }}>
+              {mode === 'push' ? 'PUSH' : 'PAUSE'}
+            </span>
+            <span className="plan-meta-text">
+              {p.name} · {humanRemaining(stage.remainingMs)} left
+            </span>
+          </span>
+        )}
+        <span className="plan-progress">
+          <ProgressTrack
+            value={derived.overallProgress}
+            tint={p?.ring ?? 'var(--brass)'}
+            label={`${plan.title}, ${Math.round(derived.overallProgress * 100)} percent through`}
+          />
+          <span className="plan-target">
+            {derived.daysLeft > 0
+              ? `${shortDate(new Date(`${plan.horizonEnd}T12:00:00`))}`
+              : 'target passed'}
+          </span>
+        </span>
+      </span>
+
+      <ChevronRight size={16} className="court-chevron plan-chevron" aria-hidden />
+    </button>
   );
 }

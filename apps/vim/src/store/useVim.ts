@@ -9,10 +9,12 @@ import { create } from 'zustand';
 import { AstronomiaEphemeris, computeChart } from '@aura/engine';
 import type { BirthData, Chart } from '@aura/engine';
 import type { BirthTimeConfidence } from '../core/court';
+import type { Plan } from '../core/plan';
 import {
   loadProfile, saveProfile as saveLocal, clearAll, setStorageIdentity,
   loadPrefs, savePrefs, DEFAULT_PREFS, type Prefs, type StoredProfile,
 } from '../services/storage';
+import { clearPlans, loadPlans, savePlans, setPlansIdentity } from '../services/plans';
 import {
   me, login as apiLogin, register as apiRegister, logout as apiLogout,
   saveProfile as apiSaveProfile, deleteAccount as apiDeleteAccount, apiReachable,
@@ -31,7 +33,11 @@ export type Route =
   | { kind: 'onboarding' }
   | { kind: 'tabs' }
   /** The daśā detail page for one office, reached from a ring or a court row. */
-  | { kind: 'office'; level: number };
+  | { kind: 'office'; level: number }
+  | { kind: 'newPlan' }
+  | { kind: 'plan'; id: string }
+  /** One stage of a plan, reached from the pipeline. */
+  | { kind: 'stage'; id: string; ordinal: number };
 
 interface Derived {
   chart: Chart | null;
@@ -65,6 +71,9 @@ export interface VimState {
   chart: Chart | null;
   chartError: string | null;
 
+  /** Inputs only — stages are always recomputed from the tree, never persisted. */
+  plans: Plan[];
+
   prefs: Prefs;
 
   /** True only when these birth details were entered in this browser session. A profile
@@ -91,6 +100,11 @@ export interface VimState {
   setConfidence: (c: BirthTimeConfidence) => void;
   setPrefs: (patch: Partial<Prefs>) => void;
   deleteEverything: () => void;
+
+  addPlan: (plan: Plan) => void;
+  updatePlan: (id: string, patch: Partial<Plan>) => void;
+  toggleCheck: (id: string, ordinal: number, itemIndex: number) => void;
+  removePlan: (id: string) => void;
 }
 
 /** Every per-person field, blanked. Used whenever the identity changes, so nothing leaks. */
@@ -98,7 +112,15 @@ function blankPerson() {
   return {
     birth: null, confidence: 'unknown' as BirthTimeConfidence, displayName: '',
     tzId: null, chart: null, chartError: null, enteredThisSession: false,
+    plans: [] as Plan[],
   };
+}
+
+/** Switch both storage slots together. A half-switched identity would put one person's
+ *  plans against another person's chart, which is worse than getting either one wrong. */
+function useIdentity(userId: number | null): void {
+  setStorageIdentity(userId);
+  setPlansIdentity(userId);
 }
 
 function applyProfile(p: StoredProfile) {
@@ -125,6 +147,7 @@ export const useVim = create<VimState>((set, get) => {
 
     ...blankPerson(),
     ...(saved ? applyProfile(saved) : {}),
+    plans: saved ? loadPlans() : [],
 
     prefs: loadPrefs(),
 
@@ -137,7 +160,7 @@ export const useVim = create<VimState>((set, get) => {
       try {
         const res = await me();
         if (res) {
-          setStorageIdentity(res.user.id); // their slot, before any local read or write
+          useIdentity(res.user.id); // their slot, before any local read or write
           if (res.profile) {
             const stored: StoredProfile = {
               birth: res.profile.birth,
@@ -147,7 +170,7 @@ export const useVim = create<VimState>((set, get) => {
             saveLocal(stored); // cached under their own slot, for offline use
             set({
               ...blankPerson(), authStatus: 'authed', user: res.user,
-              ...applyProfile(stored), route: { kind: 'tabs' },
+              ...applyProfile(stored), plans: loadPlans(), route: { kind: 'tabs' },
             });
           } else {
             // Signed in with no chart yet: start clean, never inheriting anyone else's.
@@ -158,12 +181,12 @@ export const useVim = create<VimState>((set, get) => {
           }
           return;
         }
-        setStorageIdentity(null); // no valid session → device-only slot
+        useIdentity(null); // no valid session → device-only slot
       } catch { /* token invalid or API down → fall through to local */ }
 
       const local = loadProfile();
       if (local) {
-        set({ authStatus: 'guest', ...applyProfile(local), route: { kind: 'tabs' } });
+        set({ authStatus: 'guest', ...applyProfile(local), plans: loadPlans(), route: { kind: 'tabs' } });
         return;
       }
       // Nothing stored. Only offer sign-in if the server can actually answer; otherwise
@@ -178,7 +201,7 @@ export const useVim = create<VimState>((set, get) => {
       set({ authBusy: true, authError: null });
       try {
         const user = await apiLogin(email, password);
-        setStorageIdentity(user.id);
+        useIdentity(user.id);
         const res = await me();
         if (res?.profile) {
           const stored: StoredProfile = {
@@ -189,13 +212,13 @@ export const useVim = create<VimState>((set, get) => {
           saveLocal(stored);
           set({
             ...blankPerson(), user, authStatus: 'authed', authBusy: false,
-            ...applyProfile(stored), route: { kind: 'tabs' },
+            ...applyProfile(stored), plans: loadPlans(), route: { kind: 'tabs' },
           });
         } else {
           // No chart on the server. Fall back only to what is saved under THEIR slot.
           const own = loadProfile();
           set(own
-            ? { ...blankPerson(), user, authStatus: 'authed', authBusy: false, ...applyProfile(own), route: { kind: 'tabs' } }
+            ? { ...blankPerson(), user, authStatus: 'authed', authBusy: false, ...applyProfile(own), plans: loadPlans(), route: { kind: 'tabs' } }
             : { ...blankPerson(), user, authStatus: 'authed', authBusy: false, route: { kind: 'onboarding' } });
         }
       } catch (e) {
@@ -210,7 +233,7 @@ export const useVim = create<VimState>((set, get) => {
         // Carry details over ONLY if this person typed them in this session (device → account).
         const { birth, confidence, displayName, tzId, enteredThisSession } = get();
         const carry = birth && enteredThisSession;
-        setStorageIdentity(user.id);
+        useIdentity(user.id);
         if (carry) {
           const stored: StoredProfile = {
             birth, birthTimeConfidence: confidence, displayName,
@@ -232,10 +255,10 @@ export const useVim = create<VimState>((set, get) => {
     },
 
     continueOnDevice: () => {
-      setStorageIdentity(null);
+      useIdentity(null);
       const local = loadProfile();
       set(local
-        ? { ...blankPerson(), authStatus: 'guest', ...applyProfile(local), route: { kind: 'tabs' } }
+        ? { ...blankPerson(), authStatus: 'guest', ...applyProfile(local), plans: loadPlans(), route: { kind: 'tabs' } }
         : { ...blankPerson(), authStatus: 'guest', route: { kind: 'onboarding' } });
     },
 
@@ -243,7 +266,7 @@ export const useVim = create<VimState>((set, get) => {
 
     logout: () => {
       apiLogout();
-      setStorageIdentity(null);
+      useIdentity(null);
       // Drop the identity AND every per-person field, so the next person to open this
       // browser sees nothing of the last one. Their data stays safe in their own slot.
       set({
@@ -290,10 +313,39 @@ export const useVim = create<VimState>((set, get) => {
       set({ prefs: next });
     },
 
+    addPlan: (plan) => {
+      const plans = [plan, ...get().plans];
+      savePlans(plans);
+      set({ plans, route: { kind: 'plan', id: plan.id } });
+    },
+
+    updatePlan: (id, patch) => {
+      const plans = get().plans.map((p) => (p.id === id ? { ...p, ...patch } : p));
+      savePlans(plans);
+      set({ plans });
+    },
+
+    // Optimistic: the tick lands immediately and is written straight through. There is no
+    // server round-trip to lose, because a checklist tick is the user's own state.
+    toggleCheck: (id, ordinal, itemIndex) => {
+      const key = `${ordinal}:${itemIndex}`;
+      const plans = get().plans.map((p) =>
+        p.id === id ? { ...p, checked: { ...p.checked, [key]: !p.checked[key] } } : p);
+      savePlans(plans);
+      set({ plans });
+    },
+
+    removePlan: (id) => {
+      const plans = get().plans.filter((p) => p.id !== id);
+      savePlans(plans);
+      set({ plans, route: { kind: 'tabs' } });
+    },
+
     deleteEverything: () => {
       const wasAuthed = get().authStatus === 'authed';
       if (wasAuthed) void apiDeleteAccount(); // also erases the server-side account
       clearAll();
+      clearPlans();
       savePrefs(DEFAULT_PREFS);
       set({
         ...blankPerson(),

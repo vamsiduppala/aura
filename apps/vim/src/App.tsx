@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 import { TabBar } from './components/TabBar';
 import { Mentor } from './screens/Mentor';
+import { NewPlan } from './screens/NewPlan';
 import { OfficeDetail } from './screens/OfficeDetail';
 import { Onboarding } from './screens/Onboarding';
+import { PlanDetail } from './screens/PlanDetail';
 import { Planner } from './screens/Planner';
 import { SignIn } from './screens/SignIn';
+import { StageDetail } from './screens/StageDetail';
 import { Timeline } from './screens/Timeline';
 import { Welcome } from './screens/Welcome';
 import { You } from './screens/You';
@@ -42,14 +45,21 @@ export function App() {
   // without one. There is no sample chart to fall back to, by design.
   if (route.kind === 'onboarding' || !birth) return <Onboarding />;
 
-  if (route.kind === 'office') {
+  // Sub-pages keep the tab bar, so navigation never becomes a trap.
+  if (route.kind === 'office' || route.kind === 'plan' || route.kind === 'stage') {
     return (
       <div className="screen">
-        <OfficeDetail level={route.level} />
+        {route.kind === 'office' && <OfficeDetail level={route.level} />}
+        {route.kind === 'plan' && <PlanDetail id={route.id} />}
+        {route.kind === 'stage' && <StageDetail id={route.id} ordinal={route.ordinal} />}
         <TabBar active={tab} onSelect={setTab} />
       </div>
     );
   }
+
+  // The questionnaire is modal: the tab bar is hidden so a half-finished plan can't be
+  // abandoned by a stray tap. Back is the only way out, and it steps backwards.
+  if (route.kind === 'newPlan') return <NewPlan />;
 
   return (
     <div className="screen">
