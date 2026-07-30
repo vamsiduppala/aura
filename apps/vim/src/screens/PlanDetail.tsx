@@ -14,7 +14,7 @@ import { Wheel } from '../components/Wheel';
 import { categoryDef } from '../content/plans';
 import { DISCLAIMER } from '../content/court';
 import { courtAt } from '../core/court';
-import { derivePlan, stageMode, tickedCount, type PlanStage } from '../core/plan';
+import { derivePlan, stageArchetype, tickedCount, type PlanStage } from '../core/plan';
 import { humanRemaining, shortDayMonth, shortDate } from '../core/time';
 import { useNow } from '../hooks/useNow';
 import { PLANET, WHEEL_PLAN } from '../theme/tokens';
@@ -80,7 +80,7 @@ export function PlanDetail({ id }: { id: string }) {
               <>
                 <span className="wheel-dot" style={{ background: currentPlanet.ring }} aria-hidden />
                 <span className="wheel-eyebrow">
-                  Stage {current.ordinal} · {stageMode(current.lord) === 'push' ? 'Push' : 'Pause'}
+                  Stage {current.ordinal} · {stageArchetype(current.archetype).label}
                 </span>
                 <span className="wheel-readout">{humanRemaining(current.remainingMs)} left</span>
               </>
@@ -141,7 +141,7 @@ function PipelineStage({
   stage, last, ticked, onOpen,
 }: { stage: PlanStage; last: boolean; ticked: number; onOpen: () => void }) {
   const p = PLANET[stage.lord];
-  const mode = stageMode(stage.lord);
+  const archetype = stageArchetype(stage.archetype);
   const isNow = stage.state === 'now';
   const done = stage.state === 'done';
 
@@ -192,7 +192,9 @@ function PipelineStage({
         {(isNow || done) && ticked > 0 && (
           <span className="stage-ticked">{ticked} of {stage.checklist.length} done</span>
         )}
-        <span className="stage-mode" data-mode={mode}>{mode === 'push' ? 'PUSH' : 'PAUSE'}</span>
+        <span className="stage-mode" data-mode={stage.archetype} title={archetype.gloss}>
+          {archetype.label}
+        </span>
       </button>
     </li>
   );

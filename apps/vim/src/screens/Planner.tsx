@@ -9,7 +9,7 @@ import { ChevronRight, Plus } from 'lucide-react';
 import { Pressable, ProgressTrack } from '../components/neu';
 import { categoryDef } from '../content/plans';
 import { courtAt } from '../core/court';
-import { derivePlan, stageMode, type Plan } from '../core/plan';
+import { derivePlan, stageArchetype, type Plan } from '../core/plan';
 import { humanRemaining, shortDate } from '../core/time';
 import { useNow } from '../hooks/useNow';
 import { PLANET } from '../theme/tokens';
@@ -32,7 +32,6 @@ export function Planner() {
     <div className="page">
       <header className="screen-head screen-head-row">
         <div>
-          <h1 className="t-page-title">Plans</h1>
           {king && (
             <p className="t-sub">
               <span style={{ color: PLANET[king.lord].ring }}>{PLANET[king.lord].name}</span> King
@@ -94,7 +93,7 @@ function PlanCard({ plan, now, archived }: { plan: Plan; now: Date; archived?: b
 
   const stage = derived.current ?? derived.stages[derived.stages.length - 1];
   const p = stage ? PLANET[stage.lord] : null;
-  const mode = stage ? stageMode(stage.lord) : null;
+  const archetype = stage ? stageArchetype(stage.archetype) : null;
 
   return (
     <button
@@ -135,10 +134,15 @@ function PlanCard({ plan, now, archived }: { plan: Plan; now: Date; archived?: b
         <span className="t-duration-note">
           {categoryDef(plan.category).label} · cut by {derived.cutOffice.label} terms
         </span>
-        {stage && p && mode && (
+        {stage && p && archetype && (
           <span className="plan-meta">
-            <span className="mode-pill" data-mode={mode} style={{ color: p.tabInk, background: p.tabFill }}>
-              {mode === 'push' ? 'PUSH' : 'PAUSE'}
+            <span
+              className="mode-pill"
+              data-mode={stage.archetype}
+              style={{ color: p.tabInk, background: p.tabFill }}
+              title={archetype.gloss}
+            >
+              {archetype.label}
             </span>
             <span className="plan-meta-text">
               {p.name} · {humanRemaining(stage.remainingMs)} left

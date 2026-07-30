@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { AstronomiaEphemeris, computeChart, type BirthData } from '@aura/engine';
 import { CATEGORIES, stageChecklist, stageHeading } from '../content/plans';
-import { derivePlan, horizonOptions, isTightHorizon, newPlan, stageMode, tickedCount } from '../core/plan';
+import { derivePlan, horizonOptions, isTightHorizon, newPlan, tickedCount } from '../core/plan';
+import { RULES_VERSION } from '@vim/rules';
 import { VIMSHOTTARI_ORDER } from '@aura/engine';
 
 const BIRTH: BirthData = {
@@ -136,11 +137,38 @@ describe('stage content', () => {
     }
   });
 
-  it('every planet is either push or pause, and both modes exist', () => {
-    const modes = VIMSHOTTARI_ORDER.map(stageMode);
-    expect(modes.every((m) => m === 'push' || m === 'pause')).toBe(true);
-    expect(modes).toContain('push');
-    expect(modes).toContain('pause');
+  it('every stage carries a scored archetype and the reasons behind it', () => {
+    const { stages, rulesVersion } = derivePlan(makePlan('2027-07-29'), chart, 'exact', NOW);
+    expect(rulesVersion).toBe(RULES_VERSION);
+    for (const s of stages) {
+      expect(['push', 'build', 'hold']).toContain(s.archetype);
+      // A non-neutral score must say why. An unexplained verdict is a horoscope.
+      expect(Array.isArray(s.because)).toBe(true);
+    }
+  });
+
+  it('the archetype depends on the parent period, not just the ruling planet', () => {
+    // The whole reason the composer replaced a per-planet lookup: the same planet ruling the
+    // same category can read differently depending on the term it sits inside. Across a
+    // year-long plan the stages resolve against different parents, so at least one stage must
+    // carry a parent and the set must not be a single repeated archetype for repeated lords.
+    const { stages } = derivePlan(makePlan('2027-07-29'), chart, 'exact', NOW);
+    expect(stages.some((s) => s.parentLord !== undefined)).toBe(true);
+    for (const s of stages) {
+      if (s.parentLord) expect(VIMSHOTTARI_ORDER).toContain(s.parentLord);
+    }
+  });
+
+  it('two different categories can score the same stage differently', () => {
+    const promo = derivePlan(makePlan('2027-07-29'), chart, 'exact', NOW);
+    const health = derivePlan(
+      { ...makePlan('2027-07-29'), category: 'health' as const }, chart, 'exact', NOW,
+    );
+    // Same window, same rulers, different suitability tables → the advice must differ.
+    const a = promo.stages.map((s) => s.archetype).join();
+    const b = health.stages.map((s) => s.archetype).join();
+    expect(promo.stages.map((s) => s.lord)).toEqual(health.stages.map((s) => s.lord));
+    expect(a).not.toBe(b);
   });
 });
 

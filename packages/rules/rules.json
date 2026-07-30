@@ -1,0 +1,54 @@
+{
+  "$meta": {
+    "rulesVersion": 1,
+    "note": "ASTROLOGY LIVES HERE, AS DATA. Engineers do not encode astrology in code (new-structure.md §4.5). This file is the scoring input to the Plan Composer; the composer itself is mechanism and lives in src/. Editing these numbers must never require a code change.",
+    "destination": "new-structure.md §4.5 puts these tables in Postgres, versioned, editable by an astrologer in the admin console (M15). They are JSON here so that move is a loader change, not a rewrite. `rulesVersion` is persisted on every plan beside `engineVersion`, so an old plan can always be explained by the logic that produced it.",
+    "authoredBy": "first pass, for an astrologer to revise — the whole point of versioning is that revision is cheap",
+    "scale": "suitability is -2..+2: +2 the period actively carries this kind of work, +1 helps, 0 neutral, -1 resists, -2 actively works against it. Never a verdict about the person — a statement about what KIND OF EFFORT gets traction."
+  },
+
+  "categories": [
+    "love", "job", "promotion", "startup", "health", "purchase", "study", "money", "other"
+  ],
+
+  "suitability": {
+    "$comment": "Grounded in each planet's classical signification, not invented. Sun=authority and visibility, Moon=feeling and people, Mars=force and initiative, Mercury=exchange and documents, Jupiter=expansion and patronage, Venus=attraction and partnership, Saturn=endurance and structure, Rāhu=unconventional appetite, Ketu=withdrawal and completion. The plan itself names two of these: Jupiter/Mercury for exams, Saturn/Ketu for debt discipline.",
+
+    "love":      { "sun":  0, "moon":  2, "mars":  0, "mercury":  1, "jupiter":  1, "venus":  2, "saturn": -1, "rahu": -1, "ketu": -2 },
+    "job":       { "sun":  1, "moon":  0, "mars":  2, "mercury":  2, "jupiter":  1, "venus":  1, "saturn": -1, "rahu":  1, "ketu": -2 },
+    "promotion": { "sun":  2, "moon":  0, "mars":  1, "mercury":  1, "jupiter":  2, "venus":  1, "saturn":  0, "rahu":  0, "ketu": -2 },
+    "startup":   { "sun":  1, "moon": -1, "mars":  2, "mercury":  1, "jupiter":  1, "venus":  0, "saturn":  0, "rahu":  2, "ketu": -1 },
+    "health":    { "sun":  1, "moon":  1, "mars":  2, "mercury": -1, "jupiter": -1, "venus": -1, "saturn":  1, "rahu": -2, "ketu":  0 },
+    "purchase":  { "sun":  0, "moon":  1, "mars":  0, "mercury":  1, "jupiter":  1, "venus":  2, "saturn":  1, "rahu": -2, "ketu": -1 },
+    "study":     { "sun":  0, "moon":  0, "mars":  1, "mercury":  2, "jupiter":  2, "venus": -1, "saturn":  1, "rahu": -1, "ketu":  1 },
+    "money":     { "sun":  0, "moon": -1, "mars":  0, "mercury":  2, "jupiter":  1, "venus":  1, "saturn":  2, "rahu": -2, "ketu":  1 },
+    "other":     { "sun":  0, "moon":  0, "mars":  0, "mercury":  0, "jupiter":  0, "venus":  0, "saturn":  0, "rahu":  0, "ketu":  0 }
+  },
+
+  "relationModifier": {
+    "$comment": "How the sub-ruler sits with the ruler above it, from the classical natural-relations table (naturalRelation() in @aura/knowledge). A friendly sub-period inside a term amplifies it; a hostile one pulls against it. Rāhu and Ketu are absent from that table, so any pairing involving them resolves to neutral and contributes nothing — silence rather than invention.",
+    "friend": 1,
+    "neutral": 0,
+    "enemy": -1
+  },
+
+  "houseSignificators": {
+    "$comment": "The bhava each category is read from, classically. Used for the house modifier: a planet sitting in the category's own house is working on home ground (+1); a planet in the 6th, 8th or 12th FROM that house is working uphill (-1). Capped at ±1 so the house never outweighs the category, which is the stronger signal.",
+    "love": 7,
+    "job": 10,
+    "promotion": 10,
+    "startup": 10,
+    "health": 6,
+    "purchase": 4,
+    "study": 5,
+    "money": 2,
+    "other": 1
+  },
+
+  "archetypes": {
+    "$comment": "Score → what kind of effort this stretch rewards. Three, not two: BUILD is the honest middle, and collapsing it into PUSH or HOLD is what makes a plan read like a horoscope. Thresholds are inclusive lower bounds.",
+    "push": { "minScore": 2, "label": "PUSH", "verb": "act", "gloss": "Force works here. Launch, apply, propose, sign." },
+    "build": { "minScore": 0, "label": "BUILD", "verb": "prepare", "gloss": "Groundwork pays here. Prepare, learn, network, save." },
+    "hold": { "minScore": -99, "label": "HOLD", "verb": "consolidate", "gloss": "Pushing costs double here. Consolidate, repair, rest, audit." }
+  }
+}

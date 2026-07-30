@@ -5,10 +5,12 @@
 // an engine fix leaves you with rows that are wrong but indistinguishable from rows that are
 // right. The one thing persisted about a stage is what the user themselves ticked.
 
+import { getCourtAt } from '@aura/engine';
 import type { Chart, DashaLevel, Graha } from '@aura/engine';
-import { chooseCutLevel, periodsBetween, type BirthTimeConfidence } from './court';
+import { RULES_VERSION, archetypeMeta, scoreStage, type Archetype } from '@vim/rules';
+import { birthInstantUTC, chooseCutLevel, periodsBetween, type BirthTimeConfidence } from './court';
 import { stageChecklist, stageHeading, type PlanCategory } from '../content/plans';
-import { OFFICES, type OfficeMeta } from '../theme/tokens';
+import { OFFICES, planetName, type OfficeMeta } from '../theme/tokens';
 
 export interface Plan {
   id: string;
@@ -37,6 +39,12 @@ export interface PlanStage {
   end: Date;
   heading: string;
   checklist: string[];
+  /** PUSH / BUILD / HOLD, from the scored composer — not a lookup on the planet. */
+  archetype: Archetype;
+  /** The score's parts, in plain language. Shown as "why this stage reads this way". */
+  because: string[];
+  /** The ruler of the period this stage sits inside. Feeds the relation term. */
+  parentLord: Graha | undefined;
   state: StageState;
   /** 0..1 through this stage. 0 before it starts, 1 once it has passed. */
   progress: number;
@@ -47,6 +55,9 @@ export interface PlanStage {
 export interface DerivedPlan {
   /** Which daśā level the stages were cut from. Shown to the user: "cut by Governor terms". */
   cutLevel: DashaLevel;
+  /** The rules table version that scored these stages, so an old plan stays explainable
+   *  even after an astrologer revises the tables. */
+  rulesVersion: number;
   cutOffice: OfficeMeta;
   stages: PlanStage[];
   /** 0..1 across the whole plan window. */
@@ -73,6 +84,10 @@ export function derivePlan(
   const periods = periodsBetween(chart, cutLevel, from, to);
 
   const nowMs = now.getTime();
+  const moonLong = chart.planets.moon.siderealLong;
+  const birthUtc = birthInstantUTC(chart.birth);
+  const cutIndex = OFFICES.findIndex((o) => o.dashaLevel === cutLevel);
+
   const stages: PlanStage[] = periods.map((p, i) => {
     // A stage is clipped to the plan's own window at both ends: the first stage began before
     // the plan did, and the last one runs past the target date. Showing the daśā period's
@@ -83,6 +98,23 @@ export function derivePlan(
     const elapsed = nowMs - start.getTime();
     const state: StageState =
       nowMs >= end.getTime() ? 'done' : nowMs >= start.getTime() ? 'now' : 'next';
+
+    // The ruler one level up, resolved at the stage's MIDPOINT rather than its start — a
+    // start is a boundary instant, and half-open resolution there would sometimes return
+    // the outgoing parent instead of the one that actually governs this stage.
+    const mid = new Date((start.getTime() + end.getTime()) / 2);
+    const parentLord = cutIndex > 0
+      ? getCourtAt(moonLong, birthUtc, mid)[cutIndex - 1]?.lord
+      : undefined;
+
+    const scored = scoreStage({
+      category: plan.category,
+      planet: p.lord,
+      parentPlanet: parentLord,
+      chart,
+      nameOf: planetName,
+    });
+
     return {
       ordinal: i + 1,
       lord: p.lord,
@@ -91,6 +123,9 @@ export function derivePlan(
       end,
       heading: stageHeading(plan.category, p.lord),
       checklist: stageChecklist(p.lord),
+      archetype: scored.archetype,
+      because: scored.because,
+      parentLord,
       state,
       progress: Math.min(1, Math.max(0, elapsed / totalMs)),
       remainingMs: Math.max(0, end.getTime() - nowMs),
@@ -101,6 +136,7 @@ export function derivePlan(
   const windowMs = Math.max(1, to.getTime() - from.getTime());
   return {
     cutLevel,
+    rulesVersion: RULES_VERSION,
     cutOffice,
     stages,
     overallProgress: Math.min(1, Math.max(0, (nowMs - from.getTime()) / windowMs)),
@@ -110,19 +146,14 @@ export function derivePlan(
 }
 
 /**
- * Push or Pause, from the ruling planet alone. This is the only place the app gives a
- * directional call, and it is a statement about the *kind of effort* that gets traction —
- * not a prediction about the outcome.
+ * The label and one-line gloss for a stage's archetype. Both live in the rules data, so an
+ * astrologer can reword them without a deploy.
  *
- * Push planets move things by acting: Mars, Sun, Jupiter, Mercury, Rahu.
- * Pause planets reward patience, consolidation or release: Saturn, Venus, Moon, Ketu.
+ * This replaced a lookup on the ruling planet alone. That old version could not distinguish
+ * the same Mars Governor inside a Sun term from one inside a Saturn term, and gave every
+ * person with that Governor identical advice — which is a horoscope, not a plan.
  */
-export function stageMode(lord: Graha): 'push' | 'pause' {
-  return ({
-    mars: 'push', sun: 'push', jupiter: 'push', mercury: 'push', rahu: 'push',
-    saturn: 'pause', venus: 'pause', moon: 'pause', ketu: 'pause',
-  } as const)[lord];
-}
+export const stageArchetype = (a: Archetype) => archetypeMeta(a);
 
 /** How many of a stage's checklist items the user has ticked. */
 export function tickedCount(plan: Plan, stage: PlanStage): number {

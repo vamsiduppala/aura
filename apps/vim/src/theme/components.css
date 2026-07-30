@@ -38,6 +38,16 @@ body {
   cursor: not-allowed;
 }
 
+/* A screen's opening line where the top bar already carries the page heading, so this
+   must not be another <h1>. */
+.t-lead-line {
+  font-size: var(--type-screen);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-primary);
+  margin: 0 0 var(--space-1);
+}
+
 .disclaimer {
   margin: var(--space-8) 0 0;
   font-size: var(--type-footnote);
@@ -1004,6 +1014,41 @@ body {
   font-weight: 700;
   letter-spacing: 0.07em;
 }
+/* Three archetypes, three weights. HOLD must not read as a failure state — it is a
+   statement about what kind of effort works, not a verdict on the person. */
+.mode-pill[data-mode='hold'] {
+  opacity: 0.72;
+}
+.mode-pill[data-mode='build'] {
+  opacity: 0.88;
+}
+
+/* "Why this stage reads this way" — the composer's own score, in plain language. */
+.reason-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.reason-list li {
+  position: relative;
+  padding-inline-start: 14px;
+  font-size: var(--type-small);
+  line-height: 1.5;
+  color: var(--ink-body);
+}
+.reason-list li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 2px;
+  top: 0.62em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+}
+
 .plan-meta-text {
   font-size: var(--type-footnote);
   color: var(--ink-secondary);

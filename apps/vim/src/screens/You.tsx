@@ -41,7 +41,7 @@ export function You() {
   return (
     <div className="page">
       <header className="screen-head">
-        <h1 className="t-page-title">{displayName || 'You'}</h1>
+        <p className="t-lead-line">{displayName || 'You'}</p>
         {king && (
           <p className="t-sub">
             <span style={{ color: PLANET[king.lord].ring }}>{PLANET[king.lord].name}</span> King

@@ -23,7 +23,7 @@ export function Mentor() {
   return (
     <div className="page">
       <header className="screen-head">
-        <h1 className="t-page-title">Ask anything.</h1>
+        <p className="t-lead-line">Ask anything.</p>
         <p className="t-sub">
           Your chart, your timing, your call. Real values only — when a number comes from
           your chart, you'll be told which one.

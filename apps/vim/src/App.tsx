@@ -75,7 +75,11 @@ export function App() {
   return (
     <div className="app">
       <header className="topbar">
-        <h1 className="topbar-title">{TITLES[tab] ?? 'Vimshottari'}</h1>
+        {/* Exactly one <h1> per page. On a tab route the bar's label IS the page heading;
+            on a detail route the page has its own, so the bar yields the outline to it. */}
+        {route.kind === 'tabs'
+          ? <h1 className="topbar-title">{TITLES[tab] ?? 'Vimshottari'}</h1>
+          : <p className="topbar-title" aria-hidden>{TITLES[tab] ?? 'Vimshottari'}</p>}
         <span className="topbar-spacer" />
         <button
           type="button"

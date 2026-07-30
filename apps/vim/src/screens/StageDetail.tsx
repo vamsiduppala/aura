@@ -10,7 +10,7 @@ import { Inset, Pressable, ProgressTrack } from '../components/neu';
 import { DISCLAIMER, HEALTH_NOTE, advantageSections, kingdomLine, obstacleSections } from '../content/court';
 import { categoryDef } from '../content/plans';
 import { courtAt } from '../core/court';
-import { derivePlan, stageMode } from '../core/plan';
+import { derivePlan, stageArchetype } from '../core/plan';
 import { dateRange, humanRemaining, humanTotal } from '../core/time';
 import { useNow } from '../hooks/useNow';
 import { PLANET } from '../theme/tokens';
@@ -36,14 +36,16 @@ export function StageDetail({ id, ordinal }: { id: string; ordinal: number }) {
   if (!plan || !derived || !stage) return null;
 
   const p = PLANET[stage.lord];
-  const mode = stageMode(stage.lord);
+  const archetype = stageArchetype(stage.archetype);
   const parent = seats[stage.office.level - 2];
-  // Push stages lead with what works; Pause stages lead with what backfires. Same two
-  // tabs everywhere in the app — the ruling planet just decides which one opens first.
-  const sections = mode === 'push'
+  // PUSH and BUILD lead with what works; HOLD leads with what backfires, because on a HOLD
+  // stage the useful information is what NOT to force. Both sides are always present — a
+  // stage that only tells you what works is a horoscope.
+  const leadsWithAdvantage = stage.archetype !== 'hold';
+  const sections = leadsWithAdvantage
     ? advantageSections(stage.lord, stage.office.office)
     : obstacleSections(stage.lord, stage.office.office);
-  const other = mode === 'push'
+  const other = leadsWithAdvantage
     ? obstacleSections(stage.lord, stage.office.office)
     : advantageSections(stage.lord, stage.office.office);
 
@@ -98,9 +100,24 @@ export function StageDetail({ id, ordinal }: { id: string; ordinal: number }) {
       <p className="t-section-label detail-kingdom-label">In the kingdom</p>
       <p className="t-kingdom">{kingdomLine(stage.lord, stage.office.office)}</p>
 
+      {/* Why this stage reads the way it does. The composer's own score, in plain language —
+          shown rather than hidden, because an unexplained verdict is a horoscope. */}
+      {stage.because.length > 0 && (
+        <Inset soft className="effect-note">
+          <p className="t-eyebrow" style={{ color: p.ring, margin: '0 0 6px' }}>
+            {archetype.label} · {archetype.gloss}
+          </p>
+          <ul className="reason-list">
+            {stage.because.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+        </Inset>
+      )}
+
       <section className="checklist">
         <h2 className="detail-section-head">
-          {mode === 'push' ? 'Do this now' : "Don't force this now"}
+          {stage.archetype === 'push' ? 'Do this now'
+            : stage.archetype === 'build' ? 'Lay the groundwork'
+              : "Don't force this now"}
         </h2>
         <ul className="check-list">
           {stage.checklist.map((item, i) => {

@@ -1,5 +1,21 @@
 # GEMINI.md — the handoff contract
 
+> ## ▶ START HERE, EVERY SESSION
+>
+> **Read `WATCHER.md` first.** It opens with a BOOT SEQUENCE written for an agent with zero
+> context — a brand new session, no memory of anything — and its journal is the running,
+> append-only trail of what has actually been done, captured while the work happened rather
+> than remembered afterwards.
+>
+> Then read this file in full, then `new-structure.md`.
+>
+> Journal as you go: `npm run watch -- "what I just did"`. Install the commit hook once per
+> clone with `npm run watch:install` (`.git/hooks` is not committed, so it does not travel).
+> Set `VIM_AGENT=Gemini` so your entries are attributed to you.
+>
+> **This file's §5 is a snapshot; `WATCHER.md` is the trail. When they disagree, the repo
+> wins — verify with `git log`, `npm run typecheck`, `npm test`, `npm run check:generated`.**
+
 **Gemini: read this whole file before you touch anything. Then read `CLAUDE.md`.**
 
 This file is auto-loaded by Gemini CLI from the repo root, so you already have it. It is the
@@ -243,6 +259,13 @@ single next action is. Concretely, before you stop for any reason:
 2. Overwrite **§5 CURRENT STATE** so it describes the repo as it actually is right now.
 3. If you leave a file mid-edit, name it in §5 with what is done and what is not.
 4. If you learned a trap, add it to §3 as well. A trap only in a log entry gets missed.
+
+**R27c — Journal in `WATCHER.md` as you work, not at the end.** `npm run watch -- "note"`
+after every meaningful step: a finished file, a decision, a trap, a verification. The script
+captures HEAD, the dirty file list and the parts table for you, so an entry cannot quietly
+disagree with the repo. A session that dies mid-task must still leave a trail someone can
+resume from, and the entry you write immediately before stopping is the most valuable thing in
+the file — say the exact next action, never "continue Part 3".
 
 **R28 — Never edit or delete another agent's log entries.** Append only. If you find something
 Claude wrote that turned out wrong, add a new entry correcting it and say so; leave the original.

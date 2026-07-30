@@ -30,7 +30,6 @@ export function Timeline() {
   if (chartError) {
     return (
       <div className="page">
-        <h1 className="t-page-title">Timeline</h1>
         <p className="field-error" role="alert">
           Your chart couldn't be built from the details on file. {chartError}
         </p>
@@ -49,7 +48,6 @@ export function Timeline() {
   return (
     <div className="page">
       <header className="screen-head">
-        <h1 className="t-page-title">Timeline</h1>
         <p className="t-sub">Tap any ring — or any character below.</p>
       </header>
 

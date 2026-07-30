@@ -22,6 +22,7 @@
   "dependencies": {
     "@aura/engine": "*",
     "@aura/knowledge": "*",
+    "@vim/rules": "*",
     "@vim/tokens": "*",
     "lucide-react": "^0.454.0",
     "react": "^18.3.1",
