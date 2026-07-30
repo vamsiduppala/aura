@@ -29,7 +29,7 @@ export function Planner() {
   const archived = plans.filter((p) => p.archived);
 
   return (
-    <div className="screen-scroll">
+    <div className="page">
       <header className="screen-head screen-head-row">
         <div>
           <h1 className="t-page-title">Plans</h1>
@@ -68,14 +68,14 @@ export function Planner() {
         </div>
       )}
 
-      <div className="stack" style={{ gap: 14, marginTop: 4 }}>
+      <div className="card-grid">
         {active.map((plan) => <PlanCard key={plan.id} plan={plan} now={now} />)}
       </div>
 
       {archived.length > 0 && (
         <>
           <h2 className="t-section-label" style={{ margin: '28px 0 10px 4px' }}>Archived</h2>
-          <div className="stack" style={{ gap: 14 }}>
+          <div className="card-grid">
             {archived.map((plan) => <PlanCard key={plan.id} plan={plan} now={now} archived />)}
           </div>
         </>
@@ -107,7 +107,7 @@ function PlanCard({ plan, now, archived }: { plan: Plan; now: Date; archived?: b
           wheel — elapsed over THIS period, never absolute time. */}
       <span className="mini-ring" aria-hidden>
         <svg viewBox="0 0 64 64" width="64" height="64">
-          <circle cx="32" cy="32" r="27" fill="none" stroke="var(--surf-ring-track)" strokeWidth="5" />
+          <circle cx="32" cy="32" r="27" fill="none" stroke="var(--surface-track-deep)" strokeWidth="5" />
           {p && stage && (
             <circle
               className="ring-arc"
@@ -148,7 +148,7 @@ function PlanCard({ plan, now, archived }: { plan: Plan; now: Date; archived?: b
         <span className="plan-progress">
           <ProgressTrack
             value={derived.overallProgress}
-            tint={p?.ring ?? 'var(--brass)'}
+            tint={p?.ring ?? 'var(--brass-base)'}
             label={`${plan.title}, ${Math.round(derived.overallProgress * 100)} percent through`}
           />
           <span className="plan-target">

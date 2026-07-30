@@ -21,7 +21,7 @@ export function Mentor() {
   );
 
   return (
-    <div className="screen-scroll">
+    <div className="page">
       <header className="screen-head">
         <h1 className="t-page-title">Ask anything.</h1>
         <p className="t-sub">

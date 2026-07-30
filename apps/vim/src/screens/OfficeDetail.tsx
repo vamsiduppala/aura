@@ -59,7 +59,7 @@ export function OfficeDetail({ level }: Props) {
     : obstacleSections(seat.lord, meta.office);
 
   return (
-    <div className="screen-scroll detail">
+    <div className="page detail">
       <div className="detail-band" style={{ background: p.ring }} aria-hidden />
 
       <header className="detail-head">

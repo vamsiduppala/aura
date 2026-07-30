@@ -54,7 +54,7 @@ export function NewPlan() {
   };
 
   return (
-    <div className="screen-scroll onboard">
+    <div className="page onboard">
       <header className="onboard-head">
         <Pressable variant="flat" aria-label="Back" onClick={back}>
           <ArrowLeft size={20} aria-hidden />
@@ -72,7 +72,7 @@ export function NewPlan() {
           <p className="t-sub onboard-hint">
             Pick the one that fits closest. You can change it later.
           </p>
-          <div className="stack" style={{ gap: 8 }}>
+          <div className="choice-grid">
             {CATEGORIES.map((c) => (
               <Pressable
                 key={c.key}
@@ -102,7 +102,7 @@ export function NewPlan() {
           <p className="t-sub onboard-hint">
             Be honest about the starting line — the plan is only as good as this answer.
           </p>
-          <div className="stack" style={{ gap: 8 }}>
+          <div className="choice-grid">
             {categoryDef(category).situations.map((s) => (
               <Pressable
                 key={s}

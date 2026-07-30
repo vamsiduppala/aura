@@ -36,7 +36,7 @@ export function You() {
   const nak = chart ? NAKSHATRAS[chart.moonNakshatra] : undefined;
 
   return (
-    <div className="screen-scroll">
+    <div className="page">
       <header className="screen-head">
         <h1 className="t-page-title">{displayName || 'You'}</h1>
         {king && (
@@ -52,6 +52,7 @@ export function You() {
         )}
       </header>
 
+      <div className="settings-grid">
       <Section label="Birth details">
         <Row label="Date" value={shortDate(new Date(`${birth.date}T12:00:00`))} />
         <Row
@@ -198,6 +199,7 @@ export function You() {
           Your birth date, time and place are never sent to analytics or crash reporting.
         </p>
       </Section>
+      </div>
     </div>
   );
 }

@@ -20,7 +20,7 @@ export function SignIn() {
   };
 
   return (
-    <div className="screen-scroll onboard">
+    <div className="page onboard">
       <header className="onboard-head">
         <Pressable variant="flat" aria-label="Back" onClick={() => go({ kind: 'welcome' })}>
           <ArrowLeft size={20} aria-hidden />

@@ -17,7 +17,7 @@ import { courtAt } from '../core/court';
 import { derivePlan, stageMode, tickedCount, type PlanStage } from '../core/plan';
 import { humanRemaining, shortDayMonth, shortDate } from '../core/time';
 import { useNow } from '../hooks/useNow';
-import { PLANET, WHEEL_PLAN, WHEEL } from '../theme/tokens';
+import { PLANET, WHEEL_PLAN } from '../theme/tokens';
 import { useVim } from '../store/useVim';
 
 export function PlanDetail({ id }: { id: string }) {
@@ -39,7 +39,7 @@ export function PlanDetail({ id }: { id: string }) {
   const currentPlanet = current ? PLANET[current.lord] : null;
 
   return (
-    <div className="screen-scroll detail">
+    <div className="page detail">
       <header className="detail-head">
         <button type="button" className="tap detail-back" aria-label="Back to plans" onClick={() => go({ kind: 'tabs' })}>
           <ArrowLeft size={20} aria-hidden />
@@ -58,7 +58,7 @@ export function PlanDetail({ id }: { id: string }) {
       <div className="detail-progress" style={{ marginTop: 12 }}>
         <ProgressTrack
           value={derived.overallProgress}
-          tint={currentPlanet?.ring ?? 'var(--brass)'}
+          tint={currentPlanet?.ring ?? 'var(--brass-base)'}
           label={`Overall, ${Math.round(derived.overallProgress * 100)} percent through the window`}
         />
         <span className="time-pill">{Math.round(derived.overallProgress * 100)}%</span>
@@ -66,12 +66,14 @@ export function PlanDetail({ id }: { id: string }) {
 
       {/* The plan wheel is the same component and the same live data as the Timeline's —
           the rings are the court, because the stages were cut from the court. */}
+      <div className="panes">
+        <div className="pane-lead">
       <div className="wheel-stage">
         <Wheel
           seats={seats}
           now={now}
           rings={WHEEL_PLAN}
-          size={WHEEL.wellPlan}
+          size="compact"
           onSelectLevel={(level) => go({ kind: 'office', level })}
           centre={
             current && currentPlanet ? (
@@ -87,6 +89,9 @@ export function PlanDetail({ id }: { id: string }) {
         />
       </div>
 
+        </div>
+
+        <div>
       {derived.stages.length === 1 ? (
         <Inset soft className="effect-note">
           <p className="t-sub" style={{ margin: 0 }}>
@@ -115,10 +120,13 @@ export function PlanDetail({ id }: { id: string }) {
         ))}
       </ol>
 
+        </div>
+      </div>
+
       <button
         type="button"
         className="btn-flat"
-        style={{ color: '#ffb3ac', marginTop: 20 }}
+        style={{ color: 'var(--status-danger-ink)', marginTop: 20 }}
         onClick={() => removePlan(plan.id)}
       >
         <Trash2 size={15} aria-hidden /> Delete this plan

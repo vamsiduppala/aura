@@ -6,7 +6,7 @@
 import { useMemo } from 'react';
 import { CourtTable } from '../components/CourtTable';
 import { BiggestChangeAhead } from '../components/Countdown';
-import { Wheel, WheelCentreKing } from '../components/Wheel';
+import { Wheel, WheelCentreKing, WheelLegend } from '../components/Wheel';
 import { courtAt, courtFastestFirst, nextTurn } from '../core/court';
 import { useNow } from '../hooks/useNow';
 import { MOTION } from '../theme/tokens';
@@ -29,7 +29,7 @@ export function Timeline() {
 
   if (chartError) {
     return (
-      <div className="screen-scroll">
+      <div className="page">
         <h1 className="t-page-title">Timeline</h1>
         <p className="field-error" role="alert">
           Your chart couldn't be built from the details on file. {chartError}
@@ -47,21 +47,32 @@ export function Timeline() {
   const visible = courtFastestFirst(seats);
 
   return (
-    <div className="screen-scroll">
+    <div className="page">
       <header className="screen-head">
         <h1 className="t-page-title">Timeline</h1>
         <p className="t-sub">Tap any ring — or any character below.</p>
       </header>
 
-      <div className="wheel-stage">
-        <Wheel
-          seats={seats}
-          now={tick}
-          centre={<WheelCentreKing seat={king} />}
-          onSelectLevel={(level) => go({ kind: 'office', level })}
-        />
-      </div>
+      {/* Two panes from 1024px up: the wheel holds the left column and stays put
+          while the court scrolls beside it. Below that it stacks, unchanged. */}
+      <div className="panes">
+        <div className="pane-lead">
+          <div className="wheel-stage">
+            <Wheel
+              seats={seats}
+              now={tick}
+              size="hero"
+              centre={<WheelCentreKing seat={king} />}
+              onSelectLevel={(level) => go({ kind: 'office', level })}
+            />
+          </div>
+          <WheelLegend
+            seats={seats}
+            onSelectLevel={(level) => go({ kind: 'office', level })}
+          />
+        </div>
 
+        <div>
       <div className="court-head">
         <span className="t-section-label">Your court</span>
         <span className="court-head-right">fastest first</span>
@@ -89,6 +100,9 @@ export function Timeline() {
           />
         </div>
       )}
+
+        </div>
+      </div>
 
       <p className="disclaimer">
         This describes conditions, not outcomes. What you do with them is yours.

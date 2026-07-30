@@ -1,14 +1,12 @@
-// Design tokens. Ported from the Figma source of truth (file mP16YA7x9BH1Ee0qPoSwDN)
-// via ideafiles/_extract/vimshottari_app/lib/theme/tokens.dart, which is the reconciled
-// copy — where Figma and these disagree, these win and Figma is stale.
+// Product semantics, on top of the generated design tokens.
 //
-// Surfaces, ink, radii and the shadow recipes live in app.css as custom properties,
-// because CSS is where they're consumed. This file holds only what JavaScript needs
-// to compute with: planet colour, ring geometry, motion timings, office metadata.
-//
-// Dark neumorphism. The base is deliberately mid-dark (#1B1D24), NOT black — pure
-// black kills the effect because the light shadow has nothing to lift off.
+// The seam matters: `@vim/tokens` owns every DESIGN value (colour, shadow, radius, type,
+// ring geometry, breakpoints) and generates CSS + TS + Dart from one JSON. This file owns
+// PRODUCT meaning — what an office is, which planet holds which keyword, what the motion
+// contract is called. A designer changing Venus pink edits tokens.json; an engineer changing
+// what "Governor" means edits here.
 
+import { layout, motion, planet, wheel } from '@vim/tokens';
 import type { DashaLevel, Graha } from '@aura/engine';
 
 // ---------------------------------------------------------------------------
@@ -37,27 +35,27 @@ export const OFFICES: readonly OfficeMeta[] = [
   {
     office: 'king', level: 1, dashaLevel: 'maha',
     label: 'King', sanskrit: 'Mahādaśā',
-    rules: 'Rules for several years — typically 6 to 20.',
+    rules: 'Reigns for several years — typically 6 to 20.',
   },
   {
     office: 'primeMinister', level: 2, dashaLevel: 'antar',
     label: 'Prime Minister', sanskrit: 'Antardaśā',
-    rules: 'Rules for months up to a few years — usually 1 to 3.',
+    rules: 'Serves for months up to a few years — usually 1 to 3.',
   },
   {
     office: 'governor', level: 3, dashaLevel: 'pratyantar',
     label: 'Governor', sanskrit: 'Pratyantardaśā',
-    rules: 'Rules for weeks to a few months.',
+    rules: 'Holds office for weeks to a few months.',
   },
   {
     office: 'magistrate', level: 4, dashaLevel: 'sookshma',
     label: 'Magistrate', sanskrit: 'Sūkṣma daśā',
-    rules: 'Rules for days to a few weeks.',
+    rules: 'Sits for days to a few weeks.',
   },
   {
     office: 'messenger', level: 5, dashaLevel: 'prana',
     label: 'Messenger', sanskrit: 'Prāṇa daśā',
-    rules: 'Rules for hours to a few days.',
+    rules: 'Arrives for hours to a few days.',
   },
 ] as const;
 
@@ -68,132 +66,81 @@ export const officeByLevel = (level: number): OfficeMeta =>
 // Planets
 // ---------------------------------------------------------------------------
 
-/**
- * `ring` paints the wheel. `tabFill`/`tabInk` paint plan stage tabs: the tab is its
- * own ring colour deepened, and everything drawn ON the tab is a lighter shade of the
- * SAME hue. Never introduce a foreign colour.
- * Derivation: tabFill = hue at 18% over the base; tabInk = hue at 72% lightness.
- * `rim` is a forced outline where contrast fails.
- */
 export interface PlanetPalette {
   ring: string;
   tabFill: string;
   tabFillActive: string;
   tabInk: string;
-  rim?: string;
-  /** Display name. Planet names are shown product-wide, never hidden behind jargon. */
+  /** Forced outline where the ring colour cannot carry an edge (Saturn, Moon, Jupiter). */
+  rim: string | null;
+  /** Non-colour identity channel #1. Drawn as a tick at each ring's 12 o'clock start. */
+  glyph: string;
+  /** Non-colour identity channel #2. An SVG pattern id — see Wheel's <defs>. */
+  texture: string;
   name: string;
   /** One word for what this ruler does. Reused in the court table and notifications. */
   keyword: string;
 }
 
-export const PLANET: Record<Graha, PlanetPalette> = {
-  sun: {
-    ring: '#FF7A18', tabFill: '#31220F', tabFillActive: '#3A2610', tabInk: '#E5A264',
-    name: 'Sun', keyword: 'Authority',
-  },
-  // Pearl needs an outline in light contexts or it dissolves.
-  moon: {
-    ring: '#F2EDE4', tabFill: '#2B2A27', tabFillActive: '#34322D', tabInk: '#D8D3C9',
-    rim: '#B9BCC4', name: 'Moon', keyword: 'Feel',
-  },
-  mars: {
-    ring: '#E2342B', tabFill: '#401512', tabFillActive: '#5E201B', tabInk: '#FFB3AC',
-    name: 'Mars', keyword: 'Drive',
-  },
-  mercury: {
-    ring: '#2FBF71', tabFill: '#12301F', tabFillActive: '#164028', tabInk: '#79DDA6',
-    name: 'Mercury', keyword: 'Exchange',
-  },
-  jupiter: {
-    ring: '#F5C518', tabFill: '#332A0D', tabFillActive: '#453811', tabInk: '#EBCE6B',
-    rim: '#C79A00', name: 'Jupiter', keyword: 'Expansion',
-  },
-  venus: {
-    ring: '#FF6FA5', tabFill: '#321D28', tabFillActive: '#45242F', tabInk: '#E594B7',
-    name: 'Venus', keyword: 'Attraction',
-  },
-  // True Saturn is unusable as a tab fill on a dark base — it vanishes. In plan tabs
-  // only, the hue derives from the RIM value. The wheel ring stays near-black.
-  saturn: {
-    ring: '#0E0E12', tabFill: '#282C36', tabFillActive: '#343A46', tabInk: '#B6BCCA',
-    rim: '#3A3D45', name: 'Saturn', keyword: 'Weight',
-  },
-  rahu: {
-    ring: '#6B6F76', tabFill: '#25272B', tabFillActive: '#2F3237', tabInk: '#A2A7AF',
-    name: 'Rahu', keyword: 'Hunger',
-  },
-  ketu: {
-    ring: '#61C7F0', tabFill: '#0F2833', tabFillActive: '#143743', tabInk: '#96DBF5',
-    name: 'Ketu', keyword: 'Release',
-  },
-};
+/**
+ * Straight from the generated tokens, so the nine planet colours exist in exactly one place
+ * and reach Dart and CSS from the same edit.
+ *
+ * M9: roughly 8% of male users cannot reliably separate Mars red from Mercury green, and
+ * Saturn (#1A1A20) against Rāhu (#6B6F76) is two greys at a 22px stroke. Hence `glyph` and
+ * `texture` — identity never rests on hue alone.
+ */
+export const PLANET = planet as Record<Graha, PlanetPalette>;
 
 export const planetName = (g: Graha): string => PLANET[g].name;
 
-/**
- * Saturn's ring is near-black; Rahu's is mid-smoke. On a 12px stroke at arm's length
- * they are the same grey. Motion is what separates them: Saturn's stars drift WITH the
- * fill, Rahu's haze drifts AGAINST it. Planet identity never rests on hue alone —
- * always hue + name + motion.
- */
-export const PLANET_MOTION = {
-  saturnStarCount: 12, // cap at 14 or the ring reads as noise
-  saturnStarLoopMs: 12_000,
-  rahuHazeLoopMs: 9_000, // reversed direction
-} as const;
-
 // ---------------------------------------------------------------------------
-// Wheel geometry
+// Wheel geometry — §4.2, derived from the generated tokens
 // ---------------------------------------------------------------------------
 
 export interface RingSpec {
   /** 1 = King … 5 = Messenger. */
   level: 1 | 2 | 3 | 4 | 5;
-  diameter: number;
+  /** Radius of the stroke's centre line, in canvas units. */
+  radius: number;
   stroke: number;
 }
 
+export const WHEEL_CANVAS = wheel.canvas;
+
 /**
- * Timeline wheel: 290pt well, ~108pt centre hole for the readout.
- * Outermost = fastest (Messenger), so the outer edge is what visibly moves.
- * Rounded caps on both ends of every arc; that's what sells the Activity-Ring look.
+ * A 360-unit canvas with a uniform 22 stroke, radii stepping by 28.
+ *
+ * Outermost = fastest (Messenger). The outer ring has the most arc-length per pixel, so the
+ * thing that visibly moves gets the most room to move in. A uniform stroke — rather than the
+ * earlier 14→10 taper — means 22 + 11 slop clears 44pt on every ring, so all five are
+ * genuinely tappable instead of three of them being aspirational.
  */
 export const WHEEL_TIMELINE: readonly RingSpec[] = [
-  { level: 5, diameter: 268, stroke: 14 }, // Messenger
-  { level: 4, diameter: 230, stroke: 13 }, // Magistrate
-  { level: 3, diameter: 194, stroke: 12 }, // Governor
-  { level: 2, diameter: 160, stroke: 11 }, // Prime Minister
-  { level: 1, diameter: 128, stroke: 10 }, // King
+  { level: 5, radius: wheel.radiusL5, stroke: wheel.stroke },
+  { level: 4, radius: wheel.radiusL4, stroke: wheel.stroke },
+  { level: 3, radius: wheel.radiusL3, stroke: wheel.stroke },
+  { level: 2, radius: wheel.radiusL2, stroke: wheel.stroke },
+  { level: 1, radius: wheel.radiusL1, stroke: wheel.stroke },
 ] as const;
 
-/** Plan detail wheel: 240pt well, tighter centre. */
-export const WHEEL_PLAN: readonly RingSpec[] = [
-  { level: 5, diameter: 218, stroke: 13 },
-  { level: 4, diameter: 182, stroke: 12 },
-  { level: 3, diameter: 148, stroke: 11 },
-  { level: 2, diameter: 116, stroke: 10 },
-  { level: 1, diameter: 86, stroke: 9 },
-] as const;
+/** The plan wheel is the same geometry rendered smaller, never a second design. */
+export const WHEEL_PLAN = WHEEL_TIMELINE;
 
 export const WHEEL = {
-  wellTimeline: 290,
-  wellPlan: 240,
-  /** 12 o'clock. Every arc starts here so the glyph ticks line up. */
-  startAngleDeg: -90,
-  glowOpacity: 0.5,
-  glowBlur: 12,
-  /**
-   * Adjacent rings sharing a planet blur into one fat band. Insert a small
-   * background gap and drop the outer ring to 85%.
-   */
-  sameLordGap: 2,
-  sameLordOuterOpacity: 0.85,
-  /**
-   * Hit-testing: at 10–14pt strokes with 5pt gaps, exact hit-testing loses about a
-   * fifth of taps. Resolve by NEAREST RING-CENTRE DISTANCE instead, within this slop.
-   */
-  hitSlop: 11,
+  canvas: wheel.canvas,
+  stroke: wheel.stroke,
+  startAngleDeg: wheel.startAngleDeg,
+  /** The unfilled arc is the ring colour at 12%, so an empty ring still says which it is. */
+  trackOpacity: wheel.trackOpacity,
+  glowOpacity: wheel.glowOpacity,
+  /** Nearest-ring-centre hit-testing slop. Exact annulus testing loses about a fifth of taps. */
+  hitSlop: wheel.hitSlop,
+  /** Adjacent rings sharing a planet blur into one band without this. */
+  sameLordGap: wheel.sameLordGap,
+  sameLordOuterOpacity: wheel.sameLordOuterOpacity,
+  /** Past this, a ring gets a settle so "almost done" is felt rather than merely shown. */
+  overshootThreshold: wheel.overshootThreshold,
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -201,38 +148,40 @@ export const WHEEL = {
 // ---------------------------------------------------------------------------
 
 export const MOTION = {
-  /** Ring load. Fires on every view appear, not just first mount. */
-  ringLoadMs: 1400,
-  /** Stagger outward-in: Messenger first, King last. */
-  ringStaggerMs: 90,
-  /** Ease-out, no overshoot. A progress ring that bounces past its value reads as a lie. */
-  ringEase: 'cubic-bezier(0.33, 1, 0.68, 1)',
-
-  readoutFadeDelayMs: 400,
-  readoutRisePx: 14,
-
-  /** Current pipeline stage: ONE breathing halo. Two is a heart-rate monitor. */
-  haloBreatheMs: 2200,
-  /** Dashed connector below the current stage crawls toward what's next. */
-  connectorCrawlMs: 1400,
-  chevronCrawlMs: 1200,
-
-  checkDrawMs: 320,
-  connectorFillMs: 400,
-
-  /** A Turn is NOT an achievement — it's time passing. No confetti. A colour bleed. */
-  turnBleedMs: 900,
-
+  /** Rings sweep 0 → current on every appear, staggered outward-in. Under 1.3s total. */
+  ringSweepMs: motion.ringSweepMs,
+  ringStaggerMs: motion.ringStaggerMs,
+  ringEase: motion.ringEase,
+  haloBreatheMs: motion.haloBreatheMs,
+  connectorCrawlMs: motion.connectorCrawlMs,
+  /** A Turn is not an achievement — it's time passing. A colour bleed, never confetti. */
+  turnBleedMs: motion.turnBleedMs,
   countdownTickMs: 1000,
-  /** Recompute the court every 60s while foregrounded, and on foreground. */
+  /** Recompute the tree on the minute; never walk five levels at 1Hz. */
   courtRefreshMs: 60_000,
 } as const;
 
-export const LAYOUT = {
-  gutter: 20,
-  /** 393 − 2×20, the iPhone 15/16 Pro canvas this was designed on. */
-  cardWidth: 353,
-  tabBarHeight: 66,
-  tabBarInset: 24,
-  courtRowHeight: 78,
+// ---------------------------------------------------------------------------
+// Layout
+// ---------------------------------------------------------------------------
+
+/**
+ * Breakpoints. Duplicated as literals inside app.css because CSS custom properties cannot
+ * be used in a media query — the two must be changed together, and tokens.json is the note
+ * that says so.
+ */
+export const BREAKPOINT = {
+  tablet: layout.bpTablet,
+  laptop: layout.bpLaptop,
+  desktop: layout.bpDesktop,
+  wide: layout.bpWide,
 } as const;
+
+export const LAYOUT = layout;
+
+/**
+ * Bottom nav is THREE items — Planner, Timeline, Mentor. Account lives behind the avatar.
+ * A fourth tab dilutes the Mentor, which is the retention driver, and nobody navigates to
+ * settings by thumb.
+ */
+export const NAV_TABS = ['planner', 'timeline', 'mentor'] as const;

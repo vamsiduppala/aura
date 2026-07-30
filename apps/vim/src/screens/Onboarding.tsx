@@ -93,8 +93,8 @@ export function Onboarding() {
   };
 
   return (
-    <div className="screen">
-      <div className="screen-scroll onboard">
+<>
+      <div className="page onboard">
         <header className="onboard-head">
           {idx > 0 && step !== 'reveal' && (
             <Pressable variant="flat" aria-label="Back" onClick={back}>
@@ -248,7 +248,7 @@ export function Onboarding() {
           />
         )}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -429,7 +429,7 @@ function Reveal({
   return (
     <section className="onboard-step onboard-centre">
       <h1 className="t-screen-title">Meet your court</h1>
-      <Wheel seats={seats} now={now} centre={<WheelCentreKing seat={king} />} />
+      <Wheel seats={seats} now={now} size="hero" centre={<WheelCentreKing seat={king} />} />
       {king && (
         <p className="reveal-line">
           <span style={{ color: PLANET[king.lord].ring }}>{PLANET[king.lord].name}</span>{' '}

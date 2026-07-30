@@ -1,0 +1,19 @@
+{
+  "name": "@vim/tokens",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Design tokens — one JSON, generated into CSS custom properties, TypeScript and Dart.",
+  "main": "dist/tokens.ts",
+  "exports": {
+    ".": "./dist/tokens.ts",
+    "./css": "./dist/tokens.css",
+    "./dart": "./dist/tokens.dart",
+    "./json": "./tokens.json"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node build.mjs && git diff --exit-code dist"
+  },
+  "files": ["tokens.json", "dist"]
+}

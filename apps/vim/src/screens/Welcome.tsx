@@ -6,7 +6,7 @@ import { useVim } from '../store/useVim';
 export function Welcome() {
   const { go, showSignIn, authStatus } = useVim();
   return (
-    <div className="screen-scroll welcome">
+    <div className="page welcome">
       <div className="welcome-mark" aria-hidden>
         {/* Five rings, drawn once, standing in for the Wheel the user hasn't earned yet.
             Deliberately empty: no fill, because there is no chart to fill it with. */}
@@ -16,7 +16,7 @@ export function Welcome() {
               key={r}
               cx="60" cy="60" r={r}
               fill="none"
-              stroke="var(--surf-ring-track)"
+              stroke="var(--surface-track-deep)"
               strokeWidth={5 - i * 0.5}
             />
           ))}
