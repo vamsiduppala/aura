@@ -471,22 +471,14 @@ body {
   overflow: visible;
 }
 
-/* The entrance sweep. Only a `from` keyframe, so the implicit `to` is whatever
-   the element itself declares — the real, live value. `backwards` holds the
-   empty state through the stagger delay; when the animation finishes the arc is
-   back under its own inline value and keeps tracking it. Nothing about the fill
-   depends on this running: an earlier version drove it from a React state flip
-   inside requestAnimationFrame, and rings rendered in a background tab (where
-   rAF is throttled to zero) sat at 0% forever. */
-@keyframes ring-sweep {
-  from {
-    stroke-dashoffset: var(--ring-c);
-  }
-}
-.ring-arc {
-  animation: ring-sweep var(--motion-ring-sweep-ms) var(--motion-ring-ease)
-    var(--ring-delay, 0ms) backwards;
-}
+/* The entrance sweep is NOT here. It is driven imperatively by useRingSweep, because a
+   CSS animation restarts whenever its element is re-created — which on any screen that
+   re-renders on a clock meant the sweep never advanced past its first frame and read as a
+   shutter. An effect with no dependencies cannot be retriggered by a render.
+
+   What remains true either way: an arc's resting value is its real value. The sweep
+   animates from empty to whatever the element already declares, so if it is skipped —
+   reduced motion, an unsupported engine — the arc simply shows the truth immediately. */
 
 /* Glyph tick at each ring's 12 o'clock start — the non-colour identity channel
    (M9). Colour is never the sole signal for which ring is which. */

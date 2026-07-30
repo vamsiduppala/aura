@@ -231,3 +231,20 @@ boundaries moved by under a millisecond.
 - Parts: 1:done · 2:done · 3:todo · 4:todo
 - Uncommitted: nothing — tree clean
 - Verify: _not run (use `--full`)_
+
+### 2026-07-30 04:57 · commit · commit
+**docs: mark Part 3 done in both parts tables and the roadmap**
+
+- HEAD: `9ec2b39 docs: mark Part 3 done in both parts tables and the roadmap` on `main`
+- Parts: 1:done · 2:done · 3:done · 4:in-progress
+- Uncommitted: nothing — tree clean
+- Verify: _not run (use `--full`)_
+
+### 2026-07-30 04:57 · Claude Opus 5
+**verified parts tables now read 3:done 4:next**
+
+- HEAD: `9ec2b39 docs: mark Part 3 done in both parts tables and the roadmap` on `main`
+- Parts: 1:done · 2:done · 3:done · 4:in-progress
+- Uncommitted: 1 file(s)
+  - `M WATCHER.md`
+- Verify: _not run (use `--full`)_

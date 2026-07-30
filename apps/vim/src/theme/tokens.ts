@@ -86,9 +86,13 @@ export interface PlanetPalette {
  * Straight from the generated tokens, so the nine planet colours exist in exactly one place
  * and reach Dart and CSS from the same edit.
  *
- * M9: roughly 8% of male users cannot reliably separate Mars red from Mercury green, and
- * Saturn (#1A1A20) against Rāhu (#6B6F76) is two greys at a 22px stroke. Hence `glyph` and
- * `texture` — identity never rests on hue alone.
+ * M9: roughly 8% of male users cannot reliably separate Mars red from Mercury green, so
+ * `glyph` and `texture` exist — identity never rests on hue alone.
+ *
+ * Saturn used to be the sharpest case: near-black against Rāhu's mid-smoke, two greys at a
+ * 22px stroke on a near-black surface. It is now a vibrant indigo, which removes that
+ * collision at the source rather than compensating for it, needs no rim, and leaves Rāhu as
+ * the only grey in the palette. The glyph and texture channels stay regardless.
  */
 export const PLANET = planet as Record<Graha, PlanetPalette>;
 
@@ -142,6 +146,17 @@ export const WHEEL = {
   /** Past this, a ring gets a settle so "almost done" is felt rather than merely shown. */
   overshootThreshold: wheel.overshootThreshold,
 } as const;
+
+/**
+ * How strongly each texture overlays its arc. Stars sit higher than the rest because they
+ * are Saturn's signature rather than a hint, and grain sits between — Rāhu's haze should be
+ * felt without becoming noise at a small size.
+ */
+export const TEXTURE_OPACITY: Record<string, number> = {
+  default: wheel.textureOpacity,
+  stars: wheel.textureOpacityStars,
+  grain: wheel.textureOpacityGrain,
+};
 
 // ---------------------------------------------------------------------------
 // Motion

@@ -324,6 +324,18 @@ keep building. Do not stop with nothing delivered to ask a question you could ha
   `tokens.json` or the dasha maths.
 - **Ring hit-testing** must resolve by *nearest ring-centre distance*, not exact hit. At 10–14px
   strokes with 5px gaps, exact testing loses about a fifth of taps.
+- **NOTHING animates while the tab is hidden, and this has now bitten twice.**
+  `requestAnimationFrame` never fires, and `document.timeline.currentTime` stays at `0`, so
+  every Web Animations API `currentTime` reads `0` with `playState: 'running'`. That looks
+  exactly like an animation restarting in a loop and it is not. **Check `document.hidden` and
+  `document.timeline.currentTime` before diagnosing any animation from a background tab.**
+  What you CAN verify while hidden: the animation count per element (accumulation means it is
+  being re-added) and `effect.getComputedTiming()` (duration, iterations, fill).
+- **A CSS `animation` on an element that re-renders is restartable; an effect with `[]` deps is
+  not.** The ring entrance sweep moved from a CSS keyframe to `useRingSweep`, an imperative
+  `element.animate()` in a mount-only effect, precisely so no render can retrigger it. The
+  invariant survives the move: it animates *from* empty *to* the element's own declared value
+  with `fill: 'backwards'` only, so a skipped animation still leaves the true value on screen.
 - **`useNow` deliberately stops while `document.hidden`.** A measured "the value didn't change
   over 4 seconds" in a background tab is the power saving working, not a dead clock. Check
   `document.hidden` before chasing it.

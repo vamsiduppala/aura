@@ -83,6 +83,25 @@ describe('the Wheel renders live progress', () => {
     expect(after[0]! - before[0]!).toBeGreaterThan(after[4]! - before[4]!);
   });
 
+  it('renders correct values with no Web Animations API at all', () => {
+    // jsdom has no Element.animate, which is exactly the environment this asserts: with the
+    // entrance sweep unavailable the arcs must still show the truth. The sweep is decoration;
+    // if it were load-bearing, an engine without WAAPI would render an empty wheel.
+    expect(typeof (document.createElement('div') as Element & { animate?: unknown }).animate)
+      .not.toBe('function');
+
+    const now = new Date('2026-07-29T12:00:00Z');
+    const seats = courtAt(chart, now, 'exact');
+    render(<Wheel seats={seats} now={now} />);
+    const fractions = filledFractions();
+    expect(fractions).toHaveLength(5);
+    expect(fractions.some((f) => f > 0.001)).toBe(true);
+    seats.forEach((seat, i) => {
+      // Arcs are drawn outermost-first, seats King-first.
+      expect(fractions[4 - i]).toBeCloseTo(seat.progress, 4);
+    });
+  });
+
   it('does not draw hidden rings, so a low-confidence chart shows fewer arcs', () => {
     const now = new Date('2026-07-29T12:00:00Z');
     render(<Wheel seats={courtAt(chart, now, 'unknown')} now={now} />);

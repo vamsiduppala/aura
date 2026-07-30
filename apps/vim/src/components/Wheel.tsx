@@ -14,7 +14,7 @@
 //    tappable rather than three of them being aspirational.
 //  · Identity never rests on hue alone (M9). Each planet carries a glyph tick at its 12
 //    o'clock start AND a stroke texture, because ~8% of male users cannot reliably separate
-//    Mars red from Mercury green, and Saturn against Rāhu is two greys at this weight.
+//    Mars red from Mercury green.
 //  · Hit-testing resolves by NEAREST RING-CENTRE DISTANCE. Exact annulus testing loses taps.
 //
 // SIZE IS NOT A PROP. The viewBox is fixed and the SVG scales to whatever box CSS gives it,
@@ -23,7 +23,10 @@
 import { useMemo, useRef } from 'react';
 import type { CourtSeat } from '../core/court';
 import { humanRemaining, timeLeft } from '../core/time';
-import { MOTION, PLANET, WHEEL, WHEEL_CANVAS, WHEEL_TIMELINE, type RingSpec } from '../theme/tokens';
+import {
+  MOTION, PLANET, TEXTURE_OPACITY, WHEEL, WHEEL_CANVAS, WHEEL_TIMELINE, type RingSpec,
+} from '../theme/tokens';
+import { useRingSweep } from '../hooks/useRingSweep';
 
 interface WheelProps {
   seats: CourtSeat[];
@@ -77,14 +80,19 @@ function TexturePatterns() {
       <pattern id="tex-wave" width="12" height="8" patternUnits="userSpaceOnUse">
         <path d="M0 4 Q3 0 6 4 T12 4" {...stroke} />
       </pattern>
-      {/* Saturn: a static star field. The animated shader version is feature-flagged for
-          later; a static speckle is also the prefers-reduced-motion fallback, so this is
-          the honest baseline rather than a placeholder. */}
-      <pattern id="tex-stars" width="14" height="14" patternUnits="userSpaceOnUse">
-        <circle cx="3" cy="4" r="0.9" fill="#fff" opacity="0.75" />
-        <circle cx="10" cy="2" r="0.6" fill="#fff" opacity="0.5" />
-        <circle cx="7" cy="9" r="1" fill="#fff" opacity="0.85" />
-        <circle cx="12" cy="11" r="0.65" fill="#fff" opacity="0.55" />
+      {/* Saturn's star field. Seven stars, four sizes, irregularly placed across an
+          18-unit tile so it reads as a scattered field rather than a grid at any wheel
+          size. Now that Saturn's ring is a vibrant indigo rather than near-black, this is
+          decoration on a legible surface instead of the thing carrying its contrast —
+          which is also why the animated shader version is optional rather than required. */}
+      <pattern id="tex-stars" width="18" height="18" patternUnits="userSpaceOnUse">
+        <circle cx="3.5" cy="4" r="1.15" fill="#fff" opacity="0.95" />
+        <circle cx="11" cy="1.8" r="0.6" fill="#fff" opacity="0.55" />
+        <circle cx="8" cy="9.5" r="1.35" fill="#fff" opacity="1" />
+        <circle cx="15.5" cy="12" r="0.75" fill="#fff" opacity="0.65" />
+        <circle cx="4.5" cy="14.5" r="0.55" fill="#fff" opacity="0.5" />
+        <circle cx="13" cy="6.5" r="0.45" fill="#fff" opacity="0.42" />
+        <circle cx="17" cy="17" r="0.9" fill="#fff" opacity="0.8" />
       </pattern>
       <pattern id="tex-grain" width="5" height="5" patternUnits="userSpaceOnUse">
         <circle cx="1" cy="1" r="0.7" fill="#000" opacity="0.8" />
@@ -127,6 +135,8 @@ export function Wheel({
   }, [seats, rings, now]);
 
   const svgRef = useRef<SVGSVGElement>(null);
+  // Sweeps every arc once, on appear. Never restarts, however often this re-renders.
+  useRingSweep(svgRef);
 
   /** Nearest ring centre wins, within the slop. Returns null on a miss. */
   const levelAtPoint = (clientX: number, clientY: number): number | null => {
@@ -218,9 +228,10 @@ export function Wheel({
                   strokeWidth={ring.stroke}
                   {...(ring.dashed ? { strokeDasharray: '6 10' } : {})}
                 />
-                {/* Rim, for planets whose own colour cannot carry an edge. Saturn is
-                    near-black on a near-black surface; Moon is off-white and needs an inner
-                    shadow ring so it appears to sit IN the surface rather than float. */}
+                {/* Rim, for planets whose own colour cannot carry an edge. Only the Moon
+                    needs it now — off-white on a dark surface, so a dark inner ring makes it
+                    sit IN the surface rather than float above it. Jupiter keeps one for the
+                    same reason at lower contrast. Saturn used to need one and no longer does. */}
                 {p.rim && (
                   <circle
                     className="ring-arc"
@@ -255,7 +266,7 @@ export function Wheel({
                     stroke={`url(#tex-${p.texture})`}
                     strokeWidth={ring.stroke}
                     strokeLinecap="round"
-                    opacity={0.4}
+                    opacity={TEXTURE_OPACITY[p.texture] ?? TEXTURE_OPACITY.default}
                     style={arc}
                   />
                 )}

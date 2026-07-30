@@ -4,7 +4,7 @@
 // the window you are, how many days are left. Nothing about a stage is stored except the
 // checklist ticks, so a plan can never drift out of sync with the chart it was cut from.
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { ChevronRight, Plus } from 'lucide-react';
 import { Pressable, ProgressTrack } from '../components/neu';
 import { categoryDef } from '../content/plans';
@@ -12,6 +12,7 @@ import { courtAt } from '../core/court';
 import { derivePlan, stageArchetype, type Plan } from '../core/plan';
 import { humanRemaining, shortDate } from '../core/time';
 import { useNow } from '../hooks/useNow';
+import { useRingSweep } from '../hooks/useRingSweep';
 import { PLANET } from '../theme/tokens';
 import { useVim } from '../store/useVim';
 
@@ -85,6 +86,10 @@ export function Planner() {
 
 function PlanCard({ plan, now, archived }: { plan: Plan; now: Date; archived?: boolean }) {
   const { chart, confidence, go } = useVim();
+  // The card's mini ring is the same activity ring at a smaller size, so it gets the same
+  // one-shot sweep rather than a second, subtly different animation.
+  const ringRef = useRef<HTMLSpanElement>(null);
+  useRingSweep(ringRef);
   const derived = useMemo(
     () => (chart ? derivePlan(plan, chart, confidence, now) : null),
     [plan, chart, confidence, now],
@@ -104,7 +109,7 @@ function PlanCard({ plan, now, archived }: { plan: Plan; now: Date; archived?: b
     >
       {/* The mini wheel: one ring, this stage's own progress. Same rule as the big
           wheel — elapsed over THIS period, never absolute time. */}
-      <span className="mini-ring" aria-hidden>
+      <span className="mini-ring" ref={ringRef} aria-hidden>
         <svg viewBox="0 0 64 64" width="64" height="64">
           <circle cx="32" cy="32" r="27" fill="none" stroke="var(--surface-track-deep)" strokeWidth="5" />
           {p && stage && (
