@@ -94,8 +94,8 @@ before the earlier one is committed and verified.**
 |---|---|---|---|
 | **1** | Phase 0 · M8 · §4.2 · §5.1 · §1 | Token pipeline, web design system, responsive shell, rings to spec, 3-item nav + avatar, M9 non-colour channels | **DONE** `24b2b0e` |
 | 2 | §3 · M14a/b · M19 | Engine: microsecond ints, half-open exact-sum property tests, injected clock, ayanāṁśa stored, `engineVersion` stamped, `/packages/vectors` golden fixtures | **DONE** `67dfacb` |
-| 3 | §4.5 · §4.6 · M4 | Plan Composer as versioned rules (suitability × relation × house → PUSH/BUILD/HOLD), composable interpretation with cache keys, authoring shape | not started |
-| 4 | §4.7 · M1 · M5 · M6 · M7 · M17 | Mentor gateway + tool use + date validator, notifications, auth/entitlements/privacy, Postgres migration | not started |
+| 3 | §4.5 · §4.6 · M4 | Plan Composer as versioned rules (suitability × relation × house → PUSH/BUILD/HOLD), composable interpretation with cache keys, authoring shape | **DONE** `cc06c0b` + `536b8bc` |
+| 4 | §4.7 · M1 · M5 · M6 · M7 · M17 | Mentor gateway + tool use + date validator, notifications, auth/entitlements/privacy, Postgres migration | **NEXT** |
 
 Figma: file key `mP16YA7x9BH1Ee0qPoSwDN`, page `0:1`, nine screens (`1:2` Planner,
 `1:47` Timeline, `1:32` Plan Detail, `1:62` Daśā Detail, `1:77` Mentor, `12:2` Threads,
@@ -555,8 +555,8 @@ one is a genuine S1 (tokens are stored in plaintext and never expire).
 |---|---|
 | **1** — token pipeline, web design system, responsive shell, rings to §4.2, 3-item nav + avatar, M9 channels | **DONE** `24b2b0e` |
 | **2** — engine hardening + golden vectors (§3, M14a/b, M19) | **DONE** `67dfacb` |
-| **3** — Plan Composer + composable interpretation (§4.5, §4.6, M4) | **NEXT** |
-| 4 — Mentor gateway, notifications, auth/entitlements/privacy, Postgres (§4.7, M1, M5, M6, M7, M17) | not started |
+| **3** — Plan Composer + composable interpretation (§4.5, §4.6, M4) | **DONE** `cc06c0b` + `536b8bc` |
+| **4** — Mentor gateway, notifications, auth/entitlements/privacy, Postgres (§4.7, M1, M5, M6, M7, M17) | **NEXT** |
 
 Earlier: `754d207` app on the real engine, `f73d3d0` rAF fix, `c72cc2c` Planner, `0c604a4`
 docs, `24b2b0e` Part 1, `c95804f` handoff, `67dfacb` Part 2.

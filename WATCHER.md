@@ -223,3 +223,11 @@ boundaries moved by under a millisecond.
 - Uncommitted: 1 file(s)
   - `M WATCHER.md`
 - Verify: _not run (use `--full`)_
+
+### 2026-07-30 04:56 · commit · commit
+**docs: Part 3 done, Part 4 next**
+
+- HEAD: `366dc7d docs: Part 3 done, Part 4 next` on `main`
+- Parts: 1:done · 2:done · 3:todo · 4:todo
+- Uncommitted: nothing — tree clean
+- Verify: _not run (use `--full`)_

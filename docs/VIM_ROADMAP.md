@@ -75,7 +75,9 @@ Legend: **[x]** done · **[~]** partially done, see note · **[ ]** not started
 - [~] Layer (a): generic per planet × office. **Done** as one authored block per planet plus an
       office timescale frame — real copy, no placeholders.
 - [ ] Deepen to 45 bespoke blocks (9 planets × 5 offices) where the office genuinely changes
-      the content, not just the timescale.
+      the content, not just the timescale. The relation and house layers now exist; the base
+      layer is what remains.
+- [ ] M4 authoring console — draft/review/publish over the 93 fragments, per locale.
 - [ ] Health-category extra line wherever the body is mentioned.
 
 ## M4 · Planner
@@ -90,6 +92,11 @@ Legend: **[x]** done · **[~]** partially done, see note · **[ ]** not started
 - [x] The pipeline: nodes, connectors, three stage states, breathing halo on the current
       stage, crawling dashed connector, checkmark draw-in.
 - [x] Plan detail wheel + task detail with Advantage/Obstacle and a real checklist.
+- [x] Plan Composer as versioned rules (`packages/rules`): suitability × relation × house
+      → PUSH/BUILD/HOLD, `rulesVersion` on every derived plan, and the score disclosed to
+      the user rather than hidden.
+- [x] Composable interpretation (§4.6): 81 relation + 12 house fragments, deterministic
+      assembly, FNV-1a cache keys over a bucketed chart-feature hash.
 - [ ] Course Correct + **the diff view** — never rewrite a plan silently.
 - [ ] Archive / delete with named confirms.
 
@@ -150,8 +157,8 @@ Full detail in **`docs/ACCOUNT_AND_COMMERCE.md`**. Ordered by severity, not by e
 Every chunk, before commit:
 
 - [ ] `npm run typecheck` clean across all five workspaces.
-- [ ] `npm test` green (currently 400 tests: engine 175, knowledge 124, vim 52, web 29,
-      api 20).
+- [ ] `npm test` green (currently 437 tests: engine 175, knowledge 124, rules 35, vim 54,
+      web 29, api 20).
 - [ ] `npm run check:generated` clean — tokens/dist and vectors.json are not stale.
 - [ ] No mock/static/demo data on any user-facing path — the guard test enforces it.
 - [ ] New calculations verified against a worked example, cited in the test name.
