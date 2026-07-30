@@ -1,0 +1,3001 @@
+{
+  "$schema": "https://vimshottari.app/schemas/dasha-vectors-1.json",
+  "generatedBy": "@aura/engine 0.2.0",
+  "note": "Golden fixtures. Every implementation — this TS engine, a future Dart port, the compiled JS — must reproduce these exactly. A mismatch fails the build. Regenerate only deliberately: a moved boundary is either a fix or a regression, and the commit message must say which.",
+  "count": 41,
+  "vectors": [
+    {
+      "id": "lord-ketu-start",
+      "why": "ketu as starting lord, start of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 0.013333333333333334,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "sun",
+          "startUtc": "2021-03-11T05:20:16.800Z",
+          "endUtc": "2027-03-11T17:20:16.800Z",
+          "startUs": 1615440016800000,
+          "endUs": 1804785616800000
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2026-03-11T11:20:16.800Z",
+          "endUtc": "2027-03-11T17:20:16.800Z",
+          "startUs": 1773228016800000,
+          "endUs": 1804785616800000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "rahu",
+          "startUtc": "2026-07-20T08:29:16.800Z",
+          "endUtc": "2026-09-13T03:23:16.800Z",
+          "startUs": 1784536156800000,
+          "endUs": 1789269796800000
+        },
+        {
+          "level": "sookshma",
+          "lord": "jupiter",
+          "startUtc": "2026-07-28T13:43:22.800Z",
+          "endUtc": "2026-08-04T21:02:34.800Z",
+          "startUs": 1785246202800000,
+          "endUs": 1785877354800000
+        },
+        {
+          "level": "prana",
+          "lord": "jupiter",
+          "startUtc": "2026-07-28T13:43:22.800Z",
+          "endUtc": "2026-07-29T13:05:56.400Z",
+          "startUs": 1785246202800000,
+          "endUs": 1785330356400000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "ketu",
+          "startUtc": "1994-03-11T11:20:16.800Z",
+          "endUtc": "2001-03-11T05:20:16.800Z",
+          "startUs": 763384816800000,
+          "endUs": 984288016800000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "2001-03-11T05:20:16.800Z",
+          "endUtc": "2021-03-11T05:20:16.800Z",
+          "startUs": 984288016800000,
+          "endUs": 1615440016800000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "2021-03-11T05:20:16.800Z",
+          "endUtc": "2027-03-11T17:20:16.800Z",
+          "startUs": 1615440016800000,
+          "endUs": 1804785616800000
+        }
+      ]
+    },
+    {
+      "id": "lord-ketu-middle",
+      "why": "ketu as starting lord, middle of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 6.666666666666667,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "moon",
+          "startUtc": "2023-09-12T21:42:00.000Z",
+          "endUtc": "2033-09-12T09:42:00.000Z",
+          "startUs": 1694554920000000,
+          "endUs": 2010130920000000
+        },
+        {
+          "level": "antar",
+          "lord": "rahu",
+          "startUtc": "2025-02-11T08:12:00.000Z",
+          "endUtc": "2026-08-13T05:12:00.000Z",
+          "startUs": 1739261520000000,
+          "endUs": 1786597920000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "mars",
+          "startUtc": "2026-07-12T06:10:30.000Z",
+          "endUtc": "2026-08-13T05:12:00.000Z",
+          "startUs": 1783836630000000,
+          "endUs": 1786597920000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "mercury",
+          "startUtc": "2026-07-28T05:41:15.000Z",
+          "endUtc": "2026-08-01T18:20:57.750Z",
+          "startUs": 1785217275000000,
+          "endUs": 1785608457750000
+        },
+        {
+          "level": "prana",
+          "lord": "venus",
+          "startUtc": "2026-07-29T03:25:11.550Z",
+          "endUtc": "2026-07-29T21:31:48.675Z",
+          "startUs": 1785295511550000,
+          "endUs": 1785360708675000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "ketu",
+          "startUtc": "1990-09-12T15:42:00.000Z",
+          "endUtc": "1997-09-12T09:42:00.000Z",
+          "startUs": 653154120000000,
+          "endUs": 874057320000000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "1997-09-12T09:42:00.000Z",
+          "endUtc": "2017-09-12T09:42:00.000Z",
+          "startUs": 874057320000000,
+          "endUs": 1505209320000000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "2017-09-12T09:42:00.000Z",
+          "endUtc": "2023-09-12T21:42:00.000Z",
+          "startUs": 1505209320000000,
+          "endUs": 1694554920000000
+        }
+      ]
+    },
+    {
+      "id": "lord-ketu-end",
+      "why": "ketu as starting lord, end of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 13.32,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "moon",
+          "startUtc": "2020-03-16T02:03:43.200Z",
+          "endUtc": "2030-03-16T14:03:43.200Z",
+          "startUs": 1584324223200000,
+          "endUs": 1899900223200000
+        },
+        {
+          "level": "antar",
+          "lord": "mercury",
+          "startUtc": "2026-01-14T17:03:43.200Z",
+          "endUtc": "2027-06-16T03:33:43.200Z",
+          "startUs": 1768410223200000,
+          "endUs": 1813116823200000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "sun",
+          "startUtc": "2026-07-23T10:30:43.200Z",
+          "endUtc": "2026-08-18T07:26:13.200Z",
+          "startUs": 1784802643200000,
+          "endUs": 1787037973200000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-28T09:31:21.450Z",
+          "endUtc": "2026-08-01T06:39:40.950Z",
+          "startUs": 1785231081450000,
+          "endUs": 1785566380950000
+        },
+        {
+          "level": "prana",
+          "lord": "saturn",
+          "startUtc": "2026-07-29T11:54:42.975Z",
+          "endUtc": "2026-07-30T02:39:32.063Z",
+          "startUs": 1785326082975000,
+          "endUs": 1785379172062500
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "ketu",
+          "startUtc": "1987-03-16T20:03:43.200Z",
+          "endUtc": "1994-03-16T14:03:43.200Z",
+          "startUs": 542923423200000,
+          "endUs": 763826623200000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "1994-03-16T14:03:43.200Z",
+          "endUtc": "2014-03-16T14:03:43.200Z",
+          "startUs": 763826623200000,
+          "endUs": 1394978623200000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "2014-03-16T14:03:43.200Z",
+          "endUtc": "2020-03-16T02:03:43.200Z",
+          "startUs": 1394978623200000,
+          "endUs": 1584324223200000
+        }
+      ]
+    },
+    {
+      "id": "lord-venus-start",
+      "why": "venus as starting lord, start of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 13.346666666666666,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "moon",
+          "startUtc": "2020-03-06T05:22:48.000Z",
+          "endUtc": "2030-03-06T17:22:48.000Z",
+          "startUs": 1583472168000000,
+          "endUs": 1899048168000000
+        },
+        {
+          "level": "antar",
+          "lord": "mercury",
+          "startUtc": "2026-01-04T20:22:48.000Z",
+          "endUtc": "2027-06-06T06:52:48.000Z",
+          "startUs": 1767558168000000,
+          "endUs": 1812264768000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "sun",
+          "startUtc": "2026-07-13T13:49:48.000Z",
+          "endUtc": "2026-08-08T10:45:18.000Z",
+          "startUs": 1783950588000000,
+          "endUs": 1786185918000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "saturn",
+          "startUtc": "2026-07-25T20:46:09.750Z",
+          "endUtc": "2026-07-29T23:04:57.000Z",
+          "startUs": 1785012369750000,
+          "endUs": 1785366297000000
+        },
+        {
+          "level": "prana",
+          "lord": "jupiter",
+          "startUtc": "2026-07-29T09:58:26.700Z",
+          "endUtc": "2026-07-29T23:04:57.000Z",
+          "startUs": 1785319106700000,
+          "endUs": 1785366297000000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "venus",
+          "startUtc": "1994-03-06T17:22:48.000Z",
+          "endUtc": "2014-03-06T17:22:48.000Z",
+          "startUs": 762974568000000,
+          "endUs": 1394126568000000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "2014-03-06T17:22:48.000Z",
+          "endUtc": "2020-03-06T05:22:48.000Z",
+          "startUs": 1394126568000000,
+          "endUs": 1583472168000000
+        },
+        {
+          "lord": "moon",
+          "startUtc": "2020-03-06T05:22:48.000Z",
+          "endUtc": "2030-03-06T17:22:48.000Z",
+          "startUs": 1583472168000000,
+          "endUs": 1899048168000000
+        }
+      ]
+    },
+    {
+      "id": "lord-venus-middle",
+      "why": "venus as starting lord, middle of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 20,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "mars",
+          "startUtc": "2020-03-13T12:42:00.000Z",
+          "endUtc": "2027-03-14T06:42:00.000Z",
+          "startUs": 1584103320000000,
+          "endUs": 1805006520000000
+        },
+        {
+          "level": "antar",
+          "lord": "sun",
+          "startUtc": "2026-04-07T09:06:00.000Z",
+          "endUtc": "2026-08-13T05:12:00.000Z",
+          "startUs": 1775552760000000,
+          "endUs": 1786597920000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "venus",
+          "startUtc": "2026-07-22T21:51:00.000Z",
+          "endUtc": "2026-08-13T05:12:00.000Z",
+          "startUs": 1784757060000000,
+          "endUs": 1786597920000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "mars",
+          "startUtc": "2026-07-29T07:15:18.000Z",
+          "endUtc": "2026-07-30T13:05:01.500Z",
+          "startUs": 1785309318000000,
+          "endUs": 1785416701500000
+        },
+        {
+          "level": "prana",
+          "lord": "rahu",
+          "startUtc": "2026-07-29T08:59:42.038Z",
+          "endUtc": "2026-07-29T13:28:09.563Z",
+          "startUs": 1785315582037500,
+          "endUs": 1785331689562500
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "venus",
+          "startUtc": "1984-03-13T12:42:00.000Z",
+          "endUtc": "2004-03-13T12:42:00.000Z",
+          "startUs": 448029720000000,
+          "endUs": 1079181720000000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "2004-03-13T12:42:00.000Z",
+          "endUtc": "2010-03-14T00:42:00.000Z",
+          "startUs": 1079181720000000,
+          "endUs": 1268527320000000
+        },
+        {
+          "lord": "moon",
+          "startUtc": "2010-03-14T00:42:00.000Z",
+          "endUtc": "2020-03-13T12:42:00.000Z",
+          "startUs": 1268527320000000,
+          "endUs": 1584103320000000
+        }
+      ]
+    },
+    {
+      "id": "lord-venus-end",
+      "why": "venus as starting lord, end of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 26.653333333333336,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "rahu",
+          "startUtc": "2017-03-21T02:01:12.000Z",
+          "endUtc": "2035-03-21T14:01:12.000Z",
+          "startUs": 1490061672000000,
+          "endUs": 2058098472000000
+        },
+        {
+          "level": "antar",
+          "lord": "mercury",
+          "startUtc": "2025-03-02T19:43:12.000Z",
+          "endUtc": "2027-09-20T05:01:12.000Z",
+          "startUs": 1740944592000000,
+          "endUs": 1821416472000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "mars",
+          "startUtc": "2026-06-11T12:22:12.000Z",
+          "endUtc": "2026-08-04T20:18:45.000Z",
+          "startUs": 1781180532000000,
+          "endUs": 1785874725000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "sun",
+          "startUtc": "2026-07-28T14:27:12.600Z",
+          "endUtc": "2026-07-31T07:39:02.250Z",
+          "startUs": 1785248832600000,
+          "endUs": 1785483542250000
+        },
+        {
+          "level": "prana",
+          "lord": "rahu",
+          "startUtc": "2026-07-29T02:56:58.616Z",
+          "endUtc": "2026-07-29T12:43:45.064Z",
+          "startUs": 1785293818616250,
+          "endUs": 1785329025063750
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "venus",
+          "startUtc": "1974-03-21T08:01:12.000Z",
+          "endUtc": "1994-03-21T08:01:12.000Z",
+          "startUs": 133084872000000,
+          "endUs": 764236872000000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "1994-03-21T08:01:12.000Z",
+          "endUtc": "2000-03-20T20:01:12.000Z",
+          "startUs": 764236872000000,
+          "endUs": 953582472000000
+        },
+        {
+          "lord": "moon",
+          "startUtc": "2000-03-20T20:01:12.000Z",
+          "endUtc": "2010-03-21T08:01:12.000Z",
+          "startUs": 953582472000000,
+          "endUs": 1269158472000000
+        }
+      ]
+    },
+    {
+      "id": "lord-sun-start",
+      "why": "sun as starting lord, start of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 26.68,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "rahu",
+          "startUtc": "2017-03-11T14:06:14.400Z",
+          "endUtc": "2035-03-12T02:06:14.400Z",
+          "startUs": 1489241174400000,
+          "endUs": 2057277974400000
+        },
+        {
+          "level": "antar",
+          "lord": "mercury",
+          "startUtc": "2025-02-21T07:48:14.400Z",
+          "endUtc": "2027-09-10T17:06:14.400Z",
+          "startUs": 1740124094400000,
+          "endUs": 1820595974400000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "rahu",
+          "startUtc": "2026-07-26T08:23:47.400Z",
+          "endUtc": "2026-12-13T01:23:29.400Z",
+          "startUs": 1785054227400000,
+          "endUs": 1797125009400000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-26T08:23:47.400Z",
+          "endUtc": "2026-08-16T07:20:44.700Z",
+          "startUs": 1785054227400000,
+          "endUs": 1786864844700000
+        },
+        {
+          "level": "prana",
+          "lord": "jupiter",
+          "startUtc": "2026-07-29T11:50:19.995Z",
+          "endUtc": "2026-08-01T06:53:55.635Z",
+          "startUs": 1785325819995000,
+          "endUs": 1785567235635000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "sun",
+          "startUtc": "1994-03-11T20:06:14.400Z",
+          "endUtc": "2000-03-11T08:06:14.400Z",
+          "startUs": 763416374400000,
+          "endUs": 952761974400000
+        },
+        {
+          "lord": "moon",
+          "startUtc": "2000-03-11T08:06:14.400Z",
+          "endUtc": "2010-03-11T20:06:14.400Z",
+          "startUs": 952761974400000,
+          "endUs": 1268337974400000
+        },
+        {
+          "lord": "mars",
+          "startUtc": "2010-03-11T20:06:14.400Z",
+          "endUtc": "2017-03-11T14:06:14.400Z",
+          "startUs": 1268337974400000,
+          "endUs": 1489241174400000
+        }
+      ]
+    },
+    {
+      "id": "lord-sun-middle",
+      "why": "sun as starting lord, middle of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 33.333333333333336,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "rahu",
+          "startUtc": "2014-03-14T00:42:00.000Z",
+          "endUtc": "2032-03-13T12:42:00.000Z",
+          "startUs": 1394757720000000,
+          "endUs": 1962794520000000
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2025-09-30T16:00:00.000Z",
+          "endUtc": "2028-09-30T10:00:00.000Z",
+          "startUs": 1759248000000000,
+          "endUs": 1853920800000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "moon",
+          "startUtc": "2026-05-26T01:54:00.000Z",
+          "endUtc": "2026-08-25T09:24:00.000Z",
+          "startUs": 1779760440000000,
+          "endUs": 1787649840000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "mercury",
+          "startUtc": "2026-07-18T08:16:30.000Z",
+          "endUtc": "2026-07-31T06:44:15.000Z",
+          "startUs": 1784362590000000,
+          "endUs": 1785480255000000
+        },
+        {
+          "level": "prana",
+          "lord": "saturn",
+          "startUtc": "2026-07-29T05:34:51.375Z",
+          "endUtc": "2026-07-31T06:44:15.000Z",
+          "startUs": 1785303291375000,
+          "endUs": 1785480255000000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "sun",
+          "startUtc": "1991-03-14T06:42:00.000Z",
+          "endUtc": "1997-03-13T18:42:00.000Z",
+          "startUs": 668932920000000,
+          "endUs": 858278520000000
+        },
+        {
+          "lord": "moon",
+          "startUtc": "1997-03-13T18:42:00.000Z",
+          "endUtc": "2007-03-14T06:42:00.000Z",
+          "startUs": 858278520000000,
+          "endUs": 1173854520000000
+        },
+        {
+          "lord": "mars",
+          "startUtc": "2007-03-14T06:42:00.000Z",
+          "endUtc": "2014-03-14T00:42:00.000Z",
+          "startUs": 1173854520000000,
+          "endUs": 1394757720000000
+        }
+      ]
+    },
+    {
+      "id": "lord-sun-end",
+      "why": "sun as starting lord, end of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 39.98666666666667,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "rahu",
+          "startUtc": "2011-03-16T11:17:45.600Z",
+          "endUtc": "2029-03-15T23:17:45.600Z",
+          "startUs": 1300274265600000,
+          "endUs": 1868311065600000
+        },
+        {
+          "level": "antar",
+          "lord": "sun",
+          "startUtc": "2025-10-02T20:35:45.600Z",
+          "endUtc": "2026-08-27T13:59:45.600Z",
+          "startUs": 1759437345600000,
+          "endUs": 1787839185600000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "venus",
+          "startUtc": "2026-07-03T19:05:45.600Z",
+          "endUtc": "2026-08-27T13:59:45.600Z",
+          "startUs": 1783105545600000,
+          "endUs": 1787839185600000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-23T10:16:06.600Z",
+          "endUtc": "2026-07-31T15:30:12.600Z",
+          "startUs": 1784801766600000,
+          "endUs": 1785511812600000
+        },
+        {
+          "level": "prana",
+          "lord": "venus",
+          "startUtc": "2026-07-28T16:49:39.450Z",
+          "endUtc": "2026-07-30T01:42:00.450Z",
+          "startUs": 1785257379450000,
+          "endUs": 1785375720450000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "sun",
+          "startUtc": "1988-03-15T17:17:45.600Z",
+          "endUtc": "1994-03-16T05:17:45.600Z",
+          "startUs": 574449465600000,
+          "endUs": 763795065600000
+        },
+        {
+          "lord": "moon",
+          "startUtc": "1994-03-16T05:17:45.600Z",
+          "endUtc": "2004-03-15T17:17:45.600Z",
+          "startUs": 763795065600000,
+          "endUs": 1079371065600000
+        },
+        {
+          "lord": "mars",
+          "startUtc": "2004-03-15T17:17:45.600Z",
+          "endUtc": "2011-03-16T11:17:45.600Z",
+          "startUs": 1079371065600000,
+          "endUs": 1300274265600000
+        }
+      ]
+    },
+    {
+      "id": "lord-moon-start",
+      "why": "moon as starting lord, start of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 40.013333333333335,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "rahu",
+          "startUtc": "2011-03-10T15:02:24.000Z",
+          "endUtc": "2029-03-10T03:02:24.000Z",
+          "startUs": 1299769344000000,
+          "endUs": 1867806144000000
+        },
+        {
+          "level": "antar",
+          "lord": "sun",
+          "startUtc": "2025-09-27T00:20:24.000Z",
+          "endUtc": "2026-08-21T17:44:24.000Z",
+          "startUs": 1758932424000000,
+          "endUs": 1787334264000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "venus",
+          "startUtc": "2026-06-27T22:50:24.000Z",
+          "endUtc": "2026-08-21T17:44:24.000Z",
+          "startUs": 1782600624000000,
+          "endUs": 1787334264000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "jupiter",
+          "startUtc": "2026-07-25T19:14:51.000Z",
+          "endUtc": "2026-08-02T02:34:03.000Z",
+          "startUs": 1785006891000000,
+          "endUs": 1785638043000000
+        },
+        {
+          "level": "prana",
+          "lord": "venus",
+          "startUtc": "2026-07-29T09:26:47.400Z",
+          "endUtc": "2026-07-30T14:39:59.400Z",
+          "startUs": 1785317207400000,
+          "endUs": 1785422399400000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "moon",
+          "startUtc": "1994-03-10T09:02:24.000Z",
+          "endUtc": "2004-03-09T21:02:24.000Z",
+          "startUs": 763290144000000,
+          "endUs": 1078866144000000
+        },
+        {
+          "lord": "mars",
+          "startUtc": "2004-03-09T21:02:24.000Z",
+          "endUtc": "2011-03-10T15:02:24.000Z",
+          "startUs": 1078866144000000,
+          "endUs": 1299769344000000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "2011-03-10T15:02:24.000Z",
+          "endUtc": "2029-03-10T03:02:24.000Z",
+          "startUs": 1299769344000000,
+          "endUs": 1867806144000000
+        }
+      ]
+    },
+    {
+      "id": "lord-moon-middle",
+      "why": "moon as starting lord, middle of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 46.66666666666667,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "jupiter",
+          "startUtc": "2024-03-13T12:42:00.000Z",
+          "endUtc": "2040-03-13T12:42:00.000Z",
+          "startUs": 1710333720000000,
+          "endUs": 2215255320000000
+        },
+        {
+          "level": "antar",
+          "lord": "saturn",
+          "startUtc": "2026-05-01T17:30:00.000Z",
+          "endUtc": "2028-11-12T00:42:00.000Z",
+          "startUs": 1777656600000000,
+          "endUs": 1857602520000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "saturn",
+          "startUtc": "2026-05-01T17:30:00.000Z",
+          "endUtc": "2026-09-25T05:38:24.000Z",
+          "startUs": 1777656600000000,
+          "endUs": 1790314704000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "moon",
+          "startUtc": "2026-07-24T23:16:49.800Z",
+          "endUtc": "2026-08-06T04:17:31.800Z",
+          "startUs": 1784935009800000,
+          "endUs": 1785989851800000
+        },
+        {
+          "level": "prana",
+          "lord": "jupiter",
+          "startUtc": "2026-07-28T12:44:32.050Z",
+          "endUtc": "2026-07-30T03:48:37.650Z",
+          "startUs": 1785242672050000,
+          "endUs": 1785383317650000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "moon",
+          "startUtc": "1989-03-13T18:42:00.000Z",
+          "endUtc": "1999-03-14T06:42:00.000Z",
+          "startUs": 605817720000000,
+          "endUs": 921393720000000
+        },
+        {
+          "lord": "mars",
+          "startUtc": "1999-03-14T06:42:00.000Z",
+          "endUtc": "2006-03-14T00:42:00.000Z",
+          "startUs": 921393720000000,
+          "endUs": 1142296920000000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "2006-03-14T00:42:00.000Z",
+          "endUtc": "2024-03-13T12:42:00.000Z",
+          "startUs": 1142296920000000,
+          "endUs": 1710333720000000
+        }
+      ]
+    },
+    {
+      "id": "lord-moon-end",
+      "why": "moon as starting lord, end of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 53.32,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "jupiter",
+          "startUtc": "2019-03-17T22:21:36.000Z",
+          "endUtc": "2035-03-17T22:21:36.000Z",
+          "startUs": 1552861296000000,
+          "endUs": 2057782896000000
+        },
+        {
+          "level": "antar",
+          "lord": "ketu",
+          "startUtc": "2026-02-21T07:57:36.000Z",
+          "endUtc": "2027-01-28T05:33:36.000Z",
+          "startUs": 1771660656000000,
+          "endUs": 1801114416000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "rahu",
+          "startUtc": "2026-07-13T08:57:36.000Z",
+          "endUtc": "2026-09-02T12:12:00.000Z",
+          "startUs": 1783933056000000,
+          "endUs": 1788351120000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "saturn",
+          "startUtc": "2026-07-27T20:40:40.800Z",
+          "endUtc": "2026-08-04T22:59:27.600Z",
+          "startUs": 1785184840800000,
+          "endUs": 1785884367600000
+        },
+        {
+          "level": "prana",
+          "lord": "mercury",
+          "startUtc": "2026-07-29T03:26:39.210Z",
+          "endUtc": "2026-07-30T06:58:18.840Z",
+          "startUs": 1785295599210000,
+          "endUs": 1785394698840000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "moon",
+          "startUtc": "1984-03-17T04:21:36.000Z",
+          "endUtc": "1994-03-17T16:21:36.000Z",
+          "startUs": 448345296000000,
+          "endUs": 763921296000000
+        },
+        {
+          "lord": "mars",
+          "startUtc": "1994-03-17T16:21:36.000Z",
+          "endUtc": "2001-03-17T10:21:36.000Z",
+          "startUs": 763921296000000,
+          "endUs": 984824496000000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "2001-03-17T10:21:36.000Z",
+          "endUtc": "2019-03-17T22:21:36.000Z",
+          "startUs": 984824496000000,
+          "endUs": 1552861296000000
+        }
+      ]
+    },
+    {
+      "id": "lord-mars-start",
+      "why": "mars as starting lord, start of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 53.34666666666667,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "jupiter",
+          "startUtc": "2019-03-11T17:20:16.800Z",
+          "endUtc": "2035-03-11T17:20:16.800Z",
+          "startUs": 1552324816800000,
+          "endUs": 2057246416800000
+        },
+        {
+          "level": "antar",
+          "lord": "ketu",
+          "startUtc": "2026-02-15T02:56:16.800Z",
+          "endUtc": "2027-01-22T00:32:16.800Z",
+          "startUs": 1771124176800000,
+          "endUs": 1800577936800000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "rahu",
+          "startUtc": "2026-07-07T03:56:16.800Z",
+          "endUtc": "2026-08-27T07:10:40.800Z",
+          "startUs": 1783396576800000,
+          "endUs": 1787814640800000
+        },
+        {
+          "level": "sookshma",
+          "lord": "saturn",
+          "startUtc": "2026-07-21T15:39:21.600Z",
+          "endUtc": "2026-07-29T17:58:08.400Z",
+          "startUs": 1784648361600000,
+          "endUs": 1785347888400000
+        },
+        {
+          "level": "prana",
+          "lord": "jupiter",
+          "startUtc": "2026-07-28T16:03:38.160Z",
+          "endUtc": "2026-07-29T17:58:08.400Z",
+          "startUs": 1785254618160000,
+          "endUs": 1785347888400000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "mars",
+          "startUtc": "1994-03-11T11:20:16.800Z",
+          "endUtc": "2001-03-11T05:20:16.800Z",
+          "startUs": 763384816800000,
+          "endUs": 984288016800000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "2001-03-11T05:20:16.800Z",
+          "endUtc": "2019-03-11T17:20:16.800Z",
+          "startUs": 984288016800000,
+          "endUs": 1552324816800000
+        },
+        {
+          "lord": "jupiter",
+          "startUtc": "2019-03-11T17:20:16.800Z",
+          "endUtc": "2035-03-11T17:20:16.800Z",
+          "startUs": 1552324816800000,
+          "endUs": 2057246416800000
+        }
+      ]
+    },
+    {
+      "id": "lord-mars-middle",
+      "why": "mars as starting lord, middle of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 60,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "jupiter",
+          "startUtc": "2015-09-12T21:42:00.000Z",
+          "endUtc": "2031-09-12T21:42:00.000Z",
+          "startUs": 1442094120000000,
+          "endUs": 1947015720000000
+        },
+        {
+          "level": "antar",
+          "lord": "sun",
+          "startUtc": "2026-03-26T04:54:00.000Z",
+          "endUtc": "2027-01-12T09:42:00.000Z",
+          "startUs": 1774500840000000,
+          "endUs": 1799746920000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "jupiter",
+          "startUtc": "2026-07-04T00:56:24.000Z",
+          "endUtc": "2026-08-11T23:58:48.000Z",
+          "startUs": 1783126584000000,
+          "endUs": 1786492728000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "venus",
+          "startUtc": "2026-07-23T04:40:04.800Z",
+          "endUtc": "2026-07-29T16:30:28.800Z",
+          "startUs": 1784781604800000,
+          "endUs": 1785342628800000
+        },
+        {
+          "level": "prana",
+          "lord": "ketu",
+          "startUtc": "2026-07-29T07:25:02.400Z",
+          "endUtc": "2026-07-29T16:30:28.800Z",
+          "startUs": 1785309902400000,
+          "endUs": 1785342628800000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "mars",
+          "startUtc": "1990-09-12T15:42:00.000Z",
+          "endUtc": "1997-09-12T09:42:00.000Z",
+          "startUs": 653154120000000,
+          "endUs": 874057320000000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "1997-09-12T09:42:00.000Z",
+          "endUtc": "2015-09-12T21:42:00.000Z",
+          "startUs": 874057320000000,
+          "endUs": 1442094120000000
+        },
+        {
+          "lord": "jupiter",
+          "startUtc": "2015-09-12T21:42:00.000Z",
+          "endUtc": "2031-09-12T21:42:00.000Z",
+          "startUs": 1442094120000000,
+          "endUs": 1947015720000000
+        }
+      ]
+    },
+    {
+      "id": "lord-mars-end",
+      "why": "mars as starting lord, end of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 66.65333333333334,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "jupiter",
+          "startUtc": "2012-03-16T02:03:43.200Z",
+          "endUtc": "2028-03-16T02:03:43.200Z",
+          "startUs": 1331863423200000,
+          "endUs": 1836785023200000
+        },
+        {
+          "level": "antar",
+          "lord": "rahu",
+          "startUtc": "2025-10-21T11:39:43.200Z",
+          "endUtc": "2028-03-16T02:03:43.200Z",
+          "startUs": 1761046783200000,
+          "endUs": 1836785023200000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "saturn",
+          "startUtc": "2026-06-26T20:32:31.200Z",
+          "endUtc": "2026-11-12T15:37:19.200Z",
+          "startUs": 1782505951200000,
+          "endUs": 1794497839200000
+        },
+        {
+          "level": "sookshma",
+          "lord": "mercury",
+          "startUtc": "2026-07-18T19:57:46.800Z",
+          "endUtc": "2026-08-07T11:51:57.600Z",
+          "startUs": 1784404666800000,
+          "endUs": 1786103517600000
+        },
+        {
+          "level": "prana",
+          "lord": "mars",
+          "startUtc": "2026-07-28T15:54:52.200Z",
+          "endUtc": "2026-07-29T19:26:31.830Z",
+          "startUs": 1785254092200000,
+          "endUs": 1785353191830000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "mars",
+          "startUtc": "1987-03-16T20:03:43.200Z",
+          "endUtc": "1994-03-16T14:03:43.200Z",
+          "startUs": 542923423200000,
+          "endUs": 763826623200000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "1994-03-16T14:03:43.200Z",
+          "endUtc": "2012-03-16T02:03:43.200Z",
+          "startUs": 763826623200000,
+          "endUs": 1331863423200000
+        },
+        {
+          "lord": "jupiter",
+          "startUtc": "2012-03-16T02:03:43.200Z",
+          "endUtc": "2028-03-16T02:03:43.200Z",
+          "startUs": 1331863423200000,
+          "endUs": 1836785023200000
+        }
+      ]
+    },
+    {
+      "id": "lord-rahu-start",
+      "why": "rahu as starting lord, start of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 66.68,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "jupiter",
+          "startUtc": "2012-03-06T22:54:43.200Z",
+          "endUtc": "2028-03-06T22:54:43.200Z",
+          "startUs": 1331074483200000,
+          "endUs": 1835996083200000
+        },
+        {
+          "level": "antar",
+          "lord": "rahu",
+          "startUtc": "2025-10-12T08:30:43.200Z",
+          "endUtc": "2028-03-06T22:54:43.200Z",
+          "startUs": 1760257843200000,
+          "endUs": 1835996083200000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "saturn",
+          "startUtc": "2026-06-17T17:23:31.200Z",
+          "endUtc": "2026-11-03T12:28:19.200Z",
+          "startUs": 1781717011200000,
+          "endUs": 1793708899200000
+        },
+        {
+          "level": "sookshma",
+          "lord": "ketu",
+          "startUtc": "2026-07-29T08:42:57.600Z",
+          "endUtc": "2026-08-06T11:01:44.400Z",
+          "startUs": 1785314577600000,
+          "endUs": 1786014104400000
+        },
+        {
+          "level": "prana",
+          "lord": "ketu",
+          "startUtc": "2026-07-29T08:42:57.600Z",
+          "endUtc": "2026-07-29T20:03:03.330Z",
+          "startUs": 1785314577600000,
+          "endUs": 1785355383330000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "rahu",
+          "startUtc": "1994-03-07T10:54:43.200Z",
+          "endUtc": "2012-03-06T22:54:43.200Z",
+          "startUs": 763037683200000,
+          "endUs": 1331074483200000
+        },
+        {
+          "lord": "jupiter",
+          "startUtc": "2012-03-06T22:54:43.200Z",
+          "endUtc": "2028-03-06T22:54:43.200Z",
+          "startUs": 1331074483200000,
+          "endUs": 1835996083200000
+        },
+        {
+          "lord": "saturn",
+          "startUtc": "2028-03-06T22:54:43.200Z",
+          "endUtc": "2047-03-07T16:54:43.200Z",
+          "startUs": 1835996083200000,
+          "endUs": 2435590483200000
+        }
+      ]
+    },
+    {
+      "id": "lord-rahu-middle",
+      "why": "rahu as starting lord, middle of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 73.33333333333334,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "saturn",
+          "startUtc": "2019-03-14T06:42:00.000Z",
+          "endUtc": "2038-03-14T00:42:00.000Z",
+          "startUs": 1552545720000000,
+          "endUs": 2152140120000000
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2026-01-03T00:33:00.000Z",
+          "endUtc": "2029-03-04T15:33:00.000Z",
+          "startUs": 1767400380000000,
+          "endUs": 1867332780000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "sun",
+          "startUtc": "2026-07-14T19:03:00.000Z",
+          "endUtc": "2026-09-10T15:00:00.000Z",
+          "startUs": 1784055780000000,
+          "endUs": 1789052400000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-25T21:04:25.500Z",
+          "endUtc": "2026-08-03T13:15:58.500Z",
+          "startUs": 1785013465500000,
+          "endUs": 1785762958500000
+        },
+        {
+          "level": "prana",
+          "lord": "saturn",
+          "startUtc": "2026-07-28T08:03:41.850Z",
+          "endUtc": "2026-07-29T17:01:31.575Z",
+          "startUs": 1785225821850000,
+          "endUs": 1785344491575000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "rahu",
+          "startUtc": "1985-03-13T18:42:00.000Z",
+          "endUtc": "2003-03-14T06:42:00.000Z",
+          "startUs": 479587320000000,
+          "endUs": 1047624120000000
+        },
+        {
+          "lord": "jupiter",
+          "startUtc": "2003-03-14T06:42:00.000Z",
+          "endUtc": "2019-03-14T06:42:00.000Z",
+          "startUs": 1047624120000000,
+          "endUs": 1552545720000000
+        },
+        {
+          "lord": "saturn",
+          "startUtc": "2019-03-14T06:42:00.000Z",
+          "endUtc": "2038-03-14T00:42:00.000Z",
+          "startUs": 1552545720000000,
+          "endUs": 2152140120000000
+        }
+      ]
+    },
+    {
+      "id": "lord-rahu-end",
+      "why": "rahu as starting lord, end of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 79.98666666666666,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "saturn",
+          "startUtc": "2010-03-20T14:29:16.800Z",
+          "endUtc": "2029-03-20T08:29:16.800Z",
+          "startUs": 1269095356800000,
+          "endUs": 1868689756800000
+        },
+        {
+          "level": "antar",
+          "lord": "rahu",
+          "startUtc": "2023-11-01T02:11:16.800Z",
+          "endUtc": "2026-09-07T01:17:16.800Z",
+          "startUs": 1698804676800000,
+          "endUs": 1788743836800000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "mars",
+          "startUtc": "2026-07-08T07:56:25.800Z",
+          "endUtc": "2026-09-07T01:17:16.800Z",
+          "startUs": 1783497385800000,
+          "endUs": 1788743836800000
+        },
+        {
+          "level": "sookshma",
+          "lord": "saturn",
+          "startUtc": "2026-07-29T01:52:03.225Z",
+          "endUtc": "2026-08-07T16:36:51.300Z",
+          "startUs": 1785289923225000,
+          "endUs": 1786120611300000
+        },
+        {
+          "level": "prana",
+          "lord": "saturn",
+          "startUtc": "2026-07-29T01:52:03.225Z",
+          "endUtc": "2026-07-30T14:24:08.837Z",
+          "startUs": 1785289923225000,
+          "endUs": 1785421448836875
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "rahu",
+          "startUtc": "1976-03-20T02:29:16.800Z",
+          "endUtc": "1994-03-20T14:29:16.800Z",
+          "startUs": 196136956800000,
+          "endUs": 764173756800000
+        },
+        {
+          "lord": "jupiter",
+          "startUtc": "1994-03-20T14:29:16.800Z",
+          "endUtc": "2010-03-20T14:29:16.800Z",
+          "startUs": 764173756800000,
+          "endUs": 1269095356800000
+        },
+        {
+          "lord": "saturn",
+          "startUtc": "2010-03-20T14:29:16.800Z",
+          "endUtc": "2029-03-20T08:29:16.800Z",
+          "startUs": 1269095356800000,
+          "endUs": 1868689756800000
+        }
+      ]
+    },
+    {
+      "id": "lord-jupiter-start",
+      "why": "jupiter as starting lord, start of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 80.01333333333334,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "saturn",
+          "startUtc": "2010-03-08T04:26:38.400Z",
+          "endUtc": "2029-03-07T22:26:38.400Z",
+          "startUs": 1268022398400000,
+          "endUs": 1867616798400000
+        },
+        {
+          "level": "antar",
+          "lord": "rahu",
+          "startUtc": "2023-10-19T16:08:38.400Z",
+          "endUtc": "2026-08-25T15:14:38.400Z",
+          "startUs": 1697731718400000,
+          "endUs": 1787670878400000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "mars",
+          "startUtc": "2026-06-25T21:53:47.400Z",
+          "endUtc": "2026-08-25T15:14:38.400Z",
+          "startUs": 1782424427400000,
+          "endUs": 1787670878400000
+        },
+        {
+          "level": "sookshma",
+          "lord": "mercury",
+          "startUtc": "2026-07-26T06:34:12.900Z",
+          "endUtc": "2026-08-03T21:01:40.125Z",
+          "startUs": 1785047652900000,
+          "endUs": 1785790900125000
+        },
+        {
+          "level": "prana",
+          "lord": "sun",
+          "startUtc": "2026-07-29T10:16:16.883Z",
+          "endUtc": "2026-07-29T20:35:39.244Z",
+          "startUs": 1785320176882500,
+          "endUs": 1785357339243750
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "jupiter",
+          "startUtc": "1994-03-08T04:26:38.400Z",
+          "endUtc": "2010-03-08T04:26:38.400Z",
+          "startUs": 763100798400000,
+          "endUs": 1268022398400000
+        },
+        {
+          "lord": "saturn",
+          "startUtc": "2010-03-08T04:26:38.400Z",
+          "endUtc": "2029-03-07T22:26:38.400Z",
+          "startUs": 1268022398400000,
+          "endUs": 1867616798400000
+        },
+        {
+          "lord": "mercury",
+          "startUtc": "2029-03-07T22:26:38.400Z",
+          "endUtc": "2046-03-08T04:26:38.400Z",
+          "startUs": 1867616798400000,
+          "endUs": 2404095998400000
+        }
+      ]
+    },
+    {
+      "id": "lord-jupiter-middle",
+      "why": "jupiter as starting lord, middle of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 86.66666666666667,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "mercury",
+          "startUtc": "2021-03-13T18:42:00.000Z",
+          "endUtc": "2038-03-14T00:42:00.000Z",
+          "startUs": 1615660920000000,
+          "endUs": 2152140120000000
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2024-08-06T15:06:00.000Z",
+          "endUtc": "2027-06-07T12:06:00.000Z",
+          "startUs": 1722956760000000,
+          "endUs": 1812369960000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "saturn",
+          "startUtc": "2026-06-01T16:10:30.000Z",
+          "endUtc": "2026-11-12T12:42:00.000Z",
+          "startUs": 1780330230000000,
+          "endUs": 1794487320000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "ketu",
+          "startUtc": "2026-07-20T19:55:57.000Z",
+          "endUtc": "2026-07-30T09:19:47.250Z",
+          "startUs": 1784577357000000,
+          "endUs": 1785403187250000
+        },
+        {
+          "level": "prana",
+          "lord": "mercury",
+          "startUtc": "2026-07-29T00:49:54.631Z",
+          "endUtc": "2026-07-30T09:19:47.250Z",
+          "startUs": 1785286194631250,
+          "endUs": 1785403187250000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "jupiter",
+          "startUtc": "1986-03-14T00:42:00.000Z",
+          "endUtc": "2002-03-14T00:42:00.000Z",
+          "startUs": 511144920000000,
+          "endUs": 1016066520000000
+        },
+        {
+          "lord": "saturn",
+          "startUtc": "2002-03-14T00:42:00.000Z",
+          "endUtc": "2021-03-13T18:42:00.000Z",
+          "startUs": 1016066520000000,
+          "endUs": 1615660920000000
+        },
+        {
+          "lord": "mercury",
+          "startUtc": "2021-03-13T18:42:00.000Z",
+          "endUtc": "2038-03-14T00:42:00.000Z",
+          "startUs": 1615660920000000,
+          "endUs": 2152140120000000
+        }
+      ]
+    },
+    {
+      "id": "lord-jupiter-end",
+      "why": "jupiter as starting lord, end of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 93.32,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "mercury",
+          "startUtc": "2013-03-19T14:57:21.600Z",
+          "endUtc": "2030-03-19T20:57:21.600Z",
+          "startUs": 1363705041600000,
+          "endUs": 1900184241600000
+        },
+        {
+          "level": "antar",
+          "lord": "jupiter",
+          "startUtc": "2025-04-03T20:12:21.600Z",
+          "endUtc": "2027-07-10T17:48:21.600Z",
+          "startUs": 1743711141600000,
+          "endUs": 1815241701600000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "venus",
+          "startUtc": "2026-05-15T21:25:33.600Z",
+          "endUtc": "2026-09-30T21:01:33.600Z",
+          "startUs": 1778880333600000,
+          "endUs": 1790802093600000
+        },
+        {
+          "level": "sookshma",
+          "lord": "jupiter",
+          "startUtc": "2026-07-25T00:49:21.600Z",
+          "endUtc": "2026-08-12T10:22:09.600Z",
+          "startUs": 1784940561600000,
+          "endUs": 1786530129600000
+        },
+        {
+          "level": "prana",
+          "lord": "saturn",
+          "startUtc": "2026-07-27T11:41:44.000Z",
+          "endUtc": "2026-07-30T09:36:25.600Z",
+          "startUs": 1785152504000000,
+          "endUs": 1785404185600000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "jupiter",
+          "startUtc": "1978-03-19T20:57:21.600Z",
+          "endUtc": "1994-03-19T20:57:21.600Z",
+          "startUs": 259189041600000,
+          "endUs": 764110641600000
+        },
+        {
+          "lord": "saturn",
+          "startUtc": "1994-03-19T20:57:21.600Z",
+          "endUtc": "2013-03-19T14:57:21.600Z",
+          "startUs": 764110641600000,
+          "endUs": 1363705041600000
+        },
+        {
+          "lord": "mercury",
+          "startUtc": "2013-03-19T14:57:21.600Z",
+          "endUtc": "2030-03-19T20:57:21.600Z",
+          "startUs": 1363705041600000,
+          "endUs": 1900184241600000
+        }
+      ]
+    },
+    {
+      "id": "lord-saturn-start",
+      "why": "saturn as starting lord, start of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 93.34666666666668,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "mercury",
+          "startUtc": "2013-03-06T20:08:45.600Z",
+          "endUtc": "2030-03-07T02:08:45.600Z",
+          "startUs": 1362600525600000,
+          "endUs": 1899079725600000
+        },
+        {
+          "level": "antar",
+          "lord": "jupiter",
+          "startUtc": "2025-03-22T01:23:45.600Z",
+          "endUtc": "2027-06-27T22:59:45.600Z",
+          "startUs": 1742606625600000,
+          "endUs": 1814137185600000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "venus",
+          "startUtc": "2026-05-03T02:36:57.600Z",
+          "endUtc": "2026-09-18T02:12:57.600Z",
+          "startUs": 1777775817600000,
+          "endUs": 1789697577600000
+        },
+        {
+          "level": "sookshma",
+          "lord": "jupiter",
+          "startUtc": "2026-07-12T06:00:45.600Z",
+          "endUtc": "2026-07-30T15:33:33.600Z",
+          "startUs": 1783836045600000,
+          "endUs": 1785425613600000
+        },
+        {
+          "level": "prana",
+          "lord": "rahu",
+          "startUtc": "2026-07-27T21:19:38.400Z",
+          "endUtc": "2026-07-30T15:33:33.600Z",
+          "startUs": 1785187178400000,
+          "endUs": 1785425613600000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "saturn",
+          "startUtc": "1994-03-07T02:08:45.600Z",
+          "endUtc": "2013-03-06T20:08:45.600Z",
+          "startUs": 763006125600000,
+          "endUs": 1362600525600000
+        },
+        {
+          "lord": "mercury",
+          "startUtc": "2013-03-06T20:08:45.600Z",
+          "endUtc": "2030-03-07T02:08:45.600Z",
+          "startUs": 1362600525600000,
+          "endUs": 1899079725600000
+        },
+        {
+          "lord": "ketu",
+          "startUtc": "2030-03-07T02:08:45.600Z",
+          "endUtc": "2037-03-06T20:08:45.600Z",
+          "startUs": 1899079725600000,
+          "endUs": 2119982925600000
+        }
+      ]
+    },
+    {
+      "id": "lord-saturn-middle",
+      "why": "saturn as starting lord, middle of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 100,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "ketu",
+          "startUtc": "2020-09-12T03:42:00.000Z",
+          "endUtc": "2027-09-12T21:42:00.000Z",
+          "startUs": 1599882120000000,
+          "endUs": 1820785320000000
+        },
+        {
+          "level": "antar",
+          "lord": "saturn",
+          "startUtc": "2025-08-06T21:06:00.000Z",
+          "endUtc": "2026-09-15T16:45:00.000Z",
+          "startUs": 1754514360000000,
+          "endUs": 1789490700000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "jupiter",
+          "startUtc": "2026-07-23T17:19:48.000Z",
+          "endUtc": "2026-09-15T16:45:00.000Z",
+          "startUs": 1784827188000000,
+          "endUs": 1789490700000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "jupiter",
+          "startUtc": "2026-07-23T17:19:48.000Z",
+          "endUtc": "2026-07-30T22:03:09.600Z",
+          "startUs": 1784827188000000,
+          "endUs": 1785448989600000
+        },
+        {
+          "level": "prana",
+          "lord": "mars",
+          "startUtc": "2026-07-29T10:04:07.600Z",
+          "endUtc": "2026-07-29T20:08:39.360Z",
+          "startUs": 1785319447600000,
+          "endUs": 1785355719360000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "saturn",
+          "startUtc": "1984-09-12T03:42:00.000Z",
+          "endUtc": "2003-09-12T21:42:00.000Z",
+          "startUs": 463808520000000,
+          "endUs": 1063402920000000
+        },
+        {
+          "lord": "mercury",
+          "startUtc": "2003-09-12T21:42:00.000Z",
+          "endUtc": "2020-09-12T03:42:00.000Z",
+          "startUs": 1063402920000000,
+          "endUs": 1599882120000000
+        },
+        {
+          "lord": "ketu",
+          "startUtc": "2020-09-12T03:42:00.000Z",
+          "endUtc": "2027-09-12T21:42:00.000Z",
+          "startUs": 1599882120000000,
+          "endUs": 1820785320000000
+        }
+      ]
+    },
+    {
+      "id": "lord-saturn-end",
+      "why": "saturn as starting lord, end of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 106.65333333333334,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "venus",
+          "startUtc": "2018-03-20T23:15:14.400Z",
+          "endUtc": "2038-03-20T23:15:14.400Z",
+          "startUs": 1521587714400000,
+          "endUs": 2152739714400000
+        },
+        {
+          "level": "antar",
+          "lord": "rahu",
+          "startUtc": "2025-05-20T14:15:14.400Z",
+          "endUtc": "2028-05-20T08:15:14.400Z",
+          "startUs": 1747750514400000,
+          "endUs": 1842423314400000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "saturn",
+          "startUtc": "2026-03-27T01:21:14.400Z",
+          "endUtc": "2026-09-16T13:12:14.400Z",
+          "startUs": 1774574474400000,
+          "endUs": 1789564334400000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-29T09:26:47.400Z",
+          "endUtc": "2026-08-24T10:01:26.400Z",
+          "startUs": 1785317207400000,
+          "endUs": 1787565686400000
+        },
+        {
+          "level": "prana",
+          "lord": "rahu",
+          "startUtc": "2026-07-29T09:26:47.400Z",
+          "endUtc": "2026-08-02T07:07:59.250Z",
+          "startUs": 1785317207400000,
+          "endUs": 1785654479250000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "saturn",
+          "startUtc": "1975-03-21T05:15:14.400Z",
+          "endUtc": "1994-03-20T23:15:14.400Z",
+          "startUs": 164610914400000,
+          "endUs": 764205314400000
+        },
+        {
+          "lord": "mercury",
+          "startUtc": "1994-03-20T23:15:14.400Z",
+          "endUtc": "2011-03-21T05:15:14.400Z",
+          "startUs": 764205314400000,
+          "endUs": 1300684514400000
+        },
+        {
+          "lord": "ketu",
+          "startUtc": "2011-03-21T05:15:14.400Z",
+          "endUtc": "2018-03-20T23:15:14.400Z",
+          "startUs": 1300684514400000,
+          "endUs": 1521587714400000
+        }
+      ]
+    },
+    {
+      "id": "lord-mercury-start",
+      "why": "mercury as starting lord, start of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 106.67999999999999,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "venus",
+          "startUtc": "2018-03-07T19:40:40.800Z",
+          "endUtc": "2038-03-07T19:40:40.800Z",
+          "startUs": 1520451640800000,
+          "endUs": 2151603640800000
+        },
+        {
+          "level": "antar",
+          "lord": "rahu",
+          "startUtc": "2025-05-07T10:40:40.800Z",
+          "endUtc": "2028-05-07T04:40:40.800Z",
+          "startUs": 1746614440800000,
+          "endUs": 1841287240800000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "saturn",
+          "startUtc": "2026-03-13T21:46:40.800Z",
+          "endUtc": "2026-09-03T09:37:40.800Z",
+          "startUs": 1773438400800000,
+          "endUs": 1788428260800000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-16T05:52:13.800Z",
+          "endUtc": "2026-08-11T06:26:52.800Z",
+          "startUs": 1784181133800000,
+          "endUs": 1786429612800000
+        },
+        {
+          "level": "prana",
+          "lord": "mercury",
+          "startUtc": "2026-07-27T17:43:32.025Z",
+          "endUtc": "2026-07-31T10:12:26.550Z",
+          "startUs": 1785174212025000,
+          "endUs": 1785492746550000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "mercury",
+          "startUtc": "1994-03-07T19:40:40.800Z",
+          "endUtc": "2011-03-08T01:40:40.800Z",
+          "startUs": 763069240800000,
+          "endUs": 1299548440800000
+        },
+        {
+          "lord": "ketu",
+          "startUtc": "2011-03-08T01:40:40.800Z",
+          "endUtc": "2018-03-07T19:40:40.800Z",
+          "startUs": 1299548440800000,
+          "endUs": 1520451640800000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "2018-03-07T19:40:40.800Z",
+          "endUtc": "2038-03-07T19:40:40.800Z",
+          "startUs": 1520451640800000,
+          "endUs": 2151603640800000
+        }
+      ]
+    },
+    {
+      "id": "lord-mercury-middle",
+      "why": "mercury as starting lord, middle of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 113.33333333333334,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "venus",
+          "startUtc": "2009-09-12T09:42:00.000Z",
+          "endUtc": "2029-09-12T09:42:00.000Z",
+          "startUs": 1252748520000000,
+          "endUs": 1883900520000000
+        },
+        {
+          "level": "antar",
+          "lord": "mercury",
+          "startUtc": "2025-09-12T09:42:00.000Z",
+          "endUtc": "2028-07-13T06:42:00.000Z",
+          "startUs": 1757670120000000,
+          "endUs": 1847083320000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "venus",
+          "startUtc": "2026-04-07T09:06:00.000Z",
+          "endUtc": "2026-09-26T20:36:00.000Z",
+          "startUs": 1775552760000000,
+          "endUs": 1790454960000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "saturn",
+          "startUtc": "2026-07-27T01:16:45.000Z",
+          "endUtc": "2026-08-23T08:42:00.000Z",
+          "startUs": 1785115005000000,
+          "endUs": 1787474520000000
+        },
+        {
+          "level": "prana",
+          "lord": "saturn",
+          "startUtc": "2026-07-27T01:16:45.000Z",
+          "endUtc": "2026-07-31T09:03:14.875Z",
+          "startUs": 1785115005000000,
+          "endUs": 1785488594875000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "mercury",
+          "startUtc": "1985-09-12T09:42:00.000Z",
+          "endUtc": "2002-09-12T15:42:00.000Z",
+          "startUs": 495366120000000,
+          "endUs": 1031845320000000
+        },
+        {
+          "lord": "ketu",
+          "startUtc": "2002-09-12T15:42:00.000Z",
+          "endUtc": "2009-09-12T09:42:00.000Z",
+          "startUs": 1031845320000000,
+          "endUs": 1252748520000000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "2009-09-12T09:42:00.000Z",
+          "endUtc": "2029-09-12T09:42:00.000Z",
+          "startUs": 1252748520000000,
+          "endUs": 1883900520000000
+        }
+      ]
+    },
+    {
+      "id": "lord-mercury-end",
+      "why": "mercury as starting lord, end of its nakshatra — fixes the first maha balance",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 119.98666666666668,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "sun",
+          "startUtc": "2021-03-19T23:43:19.200Z",
+          "endUtc": "2027-03-20T11:43:19.200Z",
+          "startUs": 1616197399200000,
+          "endUs": 1805542999200000
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2026-03-20T05:43:19.200Z",
+          "endUtc": "2027-03-20T11:43:19.200Z",
+          "startUs": 1773985399200000,
+          "endUs": 1805542999200000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "rahu",
+          "startUtc": "2026-07-29T02:52:19.200Z",
+          "endUtc": "2026-09-21T21:46:19.200Z",
+          "startUs": 1785293539200000,
+          "endUs": 1790027179200000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-29T02:52:19.200Z",
+          "endUtc": "2026-08-06T08:06:25.200Z",
+          "startUs": 1785293539200000,
+          "endUs": 1786003585200000
+        },
+        {
+          "level": "prana",
+          "lord": "rahu",
+          "startUtc": "2026-07-29T02:52:19.200Z",
+          "endUtc": "2026-07-30T08:27:26.100Z",
+          "startUs": 1785293539200000,
+          "endUs": 1785400046100000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "mercury",
+          "startUtc": "1977-03-19T23:43:19.200Z",
+          "endUtc": "1994-03-20T05:43:19.200Z",
+          "startUs": 227662999200000,
+          "endUs": 764142199200000
+        },
+        {
+          "lord": "ketu",
+          "startUtc": "1994-03-20T05:43:19.200Z",
+          "endUtc": "2001-03-19T23:43:19.200Z",
+          "startUs": 764142199200000,
+          "endUs": 985045399200000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "2001-03-19T23:43:19.200Z",
+          "endUtc": "2021-03-19T23:43:19.200Z",
+          "startUs": 985045399200000,
+          "endUs": 1616197399200000
+        }
+      ]
+    },
+    {
+      "id": "midnight-utc",
+      "why": "born exactly at 00:00:00.000 — the boundary between two calendar days",
+      "birthUtc": "2000-01-01T00:00:00.000Z",
+      "moonLongSidereal": 200.5,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "saturn",
+          "startUtc": "2015-05-26T20:24:00.000Z",
+          "endUtc": "2034-05-26T14:24:00.000Z",
+          "startUs": 1432671840000000,
+          "endUs": 2032266240000000
+        },
+        {
+          "level": "antar",
+          "lord": "moon",
+          "startUtc": "2026-04-29T04:57:00.000Z",
+          "endUtc": "2027-11-28T12:27:00.000Z",
+          "startUs": 1777438620000000,
+          "endUs": 1827404820000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "rahu",
+          "startUtc": "2026-07-20T03:12:45.000Z",
+          "endUtc": "2026-10-14T21:08:15.000Z",
+          "startUs": 1784517165000000,
+          "endUs": 1792012095000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-20T03:12:45.000Z",
+          "endUtc": "2026-08-02T03:30:04.500Z",
+          "startUs": 1784517165000000,
+          "endUs": 1785641404500000
+        },
+        {
+          "level": "prana",
+          "lord": "venus",
+          "startUtc": "2026-07-28T11:35:52.013Z",
+          "endUtc": "2026-07-30T15:38:45.263Z",
+          "startUs": 1785238552012500,
+          "endUs": 1785425925262500
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "jupiter",
+          "startUtc": "1999-05-26T20:24:00.000Z",
+          "endUtc": "2015-05-26T20:24:00.000Z",
+          "startUs": 927750240000000,
+          "endUs": 1432671840000000
+        },
+        {
+          "lord": "saturn",
+          "startUtc": "2015-05-26T20:24:00.000Z",
+          "endUtc": "2034-05-26T14:24:00.000Z",
+          "startUs": 1432671840000000,
+          "endUs": 2032266240000000
+        },
+        {
+          "lord": "mercury",
+          "startUtc": "2034-05-26T14:24:00.000Z",
+          "endUtc": "2051-05-26T20:24:00.000Z",
+          "startUs": 2032266240000000,
+          "endUs": 2568745440000000
+        }
+      ]
+    },
+    {
+      "id": "last-millisecond-of-day",
+      "why": "born at 23:59:59.999 — one millisecond from rolling over",
+      "birthUtc": "2003-06-30T23:59:59.999Z",
+      "moonLongSidereal": 88.88,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "saturn",
+          "startUtc": "2008-11-02T21:30:14.399Z",
+          "endUtc": "2027-11-03T15:30:14.399Z",
+          "startUs": 1225661414399000,
+          "endUs": 1825255814399000
+        },
+        {
+          "level": "antar",
+          "lord": "jupiter",
+          "startUtc": "2025-04-22T08:18:14.399Z",
+          "endUtc": "2027-11-03T15:30:14.399Z",
+          "startUs": 1745309894399000,
+          "endUs": 1825255814399000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "venus",
+          "startUtc": "2026-07-21T06:50:38.399Z",
+          "endUtc": "2026-12-22T12:02:38.399Z",
+          "startUs": 1784616638399000,
+          "endUs": 1797940958399000
+        },
+        {
+          "level": "sookshma",
+          "lord": "venus",
+          "startUtc": "2026-07-21T06:50:38.399Z",
+          "endUtc": "2026-08-15T23:42:38.399Z",
+          "startUs": 1784616638399000,
+          "endUs": 1786837358399000
+        },
+        {
+          "level": "prana",
+          "lord": "mars",
+          "startUtc": "2026-07-28T23:54:14.399Z",
+          "endUtc": "2026-07-30T11:53:16.399Z",
+          "startUs": 1785282854399000,
+          "endUs": 1785412396399000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "jupiter",
+          "startUtc": "1992-11-02T21:30:14.399Z",
+          "endUtc": "2008-11-02T21:30:14.399Z",
+          "startUs": 720739814399000,
+          "endUs": 1225661414399000
+        },
+        {
+          "lord": "saturn",
+          "startUtc": "2008-11-02T21:30:14.399Z",
+          "endUtc": "2027-11-03T15:30:14.399Z",
+          "startUs": 1225661414399000,
+          "endUs": 1825255814399000
+        },
+        {
+          "lord": "mercury",
+          "startUtc": "2027-11-03T15:30:14.399Z",
+          "endUtc": "2044-11-02T21:30:14.399Z",
+          "startUs": 1825255814399000,
+          "endUs": 2361735014399000
+        }
+      ]
+    },
+    {
+      "id": "leap-day",
+      "why": "29 February — the date arithmetic most likely to be special-cased wrongly",
+      "birthUtc": "2004-02-29T12:00:00.000Z",
+      "moonLongSidereal": 311.2,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "jupiter",
+          "startUtc": "2016-01-16T16:04:48.000Z",
+          "endUtc": "2032-01-16T16:04:48.000Z",
+          "startUs": 1452960288000001,
+          "endUs": 1957881888000001
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2023-11-28T23:16:48.000Z",
+          "endUtc": "2026-07-29T23:16:48.000Z",
+          "startUs": 1701213408000001,
+          "endUs": 1785367008000001
+        },
+        {
+          "level": "pratyantar",
+          "lord": "ketu",
+          "startUtc": "2026-06-03T03:40:48.000Z",
+          "endUtc": "2026-07-29T23:16:48.000Z",
+          "startUs": 1780458048000001,
+          "endUs": 1785367008000001
+        },
+        {
+          "level": "sookshma",
+          "lord": "mercury",
+          "startUtc": "2026-07-21T22:06:12.000Z",
+          "endUtc": "2026-07-29T23:16:48.000Z",
+          "startUs": 1784671572000001,
+          "endUs": 1785367008000001
+        },
+        {
+          "level": "prana",
+          "lord": "saturn",
+          "startUtc": "2026-07-28T16:41:37.300Z",
+          "endUtc": "2026-07-29T23:16:48.000Z",
+          "startUs": 1785256897300001,
+          "endUs": 1785367008000001
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "rahu",
+          "startUtc": "1998-01-16T04:04:48.000Z",
+          "endUtc": "2016-01-16T16:04:48.000Z",
+          "startUs": 884923488000001,
+          "endUs": 1452960288000001
+        },
+        {
+          "lord": "jupiter",
+          "startUtc": "2016-01-16T16:04:48.000Z",
+          "endUtc": "2032-01-16T16:04:48.000Z",
+          "startUs": 1452960288000001,
+          "endUs": 1957881888000001
+        },
+        {
+          "lord": "saturn",
+          "startUtc": "2032-01-16T16:04:48.000Z",
+          "endUtc": "2051-01-16T10:04:48.000Z",
+          "startUs": 1957881888000001,
+          "endUs": 2557476288000001
+        }
+      ]
+    },
+    {
+      "id": "pre-1970-negative-epoch",
+      "why": "birth before the Unix epoch — every timestamp is negative, which breaks naive division",
+      "birthUtc": "1947-08-14T18:31:00.000Z",
+      "moonLongSidereal": 45.75,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "mercury",
+          "startUtc": "2013-04-22T03:08:30.000Z",
+          "endUtc": "2030-04-22T09:08:30.000Z",
+          "startUs": 1366600110000000,
+          "endUs": 1903079310000000
+        },
+        {
+          "level": "antar",
+          "lord": "jupiter",
+          "startUtc": "2025-05-07T08:23:30.000Z",
+          "endUtc": "2027-08-13T05:59:30.000Z",
+          "startUs": 1746606210000000,
+          "endUs": 1818136770000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "venus",
+          "startUtc": "2026-06-18T09:36:42.000Z",
+          "endUtc": "2026-11-03T09:12:42.000Z",
+          "startUs": 1781775402000000,
+          "endUs": 1793697162000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "moon",
+          "startUtc": "2026-07-18T07:07:30.000Z",
+          "endUtc": "2026-07-29T19:05:30.000Z",
+          "startUs": 1784358450000000,
+          "endUs": 1785351930000000
+        },
+        {
+          "level": "prana",
+          "lord": "sun",
+          "startUtc": "2026-07-29T05:17:36.000Z",
+          "endUtc": "2026-07-29T19:05:30.000Z",
+          "startUs": 1785302256000000,
+          "endUs": 1785351930000000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "moon",
+          "startUtc": "1943-04-22T15:08:30.000Z",
+          "endUtc": "1953-04-22T03:08:30.000Z",
+          "startUs": -842431890000000,
+          "endUs": -526855890000000
+        },
+        {
+          "lord": "mars",
+          "startUtc": "1953-04-22T03:08:30.000Z",
+          "endUtc": "1960-04-21T21:08:30.000Z",
+          "startUs": -526855890000000,
+          "endUs": -305952690000000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "1960-04-21T21:08:30.000Z",
+          "endUtc": "1978-04-22T09:08:30.000Z",
+          "startUs": -305952690000000,
+          "endUs": 262084110000000
+        }
+      ]
+    },
+    {
+      "id": "india-wartime-dst-1942",
+      "why": "India ran +06:30 wartime DST 1942-45; using the modern +05:30 costs ~10 months of drift",
+      "birthUtc": "1943-07-04T02:15:00.000Z",
+      "moonLongSidereal": 128.4,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "saturn",
+          "startUtc": "2023-02-04T08:11:24.000Z",
+          "endUtc": "2042-02-04T02:11:24.000Z",
+          "startUs": 1675498284000000,
+          "endUs": 2275092684000000
+        },
+        {
+          "level": "antar",
+          "lord": "mercury",
+          "startUtc": "2026-02-07T03:14:24.000Z",
+          "endUtc": "2028-10-17T06:23:24.000Z",
+          "startUs": 1770434064000000,
+          "endUs": 1855376604000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "ketu",
+          "startUtc": "2026-06-26T09:53:10.500Z",
+          "endUtc": "2026-08-22T18:16:12.000Z",
+          "startUs": 1782467590500000,
+          "endUs": 1787422572000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "jupiter",
+          "startUtc": "2026-07-28T21:50:13.350Z",
+          "endUtc": "2026-08-05T13:21:17.550Z",
+          "startUs": 1785275413350000,
+          "endUs": 1785936077550000
+        },
+        {
+          "level": "prana",
+          "lord": "jupiter",
+          "startUtc": "2026-07-28T21:50:13.350Z",
+          "endUtc": "2026-07-29T22:18:21.910Z",
+          "startUs": 1785275413350000,
+          "endUs": 1785363501910000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "ketu",
+          "startUtc": "1939-02-04T08:11:24.000Z",
+          "endUtc": "1946-02-04T02:11:24.000Z",
+          "startUs": -975340116000000,
+          "endUs": -754436916000000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "1946-02-04T02:11:24.000Z",
+          "endUtc": "1966-02-04T02:11:24.000Z",
+          "startUs": -754436916000000,
+          "endUs": -123284916000000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "1966-02-04T02:11:24.000Z",
+          "endUtc": "1972-02-04T14:11:24.000Z",
+          "startUs": -123284916000000,
+          "endUs": 66060684000000
+        }
+      ]
+    },
+    {
+      "id": "dst-spring-forward",
+      "why": "born during a US spring-forward gap, when local wall time does not exist",
+      "birthUtc": "1990-04-01T07:30:00.000Z",
+      "moonLongSidereal": 265.31,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "rahu",
+          "startUtc": "2015-04-14T08:18:36.000Z",
+          "endUtc": "2033-04-13T20:18:36.000Z",
+          "startUs": 1428999516000000,
+          "endUs": 1997036316000000
+        },
+        {
+          "level": "antar",
+          "lord": "ketu",
+          "startUtc": "2025-10-13T11:18:36.000Z",
+          "endUtc": "2026-10-31T23:36:36.000Z",
+          "startUs": 1760354316000000,
+          "endUs": 1793489796000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "saturn",
+          "startUtc": "2026-07-08T22:19:12.000Z",
+          "endUtc": "2026-09-07T15:40:03.000Z",
+          "startUs": 1783549152000000,
+          "endUs": 1788795603000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "ketu",
+          "startUtc": "2026-07-27T03:31:27.300Z",
+          "endUtc": "2026-07-30T16:32:10.275Z",
+          "startUs": 1785123087300000,
+          "endUs": 1785429130275000
+        },
+        {
+          "level": "prana",
+          "lord": "jupiter",
+          "startUtc": "2026-07-29T03:41:51.653Z",
+          "endUtc": "2026-07-29T15:01:57.383Z",
+          "startUs": 1785296511652500,
+          "endUs": 1785337317382500
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "venus",
+          "startUtc": "1972-04-13T14:18:36.000Z",
+          "endUtc": "1992-04-13T14:18:36.000Z",
+          "startUs": 72022716000000,
+          "endUs": 703174716000000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "1992-04-13T14:18:36.000Z",
+          "endUtc": "1998-04-14T02:18:36.000Z",
+          "startUs": 703174716000000,
+          "endUs": 892520316000000
+        },
+        {
+          "lord": "moon",
+          "startUtc": "1998-04-14T02:18:36.000Z",
+          "endUtc": "2008-04-13T14:18:36.000Z",
+          "startUs": 892520316000000,
+          "endUs": 1208096316000000
+        }
+      ]
+    },
+    {
+      "id": "dst-fall-back",
+      "why": "born during a US fall-back overlap, when local wall time happens twice",
+      "birthUtc": "1990-10-28T08:30:00.000Z",
+      "moonLongSidereal": 12.07,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "moon",
+          "startUtc": "2017-06-27T02:32:58.200Z",
+          "endUtc": "2027-06-27T14:32:58.200Z",
+          "startUs": 1498530778200000,
+          "endUs": 1814106778200000
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2025-04-27T05:32:58.200Z",
+          "endUtc": "2026-12-26T23:32:58.200Z",
+          "startUs": 1745731978200000,
+          "endUs": 1798327978200000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "saturn",
+          "startUtc": "2026-05-22T20:17:58.200Z",
+          "endUtc": "2026-08-27T05:32:58.200Z",
+          "startUs": 1779481078200000,
+          "endUs": 1787808778200000
+        },
+        {
+          "level": "sookshma",
+          "lord": "mars",
+          "startUtc": "2026-07-25T07:11:20.700Z",
+          "endUtc": "2026-07-30T22:07:43.200Z",
+          "startUs": 1784963480700000,
+          "endUs": 1785449263200000
+        },
+        {
+          "level": "prana",
+          "lord": "venus",
+          "startUtc": "2026-07-29T05:38:48.450Z",
+          "endUtc": "2026-07-30T04:08:12.200Z",
+          "startUs": 1785303528450000,
+          "endUs": 1785384492200000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "ketu",
+          "startUtc": "1984-06-26T20:32:58.200Z",
+          "endUtc": "1991-06-27T14:32:58.200Z",
+          "startUs": 457129978200000,
+          "endUs": 678033178200000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "1991-06-27T14:32:58.200Z",
+          "endUtc": "2011-06-27T14:32:58.200Z",
+          "startUs": 678033178200000,
+          "endUs": 1309185178200000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "2011-06-27T14:32:58.200Z",
+          "endUtc": "2017-06-27T02:32:58.200Z",
+          "startUs": 1309185178200000,
+          "endUs": 1498530778200000
+        }
+      ]
+    },
+    {
+      "id": "southern-hemisphere",
+      "why": "southern-hemisphere birth — seasons and ascendant behave differently, dashas must not",
+      "birthUtc": "1978-12-21T18:45:00.000Z",
+      "moonLongSidereal": 178.02,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "saturn",
+          "startUtc": "2017-07-06T08:00:25.200Z",
+          "endUtc": "2036-07-06T02:00:25.200Z",
+          "startUs": 1499328025200000,
+          "endUs": 2098922425200000
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2024-04-27T01:51:25.200Z",
+          "endUtc": "2027-06-27T16:51:25.200Z",
+          "startUs": 1714182685200000,
+          "endUs": 1814115085200000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "saturn",
+          "startUtc": "2026-05-09T05:52:55.200Z",
+          "endUtc": "2026-11-08T09:03:25.200Z",
+          "startUs": 1778305975200000,
+          "endUs": 1794128605200000
+        },
+        {
+          "level": "sookshma",
+          "lord": "venus",
+          "startUtc": "2026-07-13T20:49:10.950Z",
+          "endUtc": "2026-08-13T09:20:55.950Z",
+          "startUs": 1783975750950000,
+          "endUs": 1786612855950000
+        },
+        {
+          "level": "prana",
+          "lord": "jupiter",
+          "startUtc": "2026-07-29T09:11:19.325Z",
+          "endUtc": "2026-08-02T10:51:33.325Z",
+          "startUs": 1785316279325000,
+          "endUs": 1785667893325000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "mars",
+          "startUtc": "1976-07-06T02:00:25.200Z",
+          "endUtc": "1983-07-06T20:00:25.200Z",
+          "startUs": 205466425200000,
+          "endUs": 426369625200000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "1983-07-06T20:00:25.200Z",
+          "endUtc": "2001-07-06T08:00:25.200Z",
+          "startUs": 426369625200000,
+          "endUs": 994406425200000
+        },
+        {
+          "lord": "jupiter",
+          "startUtc": "2001-07-06T08:00:25.200Z",
+          "endUtc": "2017-07-06T08:00:25.200Z",
+          "startUs": 994406425200000,
+          "endUs": 1499328025200000
+        }
+      ]
+    },
+    {
+      "id": "high-latitude",
+      "why": "high-latitude birth (Tromso, polar night) — an ascendant edge case downstream",
+      "birthUtc": "1985-01-15T11:00:00.000Z",
+      "moonLongSidereal": 96.5,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "venus",
+          "startUtc": "2023-07-13T00:25:30.000Z",
+          "endUtc": "2043-07-13T00:25:30.000Z",
+          "startUs": 1689207930000000,
+          "endUs": 2320359930000000
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2023-07-13T00:25:30.000Z",
+          "endUtc": "2026-11-11T12:25:30.000Z",
+          "startUs": 1689207930000000,
+          "endUs": 1794399930000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "mercury",
+          "startUtc": "2026-03-13T00:25:30.000Z",
+          "endUtc": "2026-09-01T11:55:30.000Z",
+          "startUs": 1773361530000000,
+          "endUs": 1788263730000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "jupiter",
+          "startUtc": "2026-07-13T04:34:15.000Z",
+          "endUtc": "2026-08-05T04:30:15.000Z",
+          "startUs": 1783917255000000,
+          "endUs": 1785904215000000
+        },
+        {
+          "level": "prana",
+          "lord": "moon",
+          "startUtc": "2026-07-29T11:31:25.000Z",
+          "endUtc": "2026-07-31T09:31:05.000Z",
+          "startUs": 1785324685000000,
+          "endUs": 1785490265000000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "saturn",
+          "startUtc": "1980-07-12T06:25:30.000Z",
+          "endUtc": "1999-07-13T00:25:30.000Z",
+          "startUs": 332231130000000,
+          "endUs": 931825530000000
+        },
+        {
+          "lord": "mercury",
+          "startUtc": "1999-07-13T00:25:30.000Z",
+          "endUtc": "2016-07-12T06:25:30.000Z",
+          "startUs": 931825530000000,
+          "endUs": 1468304730000000
+        },
+        {
+          "lord": "ketu",
+          "startUtc": "2016-07-12T06:25:30.000Z",
+          "endUtc": "2023-07-13T00:25:30.000Z",
+          "startUs": 1468304730000000,
+          "endUs": 1689207930000000
+        }
+      ]
+    },
+    {
+      "id": "year-1901",
+      "why": "earliest plausible living birth — the far end of the representable range",
+      "birthUtc": "1901-05-09T09:09:09.000Z",
+      "moonLongSidereal": 240.001,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "ketu",
+          "startUtc": "2021-05-09T04:33:01.260Z",
+          "endUtc": "2028-05-08T22:33:01.260Z",
+          "startUs": 1620534781260000,
+          "endUs": 1841437981260000
+        },
+        {
+          "level": "antar",
+          "lord": "saturn",
+          "startUtc": "2026-04-02T21:57:01.260Z",
+          "endUtc": "2027-05-12T17:36:01.260Z",
+          "startUs": 1775167021260000,
+          "endUs": 1810143361260000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "mercury",
+          "startUtc": "2026-06-06T00:15:41.760Z",
+          "endUtc": "2026-08-02T08:38:43.260Z",
+          "startUs": 1780704941760000,
+          "endUs": 1785659923260000
+        },
+        {
+          "level": "sookshma",
+          "lord": "saturn",
+          "startUtc": "2026-07-24T06:43:04.523Z",
+          "endUtc": "2026-08-02T08:38:43.260Z",
+          "startUs": 1784875384522500,
+          "endUs": 1785659923260000
+        },
+        {
+          "level": "prana",
+          "lord": "sun",
+          "startUtc": "2026-07-29T01:07:47.360Z",
+          "endUtc": "2026-07-29T12:01:34.297Z",
+          "startUs": 1785287267359688,
+          "endUs": 1785326494296563
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "ketu",
+          "startUtc": "1901-05-09T04:33:01.260Z",
+          "endUtc": "1908-05-08T22:33:01.260Z",
+          "startUs": -2166377218740000,
+          "endUs": -1945474018740000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "1908-05-08T22:33:01.260Z",
+          "endUtc": "1928-05-08T22:33:01.260Z",
+          "startUs": -1945474018740000,
+          "endUs": -1314322018740000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "1928-05-08T22:33:01.260Z",
+          "endUtc": "1934-05-09T10:33:01.260Z",
+          "startUs": -1314322018740000,
+          "endUs": -1124976418740000
+        }
+      ]
+    },
+    {
+      "id": "far-future-resolve",
+      "why": "resolved 70 years after birth, deep in the second 120-year cycle",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 55.55,
+      "atUtc": "2094-03-14T00:42:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "venus",
+          "startUtc": "2077-01-12T23:16:03.000Z",
+          "endUtc": "2097-01-12T23:16:03.000Z",
+          "startUs": 3377718963000000,
+          "endUs": 4008870963000000
+        },
+        {
+          "level": "antar",
+          "lord": "mercury",
+          "startUtc": "2093-01-12T23:16:03.000Z",
+          "endUtc": "2095-11-13T20:16:03.000Z",
+          "startUs": 3882640563000000,
+          "endUs": 3972053763000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "sun",
+          "startUtc": "2094-01-27T10:10:03.000Z",
+          "endUtc": "2094-03-20T04:01:03.000Z",
+          "startUs": 3915425403000000,
+          "endUs": 3919896063000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "venus",
+          "startUtc": "2094-03-11T13:02:33.000Z",
+          "endUtc": "2094-03-20T04:01:03.000Z",
+          "startUs": 3919150953000000,
+          "endUs": 3919896063000000
+        },
+        {
+          "level": "prana",
+          "lord": "moon",
+          "startUtc": "2094-03-13T09:53:13.500Z",
+          "endUtc": "2094-03-14T03:08:06.000Z",
+          "startUs": 3919312393500000,
+          "endUs": 3919374486000000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "mars",
+          "startUtc": "1993-01-12T23:16:03.000Z",
+          "endUtc": "2000-01-13T17:16:03.000Z",
+          "startUs": 726880563000000,
+          "endUs": 947783763000000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "2000-01-13T17:16:03.000Z",
+          "endUtc": "2018-01-13T05:16:03.000Z",
+          "startUs": 947783763000000,
+          "endUs": 1515820563000000
+        },
+        {
+          "lord": "jupiter",
+          "startUtc": "2018-01-13T05:16:03.000Z",
+          "endUtc": "2034-01-13T05:16:03.000Z",
+          "startUs": 1515820563000000,
+          "endUs": 2020742163000000
+        }
+      ]
+    },
+    {
+      "id": "longitude-exact-zero",
+      "why": "Moon at exactly 0deg — the start of Ashwini and of the zodiac",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 0,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "sun",
+          "startUtc": "2021-03-13T18:42:00.000Z",
+          "endUtc": "2027-03-14T06:42:00.000Z",
+          "startUs": 1615660920000000,
+          "endUs": 1805006520000000
+        },
+        {
+          "level": "antar",
+          "lord": "venus",
+          "startUtc": "2026-03-14T00:42:00.000Z",
+          "endUtc": "2027-03-14T06:42:00.000Z",
+          "startUs": 1773448920000000,
+          "endUs": 1805006520000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "rahu",
+          "startUtc": "2026-07-22T21:51:00.000Z",
+          "endUtc": "2026-09-15T16:45:00.000Z",
+          "startUs": 1784757060000000,
+          "endUs": 1789490700000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-22T21:51:00.000Z",
+          "endUtc": "2026-07-31T03:05:06.000Z",
+          "startUs": 1784757060000000,
+          "endUs": 1785467106000000
+        },
+        {
+          "level": "prana",
+          "lord": "venus",
+          "startUtc": "2026-07-28T04:24:32.850Z",
+          "endUtc": "2026-07-29T13:16:53.850Z",
+          "startUs": 1785212672850000,
+          "endUs": 1785331013850000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "ketu",
+          "startUtc": "1994-03-14T00:42:00.000Z",
+          "endUtc": "2001-03-13T18:42:00.000Z",
+          "startUs": 763605720000000,
+          "endUs": 984508920000000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "2001-03-13T18:42:00.000Z",
+          "endUtc": "2021-03-13T18:42:00.000Z",
+          "startUs": 984508920000000,
+          "endUs": 1615660920000000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "2021-03-13T18:42:00.000Z",
+          "endUtc": "2027-03-14T06:42:00.000Z",
+          "startUs": 1615660920000000,
+          "endUs": 1805006520000000
+        }
+      ]
+    },
+    {
+      "id": "longitude-on-nakshatra-edge",
+      "why": "Moon exactly on a nakshatra boundary — the floor() in nakshatraOf decides the lord",
+      "birthUtc": "1994-03-14T00:42:00.000Z",
+      "moonLongSidereal": 120,
+      "atUtc": "2026-07-29T12:00:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "moon",
+          "startUtc": "2020-03-13T12:42:00.000Z",
+          "endUtc": "2030-03-14T00:42:00.000Z",
+          "startUs": 1584103320000000,
+          "endUs": 1899679320000000
+        },
+        {
+          "level": "antar",
+          "lord": "mercury",
+          "startUtc": "2026-01-12T03:42:00.000Z",
+          "endUtc": "2027-06-13T14:12:00.000Z",
+          "startUs": 1768189320000000,
+          "endUs": 1812895920000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "sun",
+          "startUtc": "2026-07-20T21:09:00.000Z",
+          "endUtc": "2026-08-15T18:04:30.000Z",
+          "startUs": 1784581740000000,
+          "endUs": 1786817070000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "rahu",
+          "startUtc": "2026-07-25T20:09:38.250Z",
+          "endUtc": "2026-07-29T17:17:57.750Z",
+          "startUs": 1785010178250000,
+          "endUs": 1785345477750000
+        },
+        {
+          "level": "prana",
+          "lord": "mars",
+          "startUtc": "2026-07-29T11:51:58.613Z",
+          "endUtc": "2026-07-29T17:17:57.750Z",
+          "startUs": 1785325918612500,
+          "endUs": 1785345477750000
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "ketu",
+          "startUtc": "1987-03-14T06:42:00.000Z",
+          "endUtc": "1994-03-14T00:42:00.000Z",
+          "startUs": 542702520000000,
+          "endUs": 763605720000000
+        },
+        {
+          "lord": "venus",
+          "startUtc": "1994-03-14T00:42:00.000Z",
+          "endUtc": "2014-03-14T00:42:00.000Z",
+          "startUs": 763605720000000,
+          "endUs": 1394757720000000
+        },
+        {
+          "lord": "sun",
+          "startUtc": "2014-03-14T00:42:00.000Z",
+          "endUtc": "2020-03-13T12:42:00.000Z",
+          "startUs": 1394757720000000,
+          "endUs": 1584103320000000
+        }
+      ]
+    },
+    {
+      "id": "resolved-at-birth-instant",
+      "why": "court resolved at the birth instant itself — the first maha is mid-term by definition",
+      "birthUtc": "1997-04-11T15:25:00.000Z",
+      "moonLongSidereal": 40.12,
+      "atUtc": "1997-04-11T15:25:00.000Z",
+      "yearLengthDays": 365.25,
+      "court": [
+        {
+          "level": "maha",
+          "lord": "moon",
+          "startUtc": "1997-03-09T18:28:36.000Z",
+          "endUtc": "2007-03-10T06:28:36.000Z",
+          "startUs": 857932116000000,
+          "endUs": 1173508116000000
+        },
+        {
+          "level": "antar",
+          "lord": "moon",
+          "startUtc": "1997-03-09T18:28:36.000Z",
+          "endUtc": "1998-01-08T03:28:36.000Z",
+          "startUs": 857932116000000,
+          "endUs": 884230116000000
+        },
+        {
+          "level": "pratyantar",
+          "lord": "mars",
+          "startUtc": "1997-04-04T03:13:36.000Z",
+          "endUtc": "1997-04-21T21:21:06.000Z",
+          "startUs": 860123616000000,
+          "endUs": 861657666000000
+        },
+        {
+          "level": "sookshma",
+          "lord": "saturn",
+          "startUtc": "1997-04-10T04:49:09.750Z",
+          "endUtc": "1997-04-13T00:17:21.000Z",
+          "startUs": 860647749750000,
+          "endUs": 860890641000000
+        },
+        {
+          "level": "prana",
+          "lord": "venus",
+          "startUtc": "1997-04-11T04:59:45.781Z",
+          "endUtc": "1997-04-11T16:14:27.656Z",
+          "startUs": 860734785781250,
+          "endUs": 860775267656250
+        }
+      ],
+      "firstMahadashas": [
+        {
+          "lord": "moon",
+          "startUtc": "1997-03-09T18:28:36.000Z",
+          "endUtc": "2007-03-10T06:28:36.000Z",
+          "startUs": 857932116000000,
+          "endUs": 1173508116000000
+        },
+        {
+          "lord": "mars",
+          "startUtc": "2007-03-10T06:28:36.000Z",
+          "endUtc": "2014-03-10T00:28:36.000Z",
+          "startUs": 1173508116000000,
+          "endUs": 1394411316000000
+        },
+        {
+          "lord": "rahu",
+          "startUtc": "2014-03-10T00:28:36.000Z",
+          "endUtc": "2032-03-09T12:28:36.000Z",
+          "startUs": 1394411316000000,
+          "endUs": 1962448116000000
+        }
+      ]
+    }
+  ]
+}

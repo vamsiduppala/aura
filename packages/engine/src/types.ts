@@ -80,6 +80,19 @@ export interface Chart {
   julianDayUT: number;
   /** Ayanamsa (degrees) used to sidereal-ize. */
   ayanamsa: number;
+  /**
+   * WHICH ayanamsa produced that value. Stored, never assumed: Lahiri, Raman and KP
+   * disagree by up to ~1.2°, which against a 13°20' nakshatra is ~9% of a mahadasha —
+   * years. If this were a constant, adding a second system would silently move every
+   * date every existing user has ever been shown.
+   */
+  ayanamsaSystem: AyanamsaSystem;
+  /**
+   * The engine build that produced this chart. Stamped on every persisted computation
+   * so a maths fix is auditable: recompute, diff, and notify only the users whose
+   * boundaries actually moved (see `boundaryDrift`).
+   */
+  engineVersion: string;
   lagnaSign: number;      // 0..11
   lagnaLong: number;      // sidereal degrees of the ascendant
   moonNakshatra: number;  // 0..26
@@ -115,7 +128,20 @@ export interface DashaPeriod {
   start: Date;
   end: Date;
   level: DashaLevel;
+  /** Exact boundary in integer microseconds since the epoch. `start`/`end` are Dates
+   *  and therefore truncate to milliseconds; these do not. Half-open `[startUs, endUs)`. */
+  startUs: number;
+  endUs: number;
 }
+
+/** Which sidereal reference the chart was computed against. Frozen per chart. */
+export type AyanamsaSystem = 'lahiri';
+
+/**
+ * How well the birth time is known, and therefore how far every boundary in the tree
+ * could be wrong. Not a preference — it decides what the app is allowed to state.
+ */
+export type BirthTimeAccuracy = 'exact' | 'near_minute' | 'within_15m' | 'within_hour' | 'unknown';
 
 // ── Transits ─────────────────────────────────────────────────────────────────
 

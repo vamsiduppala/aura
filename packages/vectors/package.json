@@ -1,0 +1,15 @@
+{
+  "name": "@vim/vectors",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Golden dasha fixtures. Language-agnostic JSON, run by every implementation in CI.",
+  "exports": {
+    ".": "./vectors.json"
+  },
+  "scripts": {
+    "generate": "tsx generate.ts",
+    "check": "tsx generate.ts && git diff --exit-code vectors.json"
+  },
+  "files": ["vectors.json"]
+}

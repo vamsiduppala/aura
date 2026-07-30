@@ -4,11 +4,11 @@
 // aspects, functional polarity. Deterministic given an ephemeris.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { BirthData, Chart, Graha, House, PlanetPos } from '../types.js';
-import { GRAHAS } from '../constants.js';
+import type { AyanamsaSystem, BirthData, Chart, Graha, House, PlanetPos } from '../types.js';
+import { ENGINE_VERSION, GRAHAS } from '../constants.js';
 import { norm360, norm180, signOf, degInSign, houseFrom } from '../astro/angles.js';
 import { localToJdUT, jdToJde } from '../astro/julian.js';
-import { lahiriAyanamsa } from '../astro/ayanamsa.js';
+import { DEFAULT_AYANAMSA, ayanamsaFor } from '../astro/ayanamsa.js';
 import { ascendantTropical } from '../astro/ascendant.js';
 import type { Ephemeris } from '../astro/ephemeris.js';
 import { nakshatraOf, padaOf } from '../dasha/vimshottari.js';
@@ -22,10 +22,21 @@ const COMBUST_DEG: Partial<Record<Graha, number>> = {
   moon: 12, mars: 17, mercury: 14, jupiter: 11, venus: 10, saturn: 15,
 };
 
-export function computeChart(birth: BirthData, ephem: Ephemeris): Chart {
+export interface ChartOptions {
+  /**
+   * Which sidereal reference to use. Frozen onto the returned chart, because changing it
+   * later moves every date the user has ever been shown — up to a year at the maha level.
+   */
+  ayanamsaSystem?: AyanamsaSystem;
+}
+
+export function computeChart(
+  birth: BirthData, ephem: Ephemeris, opts: ChartOptions = {},
+): Chart {
+  const ayanamsaSystem = opts.ayanamsaSystem ?? DEFAULT_AYANAMSA;
   const jdUT = localToJdUT(birth.date, birth.unknownTime ? undefined : birth.time, birth.tzOffsetMinutes);
   const jde = jdToJde(jdUT);
-  const ayanamsa = lahiriAyanamsa(jde);
+  const ayanamsa = ayanamsaFor(ayanamsaSystem, jde);
   const precision = birth.unknownTime ? 'solar' : 'full';
 
   const trop = ephem.tropical(jde);
@@ -84,6 +95,8 @@ export function computeChart(birth: BirthData, ephem: Ephemeris): Chart {
     birth,
     julianDayUT: jdUT,
     ayanamsa,
+    ayanamsaSystem,
+    engineVersion: ENGINE_VERSION,
     lagnaSign,
     lagnaLong,
     moonNakshatra: planets.moon.nakshatra!,

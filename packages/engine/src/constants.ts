@@ -235,3 +235,35 @@ export const SIGN_NAMES = [
   'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
   'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Engine identity
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Semver of the dasha/chart maths, stamped onto every persisted computation.
+ *
+ * Bump it whenever a change can move a boundary — then recompute affected charts,
+ * diff old against new with `boundaryDrift`, and notify only the users whose
+ * boundaries actually moved more than the threshold. This is the module nobody
+ * builds and everybody needs: without it, the first maths fix is indistinguishable
+ * from a data corruption bug.
+ *
+ * 0.2.0 — internal arithmetic moved from float milliseconds to integer microseconds,
+ *         and sub-period boundaries are now derived from cumulative year totals so
+ *         children close exactly on the parent. Boundaries move by under a
+ *         millisecond, so no user-visible date changes.
+ */
+export const ENGINE_VERSION = '0.2.0';
+
+/**
+ * Moon's mean sidereal motion in degrees per day. Used to convert a birth-time
+ * uncertainty into a boundary uncertainty: the Moon crosses one nakshatra
+ * (13°20') in NAKSHATRA_ARC / this ≈ 1.0119 days ≈ 24.29 hours, and the fraction
+ * of that nakshatra already traversed at birth is what sets every boundary in the
+ * whole 120-year tree.
+ */
+export const MOON_MEAN_DAILY_MOTION = 13.176358;
+
+/** Days the Moon takes to cross one nakshatra. ≈1.0119 d (≈24.29 h). */
+export const NAKSHATRA_CROSSING_DAYS = NAKSHATRA_ARC / MOON_MEAN_DAILY_MOTION;

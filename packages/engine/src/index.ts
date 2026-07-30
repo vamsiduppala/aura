@@ -14,6 +14,7 @@ export * from './constants.js';
 export * from './astro/angles.js';
 export * from './astro/julian.js';
 export * from './astro/ayanamsa.js';
+export { type ChartOptions } from './chart/chart.js';
 export * from './astro/ascendant.js';
 export {
   type Ephemeris, type EphemerisSample, AstronomiaEphemeris, FixedEphemeris,
@@ -36,9 +37,16 @@ export {
 export {
   nakshatraOf, padaOf, startingMahaLord, nakshatraElapsedFraction,
   getStackAt, getPeriodsAt, buildDashaTree, currentMaha,
-  getCourtAt, nextPeriodAt,
+  getCourtAt, nextPeriodAt, US_SAFE_LIMIT,
   type DashaOptions,
 } from './dasha/vimshottari.js';
+
+// Birth-time precision, surfaced rather than hidden (SPEC §3), and the M19 drift path.
+export {
+  ACCURACY_MINUTES, boundaryUncertaintyMs, boundaryUncertaintyDays,
+  boundaryConfidence, formatUncertainty, boundaryDrift,
+  type UncertaintyInput, type BoundaryDrift, type DriftReport,
+} from './dasha/uncertainty.js';
 
 // Transits (Tier 2)
 export { computeTransit, sadeSatiPhase } from './transit/gochara.js';

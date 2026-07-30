@@ -15,6 +15,9 @@ import { useNow } from '../hooks/useNow';
 
 const CONFIDENCES: BirthTimeConfidence[] = ['exact', 'within15min', 'within1hour', 'unknown'];
 
+/** The ayanamsa system is stored per chart, so it is displayed rather than assumed. */
+const AYANAMSA_LABEL: Record<string, string> = { lahiri: 'Lahiri' };
+
 export function You() {
   const {
     birth, chart, confidence, displayName, tzId, prefs, user, authStatus,
@@ -115,11 +118,17 @@ export function You() {
           <Row label="Moon nakṣatra" value={nak ? `${nak.name} · pada ${chart.moonPada}` : '—'} />
           <Row label="Moon sign" value={SIGN_NAMES[chart.moonSign] ?? '—'} />
           <Row label="Ascendant" value={SIGN_NAMES[chart.lagnaSign] ?? '—'} />
-          <Row label="Ayanāṁśa" value={`Lahiri · ${chart.ayanamsa.toFixed(4)}°`} />
+          <Row
+            label="Ayanāṁśa"
+            value={`${AYANAMSA_LABEL[chart.ayanamsaSystem]} · ${chart.ayanamsa.toFixed(4)}°`}
+          />
           <Row
             label="Precision"
             value={chart.precision === 'full' ? 'full (timed chart)' : 'solar (no birth time)'}
           />
+          {/* Stamped on the chart, not read from a constant. A timing complaint is not
+              debuggable without knowing which engine build produced the dates. */}
+          <Row label="Engine" value={chart.engineVersion} />
         </Section>
       )}
 
