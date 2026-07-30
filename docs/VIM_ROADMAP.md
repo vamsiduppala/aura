@@ -54,6 +54,22 @@ Legend: **[x]** done · **[~]** partially done, see note · **[ ]** not started
 - [x] Verify in a real browser: measure for clipping/overflow, drive the flow with JS.
       Done against a real profile; found and fixed the rAF bug and a 46x28 tap target.
 
+## M2b · Engine hardening (new-structure.md §3) — Part 2, done
+
+- [x] Integer microsecond arithmetic. Was float ms; `DashaPeriod` now carries `startUs`/`endUs`.
+- [x] Half-open `[start, end)` with children summing to the parent exactly — boundaries derived
+      from cumulative year totals, so the last child closes on the parent by construction.
+- [x] No clock inside the engine, enforced by a test that greps the source.
+- [x] Ayanāṁśa is a stored parameter (`chart.ayanamsaSystem`), not a constant.
+- [x] `ENGINE_VERSION` stamped on every chart + `boundaryDrift()` for the M19 recompute-and-diff
+      path, 6-hour notify threshold.
+- [x] `boundaryUncertaintyMs` / `boundaryConfidence` — the §1.1 drift table as arithmetic,
+      asserted against every published row.
+- [x] `packages/vectors` — 41 golden fixtures, language-agnostic JSON, run in CI.
+- [x] Property tests (M14b): exact sums, half-open resolution, monotonicity, idempotence.
+- [ ] Rectification lane (§4.1): accept a time range, search a ± window for the birth time whose
+      boundaries best fit 3–5 dated life events. The honest premium feature.
+
 ## M3 · Content depth
 
 - [~] Layer (a): generic per planet × office. **Done** as one authored block per planet plus an
@@ -134,8 +150,9 @@ Full detail in **`docs/ACCOUNT_AND_COMMERCE.md`**. Ordered by severity, not by e
 Every chunk, before commit:
 
 - [ ] `npm run typecheck` clean across all five workspaces.
-- [ ] `npm test` green (currently 325 tests: engine 100, knowledge 124, vim 52, web 29,
+- [ ] `npm test` green (currently 400 tests: engine 175, knowledge 124, vim 52, web 29,
       api 20).
+- [ ] `npm run check:generated` clean — tokens/dist and vectors.json are not stale.
 - [ ] No mock/static/demo data on any user-facing path — the guard test enforces it.
 - [ ] New calculations verified against a worked example, cited in the test name.
 - [ ] `GEMINI.md` §4 updated with what was done, learned, and left.

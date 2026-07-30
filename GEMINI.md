@@ -76,8 +76,8 @@ before the earlier one is committed and verified.**
 
 | Part | Maps to | Contains | State |
 |---|---|---|---|
-| **1** | Phase 0 · M8 · §4.2 · §5.1 · §1 | Token pipeline, web design system, responsive shell, rings to spec, 3-item nav + avatar, M9 non-colour channels | **IN PROGRESS — see §5** |
-| 2 | §3 · M14a/b · M19 | Engine: microsecond ints, half-open exact-sum property tests, injected clock, ayanāṁśa stored, `engineVersion` stamped, `/packages/vectors` golden fixtures | not started |
+| **1** | Phase 0 · M8 · §4.2 · §5.1 · §1 | Token pipeline, web design system, responsive shell, rings to spec, 3-item nav + avatar, M9 non-colour channels | **DONE** `24b2b0e` |
+| 2 | §3 · M14a/b · M19 | Engine: microsecond ints, half-open exact-sum property tests, injected clock, ayanāṁśa stored, `engineVersion` stamped, `/packages/vectors` golden fixtures | **DONE** `67dfacb` |
 | 3 | §4.5 · §4.6 · M4 | Plan Composer as versioned rules (suitability × relation × house → PUSH/BUILD/HOLD), composable interpretation with cache keys, authoring shape | not started |
 | 4 | §4.7 · M1 · M5 · M6 · M7 · M17 | Mentor gateway + tool use + date validator, notifications, auth/entitlements/privacy, Postgres migration | not started |
 
@@ -294,6 +294,11 @@ keep building. Do not stop with nothing delivered to ask a question you could ha
   sweep, use a CSS `@keyframes` with only a `from` block plus `animation-fill-mode: backwards`
   — the implicit `to` is the element's own declared value, so the arc is correct even if the
   animation never runs. See `.ring-arc` in `theme/components.css`.
+- **A `Date` truncates to milliseconds.** `DashaPeriod` carries `startUs`/`endUs` for a
+  reason: two boundaries 400µs apart compare EQUAL as Dates. Compare the µs fields.
+- **`packages/tokens/dist` and `packages/vectors/vectors.json` are generated AND committed.**
+  `npm run check:generated` fails if either is stale. Run it before committing changes to
+  `tokens.json` or the dasha maths.
 - **Ring hit-testing** must resolve by *nearest ring-centre distance*, not exact hit. At 10–14px
   strokes with 5px gaps, exact testing loses about a fifth of taps.
 - **`useNow` deliberately stops while `document.hidden`.** A measured "the value didn't change
@@ -518,89 +523,108 @@ one is a genuine S1 (tokens are stored in plaintext and never expire).
 
 ## 5 — CURRENT STATE (overwrite this whole section whenever you stop)
 
-**Last updated:** 2026-07-29 by Claude Opus 5. **Part 1 is DONE and committed as `24b2b0e`.**
-**Branch:** `main`. Working tree clean. **Next: Part 2.**
+**Last updated:** 2026-07-29 by Claude Opus 5. **Part 2 is DONE and committed as `67dfacb`.**
+**Branch:** `main`. Working tree clean. **Next: Part 3.**
 
 ### Where we are
 
 | Part | State |
 |---|---|
 | **1** — token pipeline, web design system, responsive shell, rings to §4.2, 3-item nav + avatar, M9 channels | **DONE** `24b2b0e` |
-| **2** — engine hardening + golden vectors (§3, M14a/b, M19) | **NEXT** |
-| 3 — Plan Composer + composable interpretation (§4.5, §4.6, M4) | not started |
+| **2** — engine hardening + golden vectors (§3, M14a/b, M19) | **DONE** `67dfacb` |
+| **3** — Plan Composer + composable interpretation (§4.5, §4.6, M4) | **NEXT** |
 | 4 — Mentor gateway, notifications, auth/entitlements/privacy, Postgres (§4.7, M1, M5, M6, M7, M17) | not started |
 
-Earlier commits: `754d207` the app on the real engine, `f73d3d0` the rAF fix, `c72cc2c` the
-Planner, `0c604a4` docs.
+Earlier: `754d207` app on the real engine, `f73d3d0` rAF fix, `c72cc2c` Planner, `0c604a4`
+docs, `24b2b0e` Part 1, `c95804f` handoff, `67dfacb` Part 2.
 
-### Part 1 shipped — measured, not assumed
+**400 tests green** (engine 175, knowledge 124, vim 52, web 29, api 20). All five workspaces
+typecheck clean.
 
-Responsive shell verified in a same-origin iframe. The window resize is silently ignored in
-this environment (`outerWidth` reports 0), but an iframe gets its own viewport, so media
-queries inside one actually respond. **Use this technique for all responsive work.**
+### What Part 2 changed that you must know about
 
-| viewport | nav | main starts | wheel | panes |
-|---|---|---|---|---|
-| 394 | bottom bar 362x64 | 0 | 307px | 1 |
-| 814 | bottom bar 460x64 | 0 | 340px | 1 |
-| 1260 | **sidebar 264px** | **264** | 402px | **2** |
-| 1686 | sidebar 264px | 264 | 440px | 2 |
+- **`DashaPeriod` gained `startUs` / `endUs`** — exact integer microseconds. `start` / `end`
+  are still Dates, so nothing broke, but **use the µs fields for any comparison**: a Date
+  truncates to milliseconds and two boundaries that differ by 400µs will compare equal.
+- **`Chart` gained `ayanamsaSystem` and `engineVersion`.** Both are stored, not assumed. The
+  Account screen reads them. Anything that persists a chart must persist them too.
+- **`computeChart(birth, ephem, opts?)`** — third arg is `{ ayanamsaSystem? }`, defaults to
+  Lahiri. Only `'lahiri'` is implemented; `ayanamsaFor()` is a `switch` so adding Raman is a
+  compile error until it is handled, which is the point.
+- **`ENGINE_VERSION` is `'0.2.0'`** in `packages/engine/src/constants.ts`. **Bump it whenever
+  a change can move a boundary**, then follow the M19 path with `boundaryDrift()`.
+- **New: `packages/engine/src/dasha/uncertainty.ts`** — `boundaryUncertaintyMs`,
+  `boundaryConfidence`, `formatUncertainty`, `boundaryDrift`. The formula reproduces the plan's
+  §1.1 drift table exactly; the tests assert every row.
+- **New: `packages/vectors`** — 41 golden fixtures. `npm run check:generated` fails if either
+  `packages/tokens/dist` or `packages/vectors/vectors.json` is stale. **Run it before every
+  commit that touches either.**
+- **`subSpans()` derives boundaries from cumulative year totals**, not by accumulating child
+  lengths. Do not "simplify" that back into a cursor loop — the exactness depends on it.
 
-At every width: no horizontal scroll, nothing clipped, nothing overflowing, no tap target
-under 44px, no NaN in rendered text. Plans is a 3-column card grid at 1686; settings likewise.
-The avatar renders `VA` in `#F5C518` — Jupiter, this profile's real King.
+### Part 3 — what to do next, concretely
 
-### Part 2 — what to do next, concretely
+Read `new-structure.md` §4.5 and §4.6 first. Two halves.
 
-Read `new-structure.md` §3 first. Five rules to make true, in this order:
+**A. Plan Composer as versioned rules (§4.5).** Today `apps/vim/src/core/plan.ts` picks a stage
+archetype from the planet alone (`stageMode()` → push/pause, hardcoded). The spec wants a
+**deterministic scored composer**, and — critically — *"engineers do not encode astrology in
+code"*:
 
-1. **Microsecond integer arithmetic.** `packages/engine/src/dasha/vimshottari.ts` works in
-   float milliseconds today (`yearMs()` returns `days * 86400_000` as a float, and span
-   lengths are float multiples of it). Move to integer microseconds since epoch. Float drift
-   across five levels of nesting is exactly how you get an off-by-two-hours prāṇa daśā.
-2. **Half-open `[start, end)` with EXACT sums.** Level n+1 children must sum to their parent to
-   the microsecond, with the **last child absorbing the remainder**. `subSpans()` does not do
-   this today: it walks a cursor and the final child simply inherits the accumulated float
-   error instead of being pinned to the parent's end. Make it a **property test**, not a hope —
-   no gaps, no overlaps, monotonic boundaries, idempotent recomputation.
-3. **No clock inside the package.** Grep `packages/engine/src` for `new Date()` and
-   `Date.now()`. The clock must be injected, or you can neither test deterministically nor
-   render "state at date X" for the Timeline scrubber (§4.3).
-4. **Ayanāṁśa is a stored parameter, not a constant.** `chart.ts` calls `lahiriAyanamsa(jde)`
-   directly. Write the value *used* onto the chart record, so a future switch to Raman or KP
-   cannot silently shift every existing chart.
-5. **`engineVersion` semver stamped on every persisted computation**, plus the M19 path: when
-   the engine changes, recompute, diff old against new boundaries, and quietly notify only
-   users whose boundaries moved more than 6 hours. Invisible until the first maths fix, and
-   then it is the difference between a quiet patch and a support fire.
+```
+score = suitability[category][planet]          // -2..+2, a DB/data table
+      + relationshipModifier(parentPlanet, planet)   // friend/neutral/enemy
+      + houseLordshipModifier(chart, planet)
+archetype = score >= +1 ? PUSH : score === 0 ? BUILD : HOLD
+```
 
-Then **`packages/vectors`** — 40 charts as language-agnostic JSON, all five levels to the
-second, covering the edge cases §3 names: born at midnight, born during a DST transition, born
-in a pre-1970 offset, born at 23:59:59.9, southern hemisphere, high latitude. Run them in CI;
-a vector mismatch fails the build. Also add the `boundaryUncertainty` envelope from §3 so the
-UI can render `±3 days` beside a boundary instead of a false-precise timestamp.
+Three things this changes: **PUSH/BUILD/HOLD** replaces the current two-way push/pause; the
+score depends on the **parent** planet and on the **chart** (so two people with the same Mars
+Governor can get different archetypes); and the tables must be **versioned data**, with
+`rulesVersion` persisted on the plan beside `engineVersion` so an old plan can be explained by
+the logic that produced it. `naturalRelation()` in `@aura/knowledge` already gives the
+friend/enemy matrix — `OfficeDetail.tsx` uses it for the easier/rougher windows.
 
-Note: `apps/vim/src/core/court.ts` already implements the confidence *gate*
-(`visibilityFor()`). Part 2 adds the *numeric* uncertainty on top — it does not replace it.
+**B. Composable interpretation (§4.6).** The content space is combinatorial, not 45 blocks:
+two levels is 81 pairs, five levels is 59,049. The spec's answer is ~140 authored fragments
+assembled deterministically, with a cache key:
+
+```
+interpretation = base[planet][level]          45 fragments
+               + relation[parentPlanet][planet]   81 fragments
+               + houseFlavour[lordship]           12 fragments
+cacheKey = sha256(planet, level, parentPlanet, relationClass, chartFeatureHash, contentVersion)
+```
+
+Today `apps/vim/src/content/court.ts` has one authored block per planet plus an office
+timescale frame — that is the `base` layer only. Part 3 adds the `relation` and `house` layers
+and the assembler. **Do not add an LLM to this path**: §4.6 puts the smoothing pass offline,
+batched, astrologer-approved, and frozen. Users never see unreviewed generated astrology.
+
+Watch for: R3 (never copy the classical text's prose), R14 (banned vocabulary — the
+`no-mock-data.test.tsx` guard already greps for it), and the fact that 140 fragments is
+authoring work, not engineering work. If you cannot write them well, write fewer and say so
+in §4 rather than padding.
 
 ### Verified working — do not regress
 
 - Real account, real profile: **born 11 Apr 1997, 20:55, Visakhapatnam.** Place name alone
   derived 17.680 / 83.202 / Asia/Kolkata / **+5:30 on the birth date**. Rohini pada 4, Moon in
-  Taurus, Scorpio ascendant, Lahiri 23.8150°. **Jupiter King, Saturn PM.**
+  Taurus, Scorpio ascendant, Lahiri 23.8150°, engine 0.2.0. **Jupiter King, Saturn PM.**
+- After the Part 2 arithmetic change the King's ring fill is still **22.31%** — boundaries
+  moved by under a millisecond, exactly as `ENGINE_VERSION` 0.2.0 claims.
 - One real plan: *"Get the senior title"*, Promotion, 1-year horizon → **Governor terms, 5
-  stages** (computed, not padded): Sun → Moon → Mars → Rāhu → Jupiter.
-- 325 tests green (engine 100, knowledge 124, vim 52, web 29, api 20); all five workspaces
-  typecheck clean.
-- Sign-in for that account: `vamsi.5c609ad1@vimshottari.test` / `q8YUqSBaShtCdFL` — synthetic
-  `.test` TLD, local DB only.
-- **Run the token build after touching `tokens.json`:** `node packages/tokens/build.mjs`.
-  `npm run check --workspace @vim/tokens` fails if `dist` is stale.
+  stages**: Sun → Moon → Mars → Rāhu → Jupiter.
+- Responsive shell, measured in a same-origin iframe: 394 → bottom bar, wheel 307px, 1 pane ·
+  814 → bottom bar, 340px, 1 pane · 1260 → **sidebar 264px**, 402px, **2 panes** · 1686 →
+  sidebar, 440px, 2 panes. No overflow, no clipping, no sub-44px target, no NaN at any width.
+- Sign-in: `vamsi.5c609ad1@vimshottari.test` / `q8YUqSBaShtCdFL` — synthetic `.test` TLD,
+  local DB only.
 
 ### Mistakes made so far, so nobody repeats them
 
 1. **Capped the content column at 460px and centred it.** Made the website a phone screenshot
-   in a void. This is R25, and the entire reason Part 1 existed.
+   in a void. This is R25 and the entire reason Part 1 existed.
 2. **Drove ring fill from a React state flip inside `requestAnimationFrame`.** rAF is throttled
    to zero in a background tab, so every ring rendered at 0%. Now a §3 rule: a value that
    carries meaning must never depend on a frame callback.
@@ -610,30 +634,38 @@ Note: `apps/vim/src/core/court.ts` already implements the confidence *gate*
    `useVim.ts`; recovered with `git checkout --`. Use Python with explicit encoding. §3.
 5. **Asserted "the running stage has progress > 0".** Wrong — a plan created this instant has a
    running stage legitimately at 0%. Test the real property.
-6. **Measured centring against `innerWidth`.** Off by the scrollbar width; everything looked
-   20px wrong and was in fact correct to 0.3px. §3.
-7. **Set `noUnusedLocals` and `exactOptionalPropertyTypes` in `apps/vim/tsconfig.json`.**
-   Dragged shared packages into failure on code this app does not own. Extend
-   `tsconfig.base.json` instead.
+6. **Measured centring against `innerWidth`.** Off by the scrollbar; everything looked 20px
+   wrong and was correct to 0.3px. §3.
+7. **Set `noUnusedLocals` + `exactOptionalPropertyTypes` in `apps/vim/tsconfig.json`.** Dragged
+   shared packages into failure on code this app does not own. Extend `tsconfig.base.json`.
 8. **Built from a plan pasted mid-turn that had been corrupted in transit.** It was in
    `new-structure.md` on disk all along. **Ask for the file; never reconstruct from a paste.**
-9. **A regex that replaced an opening `<div>` with `<>` and left its `</div>` behind.** Broke
-   `Onboarding.tsx` with an unbalanced fragment. When a batch edit changes a tag, change both
-   ends in the same rule.
-10. **Inlined a long Python script into `bash -c "..."` twice.** Bash choked on quotes and
-    backticks inside the body both times. **Write the script to a file and run the file.**
+9. **A regex that replaced an opening `<div>` with `<>` and left its `</div>`.** Broke
+   `Onboarding.tsx`. When a batch edit changes a tag, change both ends in the same rule.
+10. **Inlined a long Python script into `bash -c "..."` twice** after already writing down that
+    it breaks. Write the script to a file and run the file.
+11. **Claimed a golden-vector set proves correctness.** It does not — the expected values come
+    from the engine being tested, so it is a regression ratchet. Correctness needs a
+    hand-computed anchor (the book's balance formula, the independently-computed drift table).
+    `packages/vectors/README.md` states this so the next person does not over-trust it.
 
 ### How I work, so the seams don't show
 
-- **Locate before changing.** One grep with alternation, not six greps.
+- **Locate before changing.** One grep with alternation, not six greps. Start every part by
+  grepping for every touch point at once, including who *consumes* what you are about to change.
 - **Batch writes.** Several files in one message; a Python script with an `assert` per
-  replacement when touching 3+ files the same way. Write the script to a file — see mistake 10.
+  replacement when touching 3+ files the same way. Write the script to a file — mistake 10.
 - **Verify by measuring, never by looking.** Drive the app with JS and assert on numbers:
   `scrollWidth > clientWidth` for clipping, rects against `documentElement.clientWidth` for
   overflow, rendered text scanned for `undefined|NaN|null`, tap-target rects against 44px. For
   responsive work, measure inside a same-origin **iframe** — it has its own viewport.
+- **Test the invariant, not the number, wherever you can.** Property tests over ~30
+  deterministic cases catch accumulation bugs that a single golden case cannot. Deterministic,
+  not random: a test that changes its own inputs cannot be bisected when it fails.
 - **When a result looks wrong, hand-check the arithmetic before "fixing" it.** The Governor and
   Magistrate both showing "7d 8h left" looked like a bug and was correct: the Venus sūkṣma is
   the last child of the Sun pratyantar, so they genuinely share an end instant.
+- **After changing shared code, re-verify the app, not just the tests.** The Part 2 arithmetic
+  change was proved harmless by the King's ring still reading 22.31% in the browser.
 - **Commit per logical chunk**, with a message that says *why* and what was deliberately left
   out. Then update this section.
