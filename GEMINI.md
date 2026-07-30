@@ -518,115 +518,122 @@ one is a genuine S1 (tokens are stored in plaintext and never expire).
 
 ## 5 — CURRENT STATE (overwrite this whole section whenever you stop)
 
-**Last updated:** 2026-07-29 by Claude Opus 5, **mid-Part-1**.
-**Branch:** `main`. **Last commit:** `0c604a4`. **Part 1 is UNCOMMITTED work in progress.**
+**Last updated:** 2026-07-29 by Claude Opus 5. **Part 1 is DONE and committed as `24b2b0e`.**
+**Branch:** `main`. Working tree clean. **Next: Part 2.**
 
 ### Where we are
 
-Parts 1–4 are defined in §1. **We are inside Part 1.** Commits `754d207`, `f73d3d0`, `c72cc2c`,
-`0c604a4` are the pre-plan app (onboarding + Timeline + Planner, all working, 325 tests green).
-Part 1 is rebuilding the design system and layout on top of that, per `new-structure.md`.
-
-**Why Part 1 exists:** the user's exact complaint was *"the website is supposed to be wide and
-should be mobile responsive, but you just made it like the screenshot. You are trying to
-replicate the screenshot, but it's not the agenda."* That was correct — `.screen-scroll` had
-`max-width: 460px; margin-inline: auto`, which made a desktop browser a phone screenshot in a
-void. The Figma frames are the *visual language*, never the web layout.
-
-### Part 1 — DONE (uncommitted)
-
-| File | State |
+| Part | State |
 |---|---|
-| `packages/tokens/tokens.json` | **Done.** 183 tokens: surfaces (base `#17181C` per §5.1), ink (`--ink-primary #E8E9EE`, ≥7:1), brass, 9 planets with `glyph` + `texture`, §5.1 shadow recipes, radii, space, type ramp, motion, §4.2 wheel geometry, layout + breakpoints, z-scale. |
-| `packages/tokens/build.mjs` | **Done.** Zero-dep generator → `dist/tokens.{css,ts,dart}`. Numbers stay numbers in TS (`canvas: 360`), colours become `Color(0xFF…)` in Dart, nulls are skipped not stringified. Verified UTF-8 clean with glyphs intact. |
-| `packages/tokens/package.json` | **Done.** `@vim/tokens`, exports `.` / `./css` / `./dart` / `./json`. `npm run check` fails if `dist` is stale. |
-| `apps/vim/src/theme/tokens.ts` | **Done.** Now re-exports from `@vim/tokens` and keeps only PRODUCT semantics (OFFICES, PLANET typing, WHEEL_TIMELINE derived from tokens, MOTION, BREAKPOINT, NAV_TABS). |
-| `apps/vim/src/theme/app.css` | **Done.** `@import '@vim/tokens/css'`, reset, neumorphic primitives, type ramp, and **the shell**: `.app` grid, `.topbar`, `.nav` as bottom bar below 1280px and labelled left rail at 1280px+ (ONE `<nav>` element), `.panes` two-pane at 1024px+, `.page` gutters, a11y overrides. |
-| `apps/vim/src/theme/components.css` | **Done.** Rewritten against new token names + responsive: `.card-grid`, `.settings-grid`, `.choice-grid`, `.legend`, fluid `.wheel` via `clamp()` + container queries, two-column `.welcome` hero at 1024px+, `.detail-sections` auto-fit grid. |
-| `apps/vim/src/components/Wheel.tsx` | **Done.** §4.2 geometry, **track = ring colour at 12%** (not grey), sweep gradient via `color-mix`, 9 texture patterns + glyph ticks at 12 o'clock (M9), `size` prop is now `'hero'` or `'compact'` — **no longer a number**. Also exports `WheelLegend`. |
-| `apps/vim/src/components/Avatar.tsx` | **Done.** Monogram tinted by the **current King's** colour — derived, no upload, no moderation, and it changes when the King changes. |
-| `apps/vim/src/components/Nav.tsx` | **Done.** 3 items + brand + hints + footer; CSS reshapes it into a rail. |
-| `apps/vim/src/App.tsx` | **Done.** `.app` shell, top bar with title + avatar → Account, `<main class="app-main">`. Pre-chart routes (welcome/signin/onboarding/newPlan) stay full-bleed with no chrome. |
+| **1** — token pipeline, web design system, responsive shell, rings to §4.2, 3-item nav + avatar, M9 channels | **DONE** `24b2b0e` |
+| **2** — engine hardening + golden vectors (§3, M14a/b, M19) | **NEXT** |
+| 3 — Plan Composer + composable interpretation (§4.5, §4.6, M4) | not started |
+| 4 — Mentor gateway, notifications, auth/entitlements/privacy, Postgres (§4.7, M1, M5, M6, M7, M17) | not started |
 
-### Part 1 — REMAINING. This is the next action.
+Earlier commits: `754d207` the app on the real engine, `f73d3d0` the rAF fix, `c72cc2c` the
+Planner, `0c604a4` docs.
 
-Nothing here is subtle; it is mechanical, and `tsc` will point at most of it.
+### Part 1 shipped — measured, not assumed
 
-1. **`apps/vim/package.json`** — add `"@vim/tokens": "*"` to `dependencies`, then `npm install`
-   at the root so the workspace link exists. **Do this first or nothing resolves.**
-2. **Delete `apps/vim/src/components/TabBar.tsx`** — superseded by `Nav.tsx`; nothing imports it.
-3. **Screens still use the OLD class names and must be converted.** Every screen currently
-   opens with `<div className="screen-scroll">`, and that class no longer exists. Convert:
-   - `.screen-scroll` → `.page` (the scroll container is now `.app-main`, owned by `App.tsx`)
-   - remove any `<div className="screen">` wrapper and any `<TabBar />` — `App.tsx` owns both
-   - `Timeline.tsx` → wrap wheel + court in `<div className="panes">`, with
-     `<div className="pane-lead">` holding wheel + `WheelLegend`, and a second div holding the
-     court table + change card
-   - `Planner.tsx` → the plan list becomes `<div className="card-grid">`
-   - `You.tsx` → sections become `<div className="settings-grid">`
-   - `NewPlan.tsx` → category and situation lists become `<div className="choice-grid">`
-   - `PlanDetail.tsx` → `<div className="panes">`: wheel + progress left, pipeline right
-   - `Welcome.tsx` / `Onboarding.tsx` / `SignIn.tsx` → `.page`, keeping `.onboard`
-4. **`Wheel` call sites pass numbers for `size`** (e.g. `size={WHEEL.wellPlan}`) — change to
-   `size="compact"`. `tsc` will list them.
-5. **`WHEEL_TIMELINE` items changed shape: `diameter` → `radius`.** Grep for `.diameter`.
-6. **Tests will need updating.** `src/test/wheel.test.tsx` still asserts on
-   `.ring-arc[data-arc]` (valid), but ring geometry changed — fix any assertion encoding the
-   old radii. `no-mock-data.test.tsx` scans `apps/vim/src` only, so the tokens package is
-   outside its sweep and needs no change.
-7. **Vitest and tsc must resolve `@vim/tokens`**, whose `main` is a `.ts` file. Vite handles a
-   source-TS workspace package; if `tsc` complains, the fix is `"paths"` in
-   `apps/vim/tsconfig.json`, **not** adding a compile step to the tokens package.
-8. **Verify in this order:** `node packages/tokens/build.mjs` → `npm run typecheck` →
-   `npm test` → browser measurement at **four widths: 390, 834, 1280, 1706** (method in §3;
-   measure against `documentElement.clientWidth`, never `innerWidth`).
-9. **Then commit,** and only then start Part 2.
+Responsive shell verified in a same-origin iframe. The window resize is silently ignored in
+this environment (`outerWidth` reports 0), but an iframe gets its own viewport, so media
+queries inside one actually respond. **Use this technique for all responsive work.**
 
-### Verified working before Part 1 started — do not regress these
+| viewport | nav | main starts | wheel | panes |
+|---|---|---|---|---|
+| 394 | bottom bar 362x64 | 0 | 307px | 1 |
+| 814 | bottom bar 460x64 | 0 | 340px | 1 |
+| 1260 | **sidebar 264px** | **264** | 402px | **2** |
+| 1686 | sidebar 264px | 264 | 440px | 2 |
 
-- Real account on the local API, real profile: **born 11 Apr 1997, 20:55, Visakhapatnam.**
-  Place name alone derived 17.680 / 83.202 / Asia/Kolkata / **+5:30 on the birth date**.
-  Rohini pada 4, Moon in Taurus, Scorpio ascendant, Lahiri 23.8150°. **Jupiter King, Saturn PM.**
-- One real plan: *"Get the senior title"*, Promotion, 1-year horizon → the app chose **Governor
-  terms, 5 stages** (computed, not padded): Sun → Moon → Mars → Rāhu → Jupiter.
-- 325 tests green (engine 100, knowledge 124, vim 52, web 29, api 20); typecheck clean.
-- Sign-in for that account, if you need it: `vamsi.5c609ad1@vimshottari.test` /
-  `q8YUqSBaShtCdFL` — synthetic `.test` TLD, local DB only.
+At every width: no horizontal scroll, nothing clipped, nothing overflowing, no tap target
+under 44px, no NaN in rendered text. Plans is a 3-column card grid at 1686; settings likewise.
+The avatar renders `VA` in `#F5C518` — Jupiter, this profile's real King.
+
+### Part 2 — what to do next, concretely
+
+Read `new-structure.md` §3 first. Five rules to make true, in this order:
+
+1. **Microsecond integer arithmetic.** `packages/engine/src/dasha/vimshottari.ts` works in
+   float milliseconds today (`yearMs()` returns `days * 86400_000` as a float, and span
+   lengths are float multiples of it). Move to integer microseconds since epoch. Float drift
+   across five levels of nesting is exactly how you get an off-by-two-hours prāṇa daśā.
+2. **Half-open `[start, end)` with EXACT sums.** Level n+1 children must sum to their parent to
+   the microsecond, with the **last child absorbing the remainder**. `subSpans()` does not do
+   this today: it walks a cursor and the final child simply inherits the accumulated float
+   error instead of being pinned to the parent's end. Make it a **property test**, not a hope —
+   no gaps, no overlaps, monotonic boundaries, idempotent recomputation.
+3. **No clock inside the package.** Grep `packages/engine/src` for `new Date()` and
+   `Date.now()`. The clock must be injected, or you can neither test deterministically nor
+   render "state at date X" for the Timeline scrubber (§4.3).
+4. **Ayanāṁśa is a stored parameter, not a constant.** `chart.ts` calls `lahiriAyanamsa(jde)`
+   directly. Write the value *used* onto the chart record, so a future switch to Raman or KP
+   cannot silently shift every existing chart.
+5. **`engineVersion` semver stamped on every persisted computation**, plus the M19 path: when
+   the engine changes, recompute, diff old against new boundaries, and quietly notify only
+   users whose boundaries moved more than 6 hours. Invisible until the first maths fix, and
+   then it is the difference between a quiet patch and a support fire.
+
+Then **`packages/vectors`** — 40 charts as language-agnostic JSON, all five levels to the
+second, covering the edge cases §3 names: born at midnight, born during a DST transition, born
+in a pre-1970 offset, born at 23:59:59.9, southern hemisphere, high latitude. Run them in CI;
+a vector mismatch fails the build. Also add the `boundaryUncertainty` envelope from §3 so the
+UI can render `±3 days` beside a boundary instead of a false-precise timestamp.
+
+Note: `apps/vim/src/core/court.ts` already implements the confidence *gate*
+(`visibilityFor()`). Part 2 adds the *numeric* uncertainty on top — it does not replace it.
+
+### Verified working — do not regress
+
+- Real account, real profile: **born 11 Apr 1997, 20:55, Visakhapatnam.** Place name alone
+  derived 17.680 / 83.202 / Asia/Kolkata / **+5:30 on the birth date**. Rohini pada 4, Moon in
+  Taurus, Scorpio ascendant, Lahiri 23.8150°. **Jupiter King, Saturn PM.**
+- One real plan: *"Get the senior title"*, Promotion, 1-year horizon → **Governor terms, 5
+  stages** (computed, not padded): Sun → Moon → Mars → Rāhu → Jupiter.
+- 325 tests green (engine 100, knowledge 124, vim 52, web 29, api 20); all five workspaces
+  typecheck clean.
+- Sign-in for that account: `vamsi.5c609ad1@vimshottari.test` / `q8YUqSBaShtCdFL` — synthetic
+  `.test` TLD, local DB only.
+- **Run the token build after touching `tokens.json`:** `node packages/tokens/build.mjs`.
+  `npm run check --workspace @vim/tokens` fails if `dist` is stale.
 
 ### Mistakes made so far, so nobody repeats them
 
 1. **Capped the content column at 460px and centred it.** Made the website a phone screenshot
-   in a void. The lesson is R25, and it is the entire reason Part 1 exists.
+   in a void. This is R25, and the entire reason Part 1 existed.
 2. **Drove ring fill from a React state flip inside `requestAnimationFrame`.** rAF is throttled
-   to zero in a background tab, so every ring rendered at 0%. Now a rule in §3: a value that
+   to zero in a background tab, so every ring rendered at 0%. Now a §3 rule: a value that
    carries meaning must never depend on a frame callback.
-3. **Deferred the onboarding chart computation behind rAF plus a dynamic import.** Same root
-   cause, different symptom — the screen hung on "building…" forever. Now synchronous.
-4. **Ran a batch edit through PowerShell `Get-Content`/`Set-Content`.** Corrupted every em-dash
-   in `useVim.ts`; recovered with `git checkout --`. Batch edits go through Python with explicit
-   encoding. In §3.
-5. **Wrote a test asserting "the running stage has progress > 0".** Wrong — a plan created this
-   instant has a running stage legitimately at 0%. Test the real property.
+3. **Deferred the onboarding chart computation behind rAF plus a dynamic import.** Same cause,
+   different symptom — the screen hung on "building…" forever. Now synchronous.
+4. **Batch-edited through PowerShell `Get-Content`/`Set-Content`.** Corrupted every em-dash in
+   `useVim.ts`; recovered with `git checkout --`. Use Python with explicit encoding. §3.
+5. **Asserted "the running stage has progress > 0".** Wrong — a plan created this instant has a
+   running stage legitimately at 0%. Test the real property.
 6. **Measured centring against `innerWidth`.** Off by the scrollbar width; everything looked
-   20px wrong and was in fact correct to 0.3px. In §3.
+   20px wrong and was in fact correct to 0.3px. §3.
 7. **Set `noUnusedLocals` and `exactOptionalPropertyTypes` in `apps/vim/tsconfig.json`.**
-   Dragged the shared workspace packages into failure on code this app does not own. Extend
+   Dragged shared packages into failure on code this app does not own. Extend
    `tsconfig.base.json` instead.
-8. **Assumed the plan document arrived intact when it was pasted mid-turn.** Long stretches were
-   corrupted in transit; I started building from fragments. It was in `new-structure.md` all
-   along. **Ask for the file, don't reconstruct from a paste.**
+8. **Built from a plan pasted mid-turn that had been corrupted in transit.** It was in
+   `new-structure.md` on disk all along. **Ask for the file; never reconstruct from a paste.**
+9. **A regex that replaced an opening `<div>` with `<>` and left its `</div>` behind.** Broke
+   `Onboarding.tsx` with an unbalanced fragment. When a batch edit changes a tag, change both
+   ends in the same rule.
+10. **Inlined a long Python script into `bash -c "..."` twice.** Bash choked on quotes and
+    backticks inside the body both times. **Write the script to a file and run the file.**
 
 ### How I work, so the seams don't show
 
 - **Locate before changing.** One grep with alternation, not six greps.
-- **Batch writes.** Several files in one message; a Python heredoc with an `assert` per
-  replacement when touching 3+ files the same way.
+- **Batch writes.** Several files in one message; a Python script with an `assert` per
+  replacement when touching 3+ files the same way. Write the script to a file — see mistake 10.
 - **Verify by measuring, never by looking.** Drive the app with JS and assert on numbers:
-  `scrollWidth > clientWidth` for clipping, rects against `clientWidth` for overflow, scan
-  rendered text for `undefined|NaN|null`, check tap-target rects against 44px. Screenshots are
-  a last resort — slow, huge, and they cannot tell you a ring is 0.3px off centre.
+  `scrollWidth > clientWidth` for clipping, rects against `documentElement.clientWidth` for
+  overflow, rendered text scanned for `undefined|NaN|null`, tap-target rects against 44px. For
+  responsive work, measure inside a same-origin **iframe** — it has its own viewport.
 - **When a result looks wrong, hand-check the arithmetic before "fixing" it.** The Governor and
   Magistrate both showing "7d 8h left" looked like a bug and was correct: the Venus sūkṣma is
   the last child of the Sun pratyantar, so they genuinely share an end instant.
-- **Commit per logical chunk,** with a message that says *why* and what was deliberately left
-  out. Then update this file.
+- **Commit per logical chunk**, with a message that says *why* and what was deliberately left
+  out. Then update this section.
