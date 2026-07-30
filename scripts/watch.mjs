@@ -71,7 +71,9 @@ let verify = '_not run (use `--full`)_';
 if (full) {
   const tc = sh('npm run typecheck 2>&1', 'FAILED');
   const tcOk = !/error TS/.test(tc) && tc !== 'FAILED';
-  const tests = sh('npm test 2>&1', 'FAILED');
+  // Vitest colourises its summary, so `Tests  175 passed` actually arrives as
+  // `Tests \x1b[1m\x1b[32m175 passed`. Strip the escapes or every count reads as zero.
+  const tests = sh('npm test 2>&1', 'FAILED').replace(/\[[0-9;]*m/g, '');
   const counts = [...tests.matchAll(/Tests\s+(\d+) passed/g)].map((m) => Number(m[1]));
   const failed = /Tests\s+\d+ failed|FAIL/.test(tests);
   const total = counts.reduce((a, b) => a + b, 0);

@@ -198,3 +198,11 @@ boundaries moved by under a millisecond.
   - `?? packages/rules/`
   - `?? scripts/`
 - Verify: typecheck clean · tests 0 passed
+
+### 2026-07-30 04:47 · commit · commit
+**Part 3a: the Plan Composer, as scored rules over versioned data**
+
+- HEAD: `cc06c0b Part 3a: the Plan Composer, as scored rules over versioned data` on `main`
+- Parts: 1:done · 2:done · 3:todo · 4:todo
+- Uncommitted: nothing — tree clean
+- Verify: _not run (use `--full`)_

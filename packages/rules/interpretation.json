@@ -1,0 +1,129 @@
+{
+  "$meta": {
+    "contentVersion": 1,
+    "note": "Composable interpretation content (new-structure.md §4.6). AUTHORED PROSE, in our own words — never lifted from any classical text. Assembled deterministically by src/interpret.ts.",
+    "why": "The content space is combinatorial, not a list. Two levels is 81 pairs; five levels is 59,049. Hand-writing that is impossible and generating it per request is nondeterministic, expensive and unauditable. So ~100 authored fragments cover the whole space by assembly.",
+    "rules": "Conditions, not predictions. No banned vocabulary (malefic, benefic, auspicious, remedies, doshas, lucky, unlucky, destiny). Behavioural only — never gemstones, fasting or ritual. No medical, legal or financial directives.",
+    "llm": "§4.6 puts the smoothing pass OFFLINE: batched over the most-hit combinations, reviewed by an astrologer, frozen into storage. Users never see unreviewed generated astrology. Nothing in this file is model output."
+  },
+
+  "relation": {
+    "$comment": "81 fragments: relation[rulerAbove][subRuler]. What the COMBINATION does — the parent's regime applied to the child's nature. This is the layer that makes the same planet read differently in different terms, which is the whole reason a sub-period is worth naming. Read parent → child, matching the composer's direction.",
+
+    "sun": {
+      "sun": "Authority doubled. Whatever you put your name to now is unambiguously yours.",
+      "moon": "The room reads your mood as policy. Warmth lands harder than usual, and so does distance.",
+      "mars": "Force with a mandate. The direct move is backed rather than merely tolerated.",
+      "mercury": "Words carry authority. What you write now gets read by whoever decides.",
+      "jupiter": "Recognition widens. The credit you earn here travels further than the work did.",
+      "venus": "Charm in public. Being liked and being respected stop pulling in different directions.",
+      "saturn": "Visible slog. The unglamorous work happens where people can see it, which is oddly useful.",
+      "rahu": "Ambition steps into the light. Wanting more stops being something you hide.",
+      "ketu": "Quiet withdrawal from a visible role. You matter less to it than you thought, and that frees you."
+    },
+    "moon": {
+      "sun": "A clear voice in an unsettled room. Decide once and say it plainly; repetition will be needed.",
+      "moon": "Feeling doubled. Read the day, but do not sign anything on the strength of it.",
+      "mars": "Sharp edges on soft ground. Force here lands as a wound rather than a push.",
+      "mercury": "Conversation runs easily. Say the thing you have been drafting in your head.",
+      "jupiter": "Generosity with people. Care given now compounds into goodwill you can draw on later.",
+      "venus": "Comfort and company. Genuinely restorative, and genuinely easy to spend a month inside.",
+      "saturn": "Duty without appetite. Keep the routine going; do not judge it by how it feels.",
+      "rahu": "Restlessness without a target. The urge to change something is louder than any reason to.",
+      "ketu": "Interest drains quietly. Before you let go of something, check whether you are just tired."
+    },
+    "mars": {
+      "sun": "Force behind a name. Confrontation is likelier and cleaner than negotiation now.",
+      "moon": "Impatience with people. Take the reaction seriously; take the timing of it with salt.",
+      "mars": "Force doubled. Genuinely fast, and genuinely the wrong window for a delicate conversation.",
+      "mercury": "Sharp words. Say it precisely or it lands as an ultimatum — read it back before sending.",
+      "jupiter": "Momentum with room to run. The bold version is the one that works.",
+      "venus": "Wanting collides with waiting. Pushing for closeness pushes it away.",
+      "saturn": "Force against structure. Everything takes the effort it takes; strain does not shorten it.",
+      "rahu": "Appetite with a weapon. Very effective, very easy to overreach — set the limit in advance.",
+      "ketu": "Energy with nowhere to go. Spend it on the body, not on a decision."
+    },
+    "mercury": {
+      "sun": "Clear statements. Put the position in writing and let it be quoted.",
+      "moon": "Talking things through works. The conversation moves further than the plan did.",
+      "mars": "Fast, pointed exchange. Good for negotiating, poor for anything that needs to age well.",
+      "mercury": "Exchange doubled. Enormously productive on paper; check that any of it is finished.",
+      "jupiter": "Ideas find a bigger frame. Teach it, publish it, or ask a larger audience for it.",
+      "venus": "Terms and taste together. This is the window for renegotiating what you are paid.",
+      "saturn": "Detail work with weight. Contracts, records and audits go well; enthusiasm does not.",
+      "rahu": "Clever routes appear. Verify anything that arrives sounding too neat.",
+      "ketu": "Deep, narrow focus. One subject, properly, while everything else goes quiet."
+    },
+    "jupiter": {
+      "sun": "Standing grows. Say yes to the room you are offered, not the one you feel ready for.",
+      "moon": "Ease with people, and easy over-promising. Count what you agree to.",
+      "mars": "Backed force. The push has support behind it, so make the larger ask.",
+      "mercury": "Learning lands. Study, write, and get the specific qualification.",
+      "jupiter": "Expansion doubled. Everything grows here, cost and weight included.",
+      "venus": "Abundance and appetite. Genuinely fortunate, and expensive if left unwatched.",
+      "saturn": "Growth on a foundation. Slower than it looks and more durable than it feels.",
+      "rahu": "Big appetite, big licence. The most and least disciplined stretch in the term.",
+      "ketu": "Wisdom over accumulation. Depth is available; more is not what you need."
+    },
+    "venus": {
+      "sun": "Warm authority. People agree with you because they want to, not because you argued.",
+      "moon": "Comfort and closeness. A good window for repair, a poor one for confrontation.",
+      "mars": "Desire in a hurry. Wanting it faster is what costs you the thing.",
+      "mercury": "Negotiation and taste. Ask for the better terms; the room is disposed to say yes.",
+      "jupiter": "Generous and pleasant. Expansive in a way that spends easily.",
+      "venus": "Attraction doubled. The most open stretch in the term, and the easiest to spend on nothing.",
+      "saturn": "Pleasure with a bill attached. Enjoy it, and expect to account for it later.",
+      "rahu": "Glamour with a hook. Do not sign anything because it looks good.",
+      "ketu": "Interest cools in something pleasant. Check whether you are done or merely comfortable."
+    },
+    "saturn": {
+      "sun": "Authority on a leash. Visibility comes with scrutiny; earn it rather than claim it.",
+      "moon": "Duty over mood. The feeling will not carry you; the routine will.",
+      "mars": "Force meets a desk. Every push needs paperwork behind it, and shortcuts get sent back.",
+      "mercury": "The audit window. Get the numbers, contracts and records right while it is cheap to.",
+      "jupiter": "Slow, real growth. Boring for months, then suddenly built.",
+      "venus": "Pleasure on a schedule. What you enjoy has to earn its place in the day.",
+      "saturn": "Weight doubled. The hardest stretch and the one that compounds hardest. Shrink the daily step.",
+      "rahu": "Appetite meets a limit. The shortcut is available and it is the expensive one.",
+      "ketu": "Endurance without appetite. Finish what is nearly done and let the rest close."
+    },
+    "rahu": {
+      "sun": "Sudden visibility. Attention arrives from a direction you did not cultivate.",
+      "moon": "Unsettled feeling. The urge to move is real; the reason you give yourself is not.",
+      "mars": "Bold and unruly. Effective, and the window where you overreach.",
+      "mercury": "Clever and quick. Excellent for the unconventional route, poor for the fine print.",
+      "jupiter": "Expansion without brakes. Say what enough looks like before you start.",
+      "venus": "Desire for the unfamiliar. Attractive, and worth sleeping on twice.",
+      "saturn": "Hunger against structure. What you want is not what the process will allow yet.",
+      "rahu": "Appetite doubled. Nothing counts as enough — put a number on it and show someone.",
+      "ketu": "Pulled two ways. You want more of something you are also finished with."
+    },
+    "ketu": {
+      "sun": "Stepping back from a visible role. Less of you in it, and that is the point.",
+      "moon": "Detachment from people. Withdrawal reads as coldness to everyone but you.",
+      "mars": "Force without a target. Do not start something to feel the momentum.",
+      "mercury": "Narrow, deep attention. Research and craft, not correspondence.",
+      "jupiter": "Depth over breadth. Understanding, rather than more.",
+      "venus": "Comfort loses its pull. Genuinely clarifying, and easy to mistake for not caring.",
+      "saturn": "Completion without reward. Close it properly; the credit is not coming.",
+      "rahu": "Wanting and letting go at once. Decide which, in writing, before acting on either.",
+      "ketu": "Release doubled. Very clear, very quiet, and the wrong moment to end anything permanently."
+    }
+  },
+
+  "houseFlavour": {
+    "$comment": "12 fragments, keyed by the bhava the ruling planet occupies in the natal chart. Classical significations, in plain words. This is the layer that makes the same period read differently for two people.",
+    "1": "It plays out in you rather than around you — health, bearing, how you come across.",
+    "2": "It shows up in income, savings and what you say. Money and voice move together here.",
+    "3": "It shows up in effort, siblings and short moves. Courage over strategy.",
+    "4": "It shows up at home, and in whatever counts as home. Property, family, the ground under you.",
+    "5": "It shows up in what you make and who you teach. Children, creation, risk taken for love of it.",
+    "6": "It shows up as work, routine and friction. Obstacles are the material, not the interruption.",
+    "7": "It shows up in partnership. The other person is the mechanism, for better and worse.",
+    "8": "It shows up underneath — what is hidden, inherited or overturned. Slow, and not superficial.",
+    "9": "It shows up as belief, teachers and distance. Long journeys, literal and otherwise.",
+    "10": "It shows up in public: work, standing, what you are known for.",
+    "11": "It shows up as gain and networks. Things arrive through people rather than effort.",
+    "12": "It shows up as release and elsewhere — rest, foreign ground, what you spend and let go."
+  }
+}

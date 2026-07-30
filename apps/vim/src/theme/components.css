@@ -846,6 +846,31 @@ body {
 .detail-progress .progress-track {
   height: 8px;
 }
+/* The assembled interpretation layers (§4.6). Each carries its own label so the reader can
+   see WHICH claim is about the pairing and which is about them specifically — an assembled
+   reading that hides its seams is indistinguishable from one that made itself up. */
+.layers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+  max-width: var(--layout-measure);
+}
+.layer {
+  margin: 0;
+  font-size: var(--type-body);
+  line-height: 1.65;
+  color: var(--ink-body);
+}
+.layer-label {
+  display: block;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-1);
+}
+
 .detail-kingdom-label {
   margin: var(--space-8) 0 var(--space-3);
 }

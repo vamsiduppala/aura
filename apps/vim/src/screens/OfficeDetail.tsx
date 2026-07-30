@@ -6,6 +6,7 @@
 import { useMemo, useState } from 'react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { naturalRelation } from '@aura/knowledge';
+import { interpret } from '@vim/rules';
 import type { DashaPeriod, Graha } from '@aura/engine';
 import { Inset, ProgressTrack } from '../components/neu';
 import {
@@ -51,6 +52,17 @@ export function OfficeDetail({ level }: Props) {
   }, [chart, seat, level]);
 
   if (!chart || !seat) return null;
+
+  // §4.6: the reading is assembled, not looked up. The base layer is this planet's own
+  // character; the relation layer says what THIS pairing does; the house layer says where it
+  // lands for THIS person. Two people in the same Venus Governor get different middle and
+  // bottom layers, which is the difference between a reading and a horoscope.
+  const layers = interpret({
+    planet: seat.lord,
+    level,
+    parentPlanet: parent?.lord,
+    chart,
+  });
 
   const p = PLANET[seat.lord];
   const meta = officeByLevel(level);
@@ -106,6 +118,29 @@ export function OfficeDetail({ level }: Props) {
 
       <p className="t-section-label detail-kingdom-label">In the kingdom</p>
       <p className="t-kingdom">{kingdomLine(seat.lord, meta.office)}</p>
+
+      {/* The assembled layers. Each is authored prose, and each is only shown when it has
+          something real to say — no filler when there is no ruler above or no chart. */}
+      {(layers.relation || layers.houseFlavour) && (
+        <div className="layers">
+          {layers.relation && parent && (
+            <p className="layer">
+              <span className="layer-label" style={{ color: p.ring }}>
+                Under {PLANET[parent.lord].name}
+              </span>
+              {layers.relation}
+            </p>
+          )}
+          {layers.houseFlavour && (
+            <p className="layer">
+              <span className="layer-label" style={{ color: p.ring }}>
+                For you
+              </span>
+              {layers.houseFlavour}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="seg" role="tablist" aria-label="How this period reads">
         {(['advantage', 'obstacle'] as const).map((t) => (

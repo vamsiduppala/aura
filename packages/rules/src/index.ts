@@ -9,3 +9,9 @@ export {
   scoreStage, relationClass, archetypeMeta,
   type Archetype, type RelationClass, type ScoreInput, type ScoreBreakdown,
 } from './composer.js';
+
+export {
+  CONTENT_VERSION, RELATION_FRAGMENTS, HOUSE_FRAGMENTS,
+  interpret, chartFeatureHash,
+  type InterpretInput, type Interpretation,
+} from './interpret.js';

@@ -8,5 +8,5 @@
     "module": "ESNext",
     "moduleResolution": "Bundler"
   },
-  "include": ["src", "rules.json"]
+  "include": ["src", "rules.json", "interpretation.json"]
 }
