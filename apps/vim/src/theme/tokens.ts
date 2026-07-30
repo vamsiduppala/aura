@@ -6,7 +6,7 @@
 // contract is called. A designer changing Venus pink edits tokens.json; an engineer changing
 // what "Governor" means edits here.
 
-import { layout, motion, planet, wheel } from '@vim/tokens';
+import { layout, motion, office, planet, wheel } from '@vim/tokens';
 import type { DashaLevel, Graha } from '@aura/engine';
 
 // ---------------------------------------------------------------------------
@@ -30,31 +30,38 @@ export interface OfficeMeta {
   rules: string;
 }
 
-/** Ordered King → Messenger, i.e. slowest first, matching engine level order. */
+/**
+ * Ordered King → Messenger, i.e. slowest first, matching engine level order.
+ *
+ * `label` and `sanskrit` come from the generated tokens, not from here. Three surfaces speak
+ * these five words — the rings, the Dart app, and the Mentor's system prompt — and a rename
+ * that reaches only two of them leaves the product calling one period by two names. Level,
+ * engine key and the explainer prose stay local: they are logic, not naming.
+ */
 export const OFFICES: readonly OfficeMeta[] = [
   {
     office: 'king', level: 1, dashaLevel: 'maha',
-    label: 'King', sanskrit: 'Mahādaśā',
+    ...office.l1,
     rules: 'Reigns for several years — typically 6 to 20.',
   },
   {
     office: 'primeMinister', level: 2, dashaLevel: 'antar',
-    label: 'Prime Minister', sanskrit: 'Antardaśā',
+    ...office.l2,
     rules: 'Serves for months up to a few years — usually 1 to 3.',
   },
   {
     office: 'governor', level: 3, dashaLevel: 'pratyantar',
-    label: 'Governor', sanskrit: 'Pratyantardaśā',
+    ...office.l3,
     rules: 'Holds office for weeks to a few months.',
   },
   {
     office: 'magistrate', level: 4, dashaLevel: 'sookshma',
-    label: 'Magistrate', sanskrit: 'Sūkṣma daśā',
+    ...office.l4,
     rules: 'Sits for days to a few weeks.',
   },
   {
     office: 'messenger', level: 5, dashaLevel: 'prana',
-    label: 'Messenger', sanskrit: 'Prāṇa daśā',
+    ...office.l5,
     rules: 'Arrives for hours to a few days.',
   },
 ] as const;
